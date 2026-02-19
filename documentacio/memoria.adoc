@@ -101,11 +101,11 @@
 
 * Board inicial:
 // Substitueix "ruta_imatge_inicial.png" per la ruta real de la teva imatge
-image::Imatges/BoardInicial.png[]
+image::Imatges/BoardInicial1.png[]
 
 * Board final:
 // Substitueix "ruta_imatge_final.png" per la ruta real de la teva imatge
-image::Imatges/BoardFinal.png[]
+image::Imatges/BoardFinal1.png[]
 
 |== RETROSPECTIVE MEETING
 
