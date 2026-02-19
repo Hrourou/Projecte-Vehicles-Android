@@ -20,10 +20,10 @@
 |3H
 
 |BACHIR
-|
-|
-|
-|
+|-
+|He après a utilitzar les noves funcionalitats necessaries al gitlab i las he implementat
+|La organització / estructura del projecte
+|6H
 
 |JOEL
 | -
@@ -53,10 +53,10 @@
 |3H
 
 |BACHIR
-|
-|
-|
-|
+|Vaig implementar totes les funcionalitats al gitlab necessaries
+|Crearé l'estructura del projecte al Android Studio tenint en compte l'enunciat
+|No accabo d'entendre com fer l'estructura
+|3H
 
 |JOEL
 | Teoria i probar coses de gitlab i organitzar una mica
@@ -64,6 +64,48 @@
 | Les mateixes preocupacions, moltes coses noves i poc temps, no se per on començar
 | 3H
 |===
+
+|===
+|19/02/2026
+|QUE ES VA FER AHIR
+|QUE ES FARA AVUI
+|PREOCUPACIONS QUE ES TENEN
+|HORES TREBALLADES
+
+|JAVIER
+|Vaig fer el daily stand up i crear els epics
+|He fet la pantalla de llistar vehicles
+|-
+|4H
+
+|HAMZA
+|Vaig organitzar i revisar la gestió del codi al gitlab i la seva estructura
+|He començat a fer les pantalles de reserva
+|-
+|4H
+
+|BACHIR
+|Vaig començar a fer l'estructura sense gaire èxit
+|Acabré l'estructura i intentaré comprobar la connexió entra backend i frontend
+|No he pogut avançar res de RF o codi, molts errors
+|4H
+
+|JOEL
+|
+|
+|
+|
+|===
+
+|== Captures board
+
+* Board inicial:
+// Substitueix "ruta_imatge_inicial.png" per la ruta real de la teva imatge
+image::Imatges/BoardInicial1.png[]
+
+* Board final:
+// Substitueix "ruta_imatge_final.png" per la ruta real de la teva imatge
+image::Imatges/BoardFinal1.png[]
 
 |== RETROSPECTIVE MEETING
 
@@ -79,4 +121,5 @@
 |Comunicació i objectius clars
 |Comunicar en cada cas el que estem fent i sobretot el que volem que faci un altra company del grup; i també afegir
 |objectius clars i concrets (pantalles i requisits específics)
+|Hem tingut problemes per entendre i començar el projecte
 |===
