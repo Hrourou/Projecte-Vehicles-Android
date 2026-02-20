@@ -1,11 +1,12 @@
 = DAILY STAND UP
-[cols="1,2,3,3,1", options="header"]
+:toc:
+:sectnums:
+
+== 13/02/2026
+
+[cols="1,3,3,3,1", options="header"]
 |===
-|13/02/2026
-|QUE ES VA FER AHIR
-|QUE ES FARA AVUI
-|PREOCUPACIONS QUE ES TENEN
-|HORES TREBALLADES
+|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
 
 |JAVIER
 |És el primer dia de projecte
@@ -20,25 +21,24 @@
 |3H
 
 |BACHIR
-|
-|
-|
-|
+|-
+|He après a utilitzar les noves funcionalitats necessaries al gitlab i las he implementat
+|La organització / estructura del projecte
+|6H
 
 |JOEL
-|
-|
-|
-|
+|-
+|Teoria i probar les noves eines del gitlab
+|El nou entorn de desnvolupament, fer servir android studio i kotlin i tot aixo amb tant poc temps
+|3h
 |===
 
 
+== 18/02/2026
+
+[cols="1,3,3,3,1", options="header"]
 |===
-|18/02/2026
-|QUE ES VA FER AHIR
-|QUE ES FARA AVUI
-|PREOCUPACIONS QUE ES TENEN
-|HORES TREBALLADES
+|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
 
 |JAVIER
 |El passat divendres vaig faltar a classe
@@ -53,10 +53,42 @@
 |3H
 
 |BACHIR
-|
-|
-|
-|
+|Vaig implementar totes les funcionalitats al gitlab necessaries
+|Crearé l'estructura del projecte al Android Studio tenint en compte l'enunciat
+|No accabo d'entendre com fer l'estructura
+|3H
+
+|JOEL
+|Teoria i probar coses de gitlab i organitzar una mica
+|Organitzar amb el grup, asignarse tasques començar amb la primera pantalla i investigar i aprofondir al enunciat
+|Les mateixes preocupacions, moltes coses noves i poc temps, no se per on començar
+|3H
+|===
+
+
+== 19/02/2026
+
+[cols="1,3,3,3,1", options="header"]
+|===
+|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
+
+|JAVIER
+|Vaig fer el daily stand up i crear els epics
+|He fet la pantalla de llistar vehicles
+|-
+|4H
+
+|HAMZA
+|Vaig organitzar i revisar la gestió del codi al gitlab i la seva estructura
+|He començat a fer les pantalles de reserva
+|-
+|4H
+
+|BACHIR
+|Vaig començar a fer l'estructura sense gaire èxit
+|Acabré l'estructura i intentaré comprobar la connexió entra backend i frontend
+|No he pogut avançar res de RF o codi, molts errors
+|4H
 
 |JOEL
 |
@@ -65,18 +97,28 @@
 |
 |===
 
-|== RETROSPECTIVE MEETING
 
-[cols="1,1,3,3,3", options="header"]
+== Captures board
+
+=== Board inicial
+
+image:Imatges/BoardInicial1.png[Board inicial, width=400]
+
+=== Board final
+
+image:Imatges/BoardFinal1.png[Board final, width=400]
+
+
+== RETROSPECTIVE MEETING
+
+[cols="1,3,3,3", options="header"]
 |===
-|Sprint
-|Aspectes positius
-|Aspectes a millorar
-|Accions concretes
+|Sprint |Aspectes positius |Aspectes a millorar |Accions concretes
 
 |Sprint 1
 |Un dels aspectes positius és que som 4 en el grup i per tant hi ha menys treball individual
-|Comunicació i objectius clars
-|Comunicar en cada cas el que estem fent i sobretot el que volem que faci un altra company del grup; i també afegir
-|objectius clars i concrets (pantalles i requisits específics)
+|Comunicació i objectius clars +
+Hem tingut problemes per entendre i començar el projecte
+|Comunicar en cada cas el que estem fent i sobretot el que volem que faci un altra company del grup; i també afegir +
+objectius clars i concrets (pantalles i requisits específics)
 |===

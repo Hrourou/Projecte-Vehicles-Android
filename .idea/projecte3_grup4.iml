@@ -3,22 +3,7 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/UsuariAnonim/data/api/remote" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/UsuariAnonim/data/repositories" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/UsuariAnonim/ui" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/client/data/api/remote" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/client/data/repositories" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/client/ui/view" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/core/auth" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/core/composables" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/core/navigation" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/core/network" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/core/validation" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/model" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/reserva/data/appi/remote" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/reserva/data/repositories" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/reserva/ui/view" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mobile/GestioVehicles/app/src/main/java/cat/copernic/myapplication/reserva/ui/viewmodel" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
