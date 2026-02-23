@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import cat.copernic.appvehicles.ui.theme.AppVehiclesTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import cat.copernic.appvehicles.vehicle.ui.view.VehicleMock
 
 /**
  * RF90 - Llistar vehicles
@@ -67,20 +68,6 @@ fun VehicleListScreen(
         }
     }
 }
-
-
-/**
- * Model temporal (Mock)
- * Més endavant vindrà de la capa Domain
- */
-data class VehicleMock(
-    val id: Int,
-    val marca: String,
-    val model: String,
-    val variant: String,
-    val preuHora: Double
-)
-
 
 /**
  * Component reutilitzable (RN25)
