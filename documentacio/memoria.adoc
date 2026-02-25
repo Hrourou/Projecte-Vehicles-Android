@@ -155,10 +155,12 @@ objectius clars i concrets (pantalles i requisits específics)
 |
 
 |JOEL
-|-
-|
-|
-|
+|Vaig crear una branca i vaig veure que es el que no em funcionaba de la pantalla anterior (Intenar acabarla 
+ de manera correcta si es posible), a més, vaig fer probes amb el chat gpt per veure com podriem fer el 
+ projecte correctament
+|Revisio del Sprint amb el Manel, parlar de dubtes i organitzar els issues i el tauler i crear tasques.
+|Temps i que tot surti bé
+|4h
 |===
 
 == 23/02/2026
@@ -187,10 +189,10 @@ objectius clars i concrets (pantalles i requisits específics)
 |
 
 |JOEL
-|-
-|
-|
-|
+|Revisio del Sprint amb el Manel, parlar de dubtes i organitzar els issues i el tauler i crear tasques. 
+|Creare la pantalla de login i la de recuperar contrasenya, també si em dona temps començare la de edit profile i preguntare dubtes
+|La manera de fer les pantalles funcionals i que no surgeixin problemes a l'hora d'utilitzar el android studio i sincroniztar cambis
+|3H
 |===
 
 == 24/02/2026
@@ -219,7 +221,6 @@ objectius clars i concrets (pantalles i requisits específics)
 |
 
 |JOEL
-|-
 |
 |
 |
@@ -251,8 +252,8 @@ objectius clars i concrets (pantalles i requisits específics)
 |
 
 |JOEL
-|-
-|
-|
-|
+|Ahir vaig crear la pantalla de login i la de recuperar contrasenya, també vaig començar la de edit profile i vaig preguntar dubtes
+|Avui acabare la pantalla de edit profile i començare el Rf de edit profile
+|La manera de fer les pantalles funcionals i que no surgeixin problemes a l'hora d'utilitzar el android studio i sincroniztar cambis
+|3H
 |===
