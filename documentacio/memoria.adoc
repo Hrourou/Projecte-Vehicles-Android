@@ -286,8 +286,8 @@ objectius clars i concrets (pantalles i requisits específics)
 |
 
 |JOEL
-|
-|
-|
-|
+|Ahir vaig acabar la pantalla de edit profile i vaig començar el Rf de edit profile
+|Avui intentare acabar el RF i cercare informació de com enllaçar les parts del projecte
+|Saber conectar de manera correcta la part de android amb la de java i el temps.
+|4H
 |===
