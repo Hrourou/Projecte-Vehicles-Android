@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package cat.copernic.backendProjecte3.entities;
 
 import cat.copernic.backendProjecte3.enums.EstatVehicle;
@@ -20,13 +16,25 @@ public class Vehicle {
     @Column(length = 20)
     private String matricula;
 
-    @Enumerated(EnumType.STRING)
-    private TipusVehicle tipusVehicle;
-    
-    @Enumerated(EnumType.STRING)
-    private EstatVehicle estatVehicle;
+    // --- DADES COMERCIALS (RF90) ---
 
-    private String motor;
+    @Column(nullable = false)
+    private String marca;
+
+    @Column(nullable = false)
+    private String model;
+
+    /**
+     * Variant comercial (Elèctric, Híbrid, Dièsel…)
+     * No confondre amb tipusVehicle (COTXE, MOTO…)
+     */
+    @Column(nullable = false)
+    private String variant;
+
+    /**
+     * Ruta o URL pública de la imatge del vehicle
+     */
+    private String fotoUrl;
 
     private String potencia;
 
@@ -44,6 +52,14 @@ public class Vehicle {
 
     private Integer maxDiesLloguer;
 
+    // --- DADES INTERNES DE NEGOCI ---
+
+    @Enumerated(EnumType.STRING)
+    private TipusVehicle tipusVehicle;
+
+    @Enumerated(EnumType.STRING)
+    private EstatVehicle estatVehicle;
+
     @Column(columnDefinition = "TEXT")
     private String comentarisPrivats;
 
@@ -54,161 +70,82 @@ public class Vehicle {
 
     public Vehicle() {}
 
-    public String getMatricula() {
-        return matricula;
-    }
+    // ---------------- GETTERS & SETTERS ----------------
 
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
-    }
+    public String getMatricula() { return matricula; }
+    public void setMatricula(String matricula) { this.matricula = matricula; }
 
-    public TipusVehicle getTipusVehicle() {
-        return tipusVehicle;
-    }
+    public String getMarca() { return marca; }
+    public void setMarca(String marca) { this.marca = marca; }
 
-    public void setTipusVehicle(TipusVehicle tipusVehicle) {
-        this.tipusVehicle = tipusVehicle;
-    }
+    public String getModel() { return model; }
+    public void setModel(String model) { this.model = model; }
 
-    public String getMotor() {
-        return motor;
-    }
+    public String getVariant() { return variant; }
+    public void setVariant(String variant) { this.variant = variant; }
 
-    public void setMotor(String motor) {
-        this.motor = motor;
-    }
+    public String getFotoUrl() { return fotoUrl; }
+    public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
 
-    public String getPotencia() {
-        return potencia;
-    }
+    public String getPotencia() { return potencia; }
+    public void setPotencia(String potencia) { this.potencia = potencia; }
 
-    public void setPotencia(String potencia) {
-        this.potencia = potencia;
-    }
+    public String getColor() { return color; }
+    public void setColor(String color) { this.color = color; }
 
-    public String getColor() {
-        return color;
-    }
+    public Integer getLimitQuilometratge() { return limitQuilometratge; }
+    public void setLimitQuilometratge(Integer limitQuilometratge) { this.limitQuilometratge = limitQuilometratge; }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+    public BigDecimal getPreuHora() { return preuHora; }
+    public void setPreuHora(BigDecimal preuHora) { this.preuHora = preuHora; }
 
-    public Integer getLimitQuilometratge() {
-        return limitQuilometratge;
-    }
+    public BigDecimal getFiancaEstandard() { return fiancaEstandard; }
+    public void setFiancaEstandard(BigDecimal fiancaEstandard) { this.fiancaEstandard = fiancaEstandard; }
 
-    public void setLimitQuilometratge(Integer limitQuilometratge) {
-        this.limitQuilometratge = limitQuilometratge;
-    }
+    public Integer getMinDiesLloguer() { return minDiesLloguer; }
+    public void setMinDiesLloguer(Integer minDiesLloguer) { this.minDiesLloguer = minDiesLloguer; }
 
-    public BigDecimal getPreuHora() {
-        return preuHora;
-    }
+    public Integer getMaxDiesLloguer() { return maxDiesLloguer; }
+    public void setMaxDiesLloguer(Integer maxDiesLloguer) { this.maxDiesLloguer = maxDiesLloguer; }
 
-    public void setPreuHora(BigDecimal preuHora) {
-        this.preuHora = preuHora;
-    }
+    public TipusVehicle getTipusVehicle() { return tipusVehicle; }
+    public void setTipusVehicle(TipusVehicle tipusVehicle) { this.tipusVehicle = tipusVehicle; }
 
-    public BigDecimal getFiancaEstandard() {
-        return fiancaEstandard;
-    }
+    public EstatVehicle getEstatVehicle() { return estatVehicle; }
+    public void setEstatVehicle(EstatVehicle estatVehicle) { this.estatVehicle = estatVehicle; }
 
-    public void setFiancaEstandard(BigDecimal fiancaEstandard) {
-        this.fiancaEstandard = fiancaEstandard;
-    }
+    public String getComentarisPrivats() { return comentarisPrivats; }
+    public void setComentarisPrivats(String comentarisPrivats) { this.comentarisPrivats = comentarisPrivats; }
 
-    public Integer getMinDiesLloguer() {
-        return minDiesLloguer;
-    }
+    public String getRutaDocumentacioPrivada() { return rutaDocumentacioPrivada; }
+    public void setRutaDocumentacioPrivada(String rutaDocumentacioPrivada) { this.rutaDocumentacioPrivada = rutaDocumentacioPrivada; }
 
-    public void setMinDiesLloguer(Integer minDiesLloguer) {
-        this.minDiesLloguer = minDiesLloguer;
-    }
+    public List<Reserva> getReservas() { return reservas; }
+    public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
 
-    public Integer getMaxDiesLloguer() {
-        return maxDiesLloguer;
-    }
-
-    public void setMaxDiesLloguer(Integer maxDiesLloguer) {
-        this.maxDiesLloguer = maxDiesLloguer;
-    }
-
-    public String getComentarisPrivats() {
-        return comentarisPrivats;
-    }
-
-    public void setComentarisPrivats(String comentarisPrivats) {
-        this.comentarisPrivats = comentarisPrivats;
-    }
-
-    public String getRutaDocumentacioPrivada() {
-        return rutaDocumentacioPrivada;
-    }
-
-    public void setRutaDocumentacioPrivada(String rutaDocumentacioPrivada) {
-        this.rutaDocumentacioPrivada = rutaDocumentacioPrivada;
-    }
-
-    public List<Reserva> getReservas() {
-        return reservas;
-    }
-
-    public void setReservas(List<Reserva> reservas) {
-        this.reservas = reservas;
-    }
-
-    public EstatVehicle getEstatVehicle() {
-        return estatVehicle;
-    }
-
-    public void setEstatVehicle(EstatVehicle estatVehicle) {
-        this.estatVehicle = estatVehicle;
-    }
+    // ---------------- equals & hashCode ----------------
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 83 * hash + Objects.hashCode(this.matricula);
-        return hash;
+        return Objects.hashCode(this.matricula);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Vehicle other = (Vehicle) obj;
+        if (this == obj) return true;
+        if (!(obj instanceof Vehicle)) return false;
+        Vehicle other = (Vehicle) obj;
         return Objects.equals(this.matricula, other.matricula);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Vehicle{");
-        sb.append("matricula=").append(matricula);
-        sb.append(", tipusVehicle=").append(tipusVehicle);
-        sb.append(", motor=").append(motor);
-        sb.append(", potencia=").append(potencia);
-        sb.append(", color=").append(color);
-        sb.append(", limitQuilometratge=").append(limitQuilometratge);
-        sb.append(", preuHora=").append(preuHora);
-        sb.append(", fiancaEstandard=").append(fiancaEstandard);
-        sb.append(", minDiesLloguer=").append(minDiesLloguer);
-        sb.append(", maxDiesLloguer=").append(maxDiesLloguer);
-        sb.append(", comentarisPrivats=").append(comentarisPrivats);
-        sb.append(", rutaDocumentacioPrivada=").append(rutaDocumentacioPrivada);
-        sb.append(", num reservas=").append(reservas.size());
-        sb.append('}');
-        return sb.toString();
+        return "Vehicle{" +
+                "matricula=" + matricula +
+                ", marca=" + marca +
+                ", model=" + model +
+                ", variant=" + variant +
+                ", preuHora=" + preuHora +
+                '}';
     }
-    
-    
-   
 }

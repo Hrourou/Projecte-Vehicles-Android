@@ -1,25 +1,15 @@
 package cat.copernic.backendProjecte3;
 
-import cat.copernic.backendProjecte3.config.PasswordHasher;
-import cat.copernic.backendProjecte3.entities.Client;
-import cat.copernic.backendProjecte3.entities.Reserva;
-import cat.copernic.backendProjecte3.entities.Vehicle;
-import cat.copernic.backendProjecte3.enums.Reputacio;
-import cat.copernic.backendProjecte3.enums.TipusVehicle;
-import cat.copernic.backendProjecte3.enums.UserRole;
 import cat.copernic.backendProjecte3.repository.ClientRepository;
 import cat.copernic.backendProjecte3.repository.ReservaRepository;
 import cat.copernic.backendProjecte3.repository.VehicleRepository;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
 @SpringBootApplication
-public class BackendProjecte3Application implements CommandLineRunner{
+public class BackendProjecte3Application implements CommandLineRunner {
 
     @Autowired
     private VehicleRepository vehicleRepo;
@@ -30,45 +20,44 @@ public class BackendProjecte3Application implements CommandLineRunner{
     @Autowired
     private ReservaRepository reservaRepo;
 
-    /***
+    /**
      * Inici aplicació Java.
-     * 
-     * En aquest punt SpringBoot encara no és "actiu"
-     * @param args 
      */
     public static void main(String[] args) {
-            SpringApplication.run(BackendProjecte3Application.class, args);
+        SpringApplication.run(BackendProjecte3Application.class, args);
     }
-        
-    /***
-     * Inici d'aplicació SpringBoot, si implementem la interficie CommandLineRunner
+
+    /**
+     * Inici SpringBoot.
      * 
-     * Aquí ja està inicialitzada tota la maquinaria de SpringBoot
-     * 
-     * @param args
-     * @throws Exception 
+     * ⚠️ Dades de prova DESACTIVADES temporalment
+     * per poder provar només RF90 (vehicles).
      */
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Inserint dades de prova...");
-
-        try {            
-            Client clientVip = crearClientExemple();
-            
-            Vehicle cotxeElectring = crearVehicleExemple();
-            
-            crearReservaExemple(clientVip, cotxeElectring);
-
-            System.out.println("Dades inserides correctament.");
-        } catch (Exception e) {
-            System.err.println("ERROR inserint dades de prova: " + e.getMessage());
-        }
+        // System.out.println("Inserint dades de prova...");
+        //
+        // try {            
+        //     Client clientVip = crearClientExemple();
+        //     Vehicle cotxeElectring = crearVehicleExemple();
+        //     crearReservaExemple(clientVip, cotxeElectring);
+        //
+        //     System.out.println("Dades inserides correctament.");
+        // } catch (Exception e) {
+        //     System.err.println("ERROR inserint dades de prova: " + e.getMessage());
+        // }
     }
+
+    /*
+    // ================================
+    // MÈTODES DE PROVA DESACTIVATS
+    // ================================
 
     private Client crearClientExemple() {
         Client c = new Client();
         c.setEmail("maria@test.com");
         c.setPassword(PasswordHasher.encode("123456"));
+        c.setNomComplet("Maria Garcia"); // Faltava això
         c.setDni("44556677D");
         c.setReputacio(Reputacio.PREMIUM);
         c.setRol(UserRole.CLIENT);
@@ -92,8 +81,8 @@ public class BackendProjecte3Application implements CommandLineRunner{
         r.setDataInici(LocalDate.now().plusWeeks(1));
         r.setDataFi(LocalDate.now().plusWeeks(1).plusDays(3));
         r.setImportTotal(new BigDecimal("150.00"));
-        r.setFiancaPagada(new BigDecimal("300.00")); // Fiança reduïda manualment
+        r.setFiancaPagada(new BigDecimal("300.00"));
         reservaRepo.save(r);
     }
-
+    */
 }
