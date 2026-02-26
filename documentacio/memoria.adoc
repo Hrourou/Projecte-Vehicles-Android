@@ -129,6 +129,7 @@ objectius clars i concrets (pantalles i requisits específics)
 |===
 
 |SPRINT 2:
+
 == 20/02/2026
 
 [cols="1,3,3,3,1", options="header"]
@@ -149,10 +150,10 @@ objectius clars i concrets (pantalles i requisits específics)
 
 
 |BACHIR
-|
-|
-|
-|
+| -
+|Avuí intentaré resoldre els errors de sincronització i gradle del projecte
+|No aconsegueixo veure o solucionar l'error
+|3H
 
 |JOEL
 |Vaig crear una branca i vaig veure que es el que no em funcionaba de la pantalla anterior (Intenar acabarla 
@@ -177,16 +178,16 @@ objectius clars i concrets (pantalles i requisits específics)
 
 |HAMZA
 |Ahir vaig començar la pantalla de llistar reserves 
-|Avui acabaré la pantalla de detall de reserva.
+|Avui acabaré la pantalla de detall i de crear de reserva.
 |Preocupació per l’organització correcta dels RF i com connectar les pantalles amb la lògica.
 |4H
 
 
 |BACHIR
-|
-|
-|
-|
+|Ahir vaig acabar de arreglar problemes amb la sincronitzacio del projecte
+|Avui he començat la pantallas principal i de registre, a més de dividir la pantalla de registre en 3 pantalles
+|Hauria de fer el bottom navigation per poder veure pantalles
+|6H
 
 |JOEL
 |Revisio del Sprint amb el Manel, parlar de dubtes i organitzar els issues i el tauler i crear tasques. 
@@ -195,38 +196,6 @@ objectius clars i concrets (pantalles i requisits específics)
 |3H
 |===
 
-== 24/02/2026
-
-[cols="1,3,3,3,1", options="header"]
-|===
-|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
-
-|JAVIER
-|Ahir vaig crear totes les pantalles de Vehicle però al final l'Esther em va indicar que l'habia d'unificar 3 en 1.
-|Avui he unificat les pantalles de llistar, odernar per preu i filtrar per dates en una sola pantalla (VehicleLlistarScreen)
-|Preocupació les de sempre, temps, codi pels RF
-|1 H
-
-== 24/02/2026
-
-|HAMZA
-|Ahir vaig crear la pantalla de detall de reserva i vaig començar la pantalla de crear reserva.
-|Avui acabaré la pantalla de crear reserva i revisaré la navegació entre les tres pantalles.
-|Preocupació pel temps i per implementar correctament la part de ViewModel i backend.
-|3H
-
-
-|BACHIR
-|
-|
-|
-|
-
-|JOEL
-|
-|
-|
-|===
 
 == 25/02/2026
 
@@ -235,8 +204,8 @@ objectius clars i concrets (pantalles i requisits específics)
 |Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
 
 |JAVIER
-|Ahir vaig unificar totes les pantalles de Vehicle
-|
+|Ahir vaig crear totes les pantalles de Vehicle però al final l'Esther em va indicar que l'habia d'unificar 3 en 1.
+|Avui he unificat les pantalles de llistar, odernar per preu i filtrar per dates en una sola pantalla (VehicleLlistarScreen)
 |Preocupació per part de la creació dels RF
 |2H
 
@@ -244,14 +213,14 @@ objectius clars i concrets (pantalles i requisits específics)
 |Ahir vaig acabar la pantalla de crear reserva i vaig revisar les tres pantalles .
 |Avui començaré a implementar la lògica del RF de reserves .
 |Preocupació per la implementació correcta dels RF i la connexió amb el backend.
-|5H
+|3H
 
 
 |BACHIR
-|
-|
-|
-|
+|Ahir vaig fer les pantalles de registre i la pantalla principal
+|Avui faré el bottom navigation funcional i començaré a fer el RF de registre
+|No sé com conectar les dades del backend al frontend
+|3H
 
 |JOEL
 |Ahir vaig crear la pantalla de login i la de recuperar contrasenya, també vaig començar la de edit profile i vaig preguntar dubtes
@@ -267,23 +236,23 @@ objectius clars i concrets (pantalles i requisits específics)
 |Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
 
 |JAVIER
-|
-|
-|
-|
+|Ahir vaig unificar les pantalles de vehicle
+|Avui he fet tot el backend de java (vehicle service, vehicle controller, vehicle i vehicle mapper)
+|El temps que falta i que els seguents RF siguin mes complicats
+|3H
 
 |HAMZA
 |Ahir vaig crear el ReservaController al backend i vaig començar a definir els endpoints necessaris per al RF de llistar reserves.
 |Avui implementaré completament el RF de llistar reserves (Controller, Service i Repository) i començaré la connexió amb l'app perquè la pantalla ReserveListScreen funcioni amb dades reals.
 |Preocupació per la correcta connexió entre backend i frontend.
-|5H
+|3H
 
 
 |BACHIR
-|
-|
-|
-|
+|Ahir vaig ver el bottom navigation i vaig començar amb el RF de registre
+|Avui he acabat el RF de registre, nomes hem falta fer les validacions
+|Encara ens falten molts RF i nomès queda un sprint
+|3H
 
 |JOEL
 |
@@ -291,3 +260,13 @@ objectius clars i concrets (pantalles i requisits específics)
 |
 |
 |===
+
+== Captures board
+
+=== Board inicial
+
+image:Imatges/BoardInicial1.png[Board inicial, width=400]
+
+=== Board final
+
+image:Imatges/BoardFinal1.png[Board final, width=400]
