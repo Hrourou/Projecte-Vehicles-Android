@@ -255,17 +255,17 @@ objectius clars i concrets (pantalles i requisits específics)
 |3H
 
 |JOEL
-|
-|
-|
-|
+|Ahir vaig acabar la pantalla de edit profile i vaig començar el Rf de edit profile
+|Avui intentare acabar el RF i cercare informació de com enllaçar les parts del projecte
+|Saber conectar de manera correcta la part de android amb la de java i el temps.
+|4H
 |===
 
 == Captures board
 
 === Board inicial
 
-image:Imatges/BoardInicial1.png[Board inicial, width=400]
+image:Imatges/.png[Board inicial, width=400]
 
 === Board final
 
