@@ -259,3 +259,35 @@ objectius clars i concrets (pantalles i requisits específics)
 |La manera de fer les pantalles funcionals i que no surgeixin problemes a l'hora d'utilitzar el android studio i sincroniztar cambis
 |3H
 |===
+
+== 26/02/2026
+
+[cols="1,3,3,3,1", options="header"]
+|===
+|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
+
+|JAVIER
+|
+|
+|
+|
+
+|HAMZA
+|Ahir vaig crear el ReservaController al backend i vaig començar a definir els endpoints necessaris per al RF de llistar reserves.
+|Avui implementaré completament el RF de llistar reserves (Controller, Service i Repository) i començaré la connexió amb l'app perquè la pantalla ReserveListScreen funcioni amb dades reals.
+|Preocupació per la correcta connexió entre backend i frontend.
+|5H
+
+
+|BACHIR
+|
+|
+|
+|
+
+|JOEL
+|
+|
+|
+|
+|===
