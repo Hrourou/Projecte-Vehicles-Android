@@ -51,8 +51,14 @@ fun ConsultarDisponibilidadScreen(
                 FormularioRangoFechas(
                     fechaInicio = fechaInicio,
                     fechaFin = fechaFin,
-                    onFechaInicioChange = { fechaInicio = it },
-                    onFechaFinChange = { fechaFin = it },
+                    onFechaInicioChange = {
+                        val it = ""
+                        fechaInicio = it
+                    },
+                    onFechaFinChange = {
+                        val it = ""
+                        fechaFin = it
+                    },
                     onBuscarClick = { mostrarResultados = true }
                 )
             }
@@ -76,10 +82,21 @@ fun ConsultarDisponibilidadScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ConsultarDisponibilidadScreenPreview() {
-    AppVehiclesTheme {
-        ConsultarDisponibilidadScreen()
+    @Composable
+    fun FormularioRangoFechas(
+        fechaInicio: String,
+        fechaFin: String,
+        onFechaInicioChange: () -> Unit,
+        onFechaFinChange: () -> Unit,
+        onBuscarClick: () -> Unit
+    ) {
+        TODO("Not yet implemented")
     }
-}
+
+    @Preview(showBackground = true, showSystemUi = true)
+    @Composable
+    fun ConsultarDisponibilidadScreenPreview() {
+        AppVehiclesTheme {
+            ConsultarDisponibilidadScreen()
+        }
+    }
