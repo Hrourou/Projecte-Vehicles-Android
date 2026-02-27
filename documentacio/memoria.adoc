@@ -1,10 +1,13 @@
 = DAILY STAND UP
 :toc:
+:toclevels: 2
 :sectnums:
 
-|SPRINT 1
+== SPRINT 1
 
-== 13/02/2026
+=== Daily standup
+
+==== 13/02/2026
 
 [cols="1,3,3,3,1", options="header"]
 |===
@@ -36,7 +39,7 @@
 |===
 
 
-== 18/02/2026
+==== 18/02/2026
 
 [cols="1,3,3,3,1", options="header"]
 |===
@@ -68,7 +71,7 @@
 |===
 
 
-== 19/02/2026
+==== 19/02/2026
 
 [cols="1,3,3,3,1", options="header"]
 |===
@@ -93,28 +96,28 @@
 |4H
 
 |JOEL
-|Vaig organitzar amb el grup, em vaig asignar tasques, començar amb la primera pantalla i investigar 
- i aprofondir al enunciat
-|Em creare una branca i intentare veure que es el que no em funcionaba de la pantalla anterior (Intenar acabarla 
- de manera correcta si es posible), a més, fare probes amb el chat gpt per veure com podriem fer el 
- projecte correctament
+|Vaig organitzar amb el grup, em vaig asignar tasques, començar amb la primera pantalla i investigar
+i aprofondir al enunciat
+|Em creare una branca i intentare veure que es el que no em funcionaba de la pantalla anterior (Intenar acabarla
+de manera correcta si es posible), a més, fare probes amb el chat gpt per veure com podriem fer el
+projecte correctament
 |Que no entenc molt be alguns errors perque no controlo ni el entorn ni l'estructura ni el llenguatge
 |5h
 |===
 
 
-== Captures board
+=== Captures board
 
-=== Board inicial
+==== Board inicial
 
 image:Imatges/BoardInicial1.png[Board inicial, width=400]
 
-=== Board final
+==== Board final
 
 image:Imatges/BoardFinal1.png[Board final, width=400]
 
 
-== RETROSPECTIVE MEETING
+=== RETROSPECTIVE MEETING
 
 [cols="1,3,3,3", options="header"]
 |===
@@ -128,8 +131,13 @@ Hem tingut problemes per entendre i començar el projecte
 objectius clars i concrets (pantalles i requisits específics)
 |===
 
-|SPRINT 2:
-== 20/02/2026
+---
+
+== SPRINT 2
+
+=== Daily standup
+
+==== 20/02/2026
 
 [cols="1,3,3,3,1", options="header"]
 |===
@@ -142,10 +150,76 @@ objectius clars i concrets (pantalles i requisits específics)
 |5H
 
 |HAMZA
-|Ahir vaig acabar la pantalla 
+|Ahir vaig acabar la pantalla
 |Avui continuaré revisant l’error d’arrencada i avançaré amb el que pugui de les pantalles
 |Em preocupa que el projecte no s’arrenqui correctament i això freni el progrés
 |5H
+
+
+|BACHIR
+| -
+|Avuí intentaré resoldre els errors de sincronització i gradle del projecte
+|No aconsegueixo veure o solucionar l'error
+|3H
+
+|JOEL
+|Vaig crear una branca i vaig veure que es el que no em funcionaba de la pantalla anterior (Intenar acabarla
+de manera correcta si es posible), a més, vaig fer probes amb el chat gpt per veure com podriem fer el
+projecte correctament
+|Revisio del Sprint amb el Manel, parlar de dubtes i organitzar els issues i el tauler i crear tasques.
+|Temps i que tot surti bé
+|4h
+|===
+
+==== 23/02/2026
+
+[cols="1,3,3,3,1", options="header"]
+|===
+|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
+
+|JAVIER
+|Ahir vaig fer tots els fitxers correctament i he començat a crear la pantalla de Vehicle
+|Avui he creat les 4 pantalles de vehicle, però al final de la classe l'Esther m'ha indicat que he d'unificar 3 pantalles en 1 sola (llistar, ordenar i filtrar)
+|La preocupació més gran es el temps i una mica d'incertesa en la construcció del backend
+|5H
+
+|HAMZA
+|Ahir vaig començar la pantalla de llistar reserves
+|Avui acabaré la pantalla de detall i de crear de reserva.
+|Preocupació per l’organització correcta dels RF i com connectar les pantalles amb la lògica.
+|4H
+
+
+|BACHIR
+|Ahir vaig acabar de arreglar problemes amb la sincronitzacio del projecte
+|Avui he començat la pantallas principal i de registre, a més de dividir la pantalla de registre en 3 pantalles
+|Hauria de fer el bottom navigation per poder veure pantalles
+|6H
+
+|JOEL
+|Revisio del Sprint amb el Manel, parlar de dubtes i organitzar els issues i el tauler i crear tasques.
+|Creare la pantalla de login i la de recuperar contrasenya, també si em dona temps començare la de edit profile i preguntare dubtes
+|La manera de fer les pantalles funcionals i que no surgeixin problemes a l'hora d'utilitzar el android studio i sincroniztar cambis
+|3H
+|===
+
+==== 24/02/2026
+
+[cols="1,3,3,3,1", options="header"]
+|===
+|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
+
+|JAVIER
+|Ahir vaig crear les 4 pantalles de vehicle, però al final de la classe l'Esther m'ha indicat que he d'unificar 3 pantalles en 1 sola (llistar, ordenar i filtrar)
+|Avui he començt a unificar les pantalles i a plantejar com unir-les.
+|La preocupació més gran es quins son els pasos per començar correctament amb el backend però mica en mica vaig agafant informació
+|1H
+
+|HAMZA
+|
+|
+|
+|
 
 
 |BACHIR
@@ -155,8 +229,98 @@ objectius clars i concrets (pantalles i requisits específics)
 |
 
 |JOEL
-|-
 |
 |
 |
+|
+|===
+
+
+==== 25/02/2026
+
+[cols="1,3,3,3,1", options="header"]
+|===
+|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
+
+|JAVIER
+|Ahir vaig crear totes les pantalles de Vehicle però al final l'Esther em va indicar que l'habia d'unificar 3 en 1.
+|Avui he finalitzat la unificació de les pantalles de llistar, odernar per preu i filtrar per dates en una sola pantalla (VehicleLlistarScreen)
+|Preocupació per part de la creació dels RF
+|2H
+
+|HAMZA
+|Ahir vaig acabar la pantalla de crear reserva i vaig revisar les tres pantalles .
+|Avui començaré a implementar la lògica del RF de reserves .
+|Preocupació per la implementació correcta dels RF i la connexió amb el backend.
+|3H
+
+
+|BACHIR
+|Ahir vaig fer les pantalles de registre i la pantalla principal
+|Avui faré el bottom navigation funcional i començaré a fer el RF de registre
+|No sé com conectar les dades del backend al frontend
+|3H
+
+|JOEL
+|Ahir vaig crear la pantalla de login i la de recuperar contrasenya, també vaig començar la de edit profile i vaig preguntar dubtes
+|Avui acabare la pantalla de edit profile i començare el Rf de edit profile
+|La manera de fer les pantalles funcionals i que no surgeixin problemes a l'hora d'utilitzar el android studio i sincroniztar cambis
+|3H
+|===
+
+==== 26/02/2026
+
+[cols="1,3,3,3,1", options="header"]
+|===
+|Nom |QUE ES VA FER AHIR |QUE ES FARA AVUI |PREOCUPACIONS QUE ES TENEN |HORES TREBALLADES
+
+|JAVIER
+|Ahir vaig unificar les pantalles de vehicle
+|Avui he fet tot el backend de java (vehicle service, vehicle controller, vehicle i vehicle mapper)
+|El temps que falta i que els seguents RF siguin mes complicats
+|3H
+
+|HAMZA
+|Ahir vaig crear el ReservaController al backend i vaig començar a definir els endpoints necessaris per al RF de llistar reserves.
+|Avui implementaré completament el RF de llistar reserves (Controller, Service i Repository) i començaré la connexió amb l'app perquè la pantalla ReserveListScreen funcioni amb dades reals.
+|Preocupació per la correcta connexió entre backend i frontend.
+|3H
+
+
+|BACHIR
+|Ahir vaig ver el bottom navigation i vaig començar amb el RF de registre
+|Avui he acabat el RF de registre, nomes hem falta fer les validacions
+|Encara ens falten molts RF i nomès queda un sprint
+|3H
+
+|JOEL
+|Ahir vaig acabar la pantalla de edit profile i vaig començar el Rf de edit profile
+|Avui intentare acabar el RF i cercare informació de com enllaçar les parts del projecte
+|Saber conectar de manera correcta la part de android amb la de java i el temps.
+|4H
+|===
+
+=== Captures board
+
+==== Board inicial
+
+image:Imatges/BoardInicialSprint2.png[Board inicial, width=400]
+
+==== Board final
+
+image:Imatges/BoardFinalSprint2Part1.png[Board final, width=400]
+
+image:Imatges/BoardFinalSprint2Part2.png[Board final, width=400]
+
+
+=== RETROSPECTIVE MEETING
+
+[cols="1,3,3,3", options="header"]
+|===
+|Sprint |Aspectes positius |Aspectes a millorar |Accions concretes
+
+|Sprint 2
+|Tots estem posant de la nostra part, no hi ha ningú que estigui endarrerit i la comunicació es bona
+|Potser hem de ser mes eficients a l'hora d'acabar tasques, el temps s'acaba i ens hauria agradat poder haber avançat més
+|Intentar preguntar mes dubtes per tenir més clara l'informació a l'hora de començar una tasca
 |===

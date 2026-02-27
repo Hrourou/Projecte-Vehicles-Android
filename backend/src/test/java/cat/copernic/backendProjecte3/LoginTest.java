@@ -55,6 +55,7 @@ public class LoginTest {
         clientTest.setEmail(EMAIL_TEST);
         clientTest.setPassword(PasswordHasher.encode(PASSWORD_RAW)); 
         clientTest.setRol(UserRole.CLIENT);
+        clientTest.setNomComplet("Usuario de Prueba");
         clientTest.setDni("12345678Z");
         
         clientRepo.save(clientTest);

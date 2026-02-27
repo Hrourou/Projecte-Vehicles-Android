@@ -119,6 +119,7 @@ public class VehicleTest {
         client.setEmail("test@client.com");
         client.setDni("12345678A");
         client.setPassword("pass");
+        client.setNomComplet("Usuario de Prueba");
         client.setRol(UserRole.CLIENT);
         clientRepo.save(client);
 

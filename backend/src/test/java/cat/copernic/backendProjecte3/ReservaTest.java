@@ -77,6 +77,7 @@ public class ReservaTest {
         clientTest.setEmail(EMAIL_LOGIN);
         clientTest.setPassword(PasswordHasher.encode(PASSWORD_RAW)); // Encriptem!
         clientTest.setRol(UserRole.CLIENT);
+        clientTest.setNomComplet("Usuario de Prueba");
         clientTest.setDni("12345678A");
         clientRepo.save(clientTest);
 
@@ -98,6 +99,7 @@ public class ReservaTest {
         clientTest.setEmail(EMAIL_LOGIN);
         clientTest.setPassword(PasswordHasher.encode(PASSWORD_RAW)); // Encriptem!
         clientTest.setRol(UserRole.CLIENT);
+        clientTest.setNomComplet("Usuario de Prueba");
         clientTest.setDni("12345678A");
         clientRepo.save(clientTest);
         
@@ -120,6 +122,7 @@ public class ReservaTest {
         clientTest.setPassword(PasswordHasher.encode(PASSWORD_RAW)); // Encriptem!
         clientTest.setRol(UserRole.NONE);
         clientTest.setDni("12345678A");
+        clientTest.setNomComplet("Usuario de Prueba");
         clientRepo.save(clientTest);
         
         vehicleTest = new Vehicle();
@@ -141,6 +144,7 @@ public class ReservaTest {
         clientTest.setEmail(EMAIL_LOGIN);
         clientTest.setPassword(PasswordHasher.encode(PASSWORD_RAW)); // Encriptem!
         clientTest.setRol(UserRole.AGENT);
+        clientTest.setNomComplet("Usuario de Prueba");
         clientTest.setDni("12345678A");
         clientRepo.save(clientTest);
 
@@ -174,6 +178,7 @@ public class ReservaTest {
         clientTest.setEmail(EMAIL_LOGIN);
         clientTest.setPassword(PasswordHasher.encode(PASSWORD_RAW)); // Encriptem!
         clientTest.setRol(UserRole.CLIENT);
+        clientTest.setNomComplet("Usuario de Prueba");
         clientTest.setDni("12345678A");
         clientRepo.save(clientTest);
 
@@ -208,6 +213,7 @@ public class ReservaTest {
         clientTest.setEmail(EMAIL_LOGIN);
         clientTest.setPassword(PasswordHasher.encode(PASSWORD_RAW)); // Encriptem!
         clientTest.setRol(UserRole.CLIENT);
+        clientTest.setNomComplet("Usuario de Prueba");
         clientTest.setDni("12345678A");
         clientRepo.save(clientTest);
 

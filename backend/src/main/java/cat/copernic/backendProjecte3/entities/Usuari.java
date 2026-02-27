@@ -3,19 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package cat.copernic.backendProjecte3.entities;
+
 import cat.copernic.backendProjecte3.enums.UserRole;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 
 /**
  *
@@ -24,14 +17,17 @@ import java.util.Objects;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "usuari")
-public class Usuari{
+public class Usuari {
     
     @Id
     @Column(length = 100)
-    private String email;
+    private String email; // Será el username [cite: 120]
     
     @Column(nullable = false, length = 255)
     private String password;
+    
+    @Column(name = "nom_complet", nullable = false)
+    private String nomComplet; // Requerido por 
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -44,35 +40,30 @@ public class Usuari{
     
     public Usuari() {}
 
+    // --- Getters y Setters ---
+
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(email);
+    public String getNomComplet() {
+        return nomComplet;
     }
 
-    
-    public List<UserRole> getAuthorities() {
-        
-        List<UserRole> roles = new ArrayList<>();
-        
-        roles.add(this.getRol());
-        
-        return roles;
-    }
-    
-    public String getPassword() {
-        return this.password;
-    }
-    
-    public String getUsername() {
-        return this.email;
+    public void setNomComplet(String nomComplet) {
+        this.nomComplet = nomComplet;
     }
 
     public UserRole getRol() {
@@ -81,6 +72,22 @@ public class Usuari{
 
     public void setRol(UserRole rol) {
         this.rol = rol;
+    }
+    
+    // Métodos de seguridad/autoridad
+    public List<UserRole> getAuthorities() {
+        List<UserRole> roles = new ArrayList<>();
+        roles.add(this.getRol());
+        return roles;
+    }
+    
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
     }
     
     @Override
@@ -93,12 +100,6 @@ public class Usuari{
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Usuari{");
-        sb.append("email=").append(email);
-        sb.append(", password=").append(password);
-        sb.append(", rol=").append(rol);
-        sb.append('}');
-        return sb.toString();
+        return "Usuari{" + "email=" + email + ", rol=" + rol + '}';
     }
 }

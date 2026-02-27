@@ -6,6 +6,7 @@ package cat.copernic.backendProjecte3.entities;
 
 import cat.copernic.backendProjecte3.enums.Reputacio;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,17 +14,34 @@ import java.util.Objects;
 @Entity
 @Table(name = "client")
 @PrimaryKeyJoinColumn(name = "client_email")
-public class Client extends Usuari{
+public class Client extends Usuari {
 
-    // --- Datos Personales ---
-    
+    // --- Datos de Identificación ---
     @Column(nullable = false, length = 20)
     private String dni;
 
+    @Column(name = "data_caducitat_dni")
+    private LocalDate dataCaducitatDni;
+
+    @Column(name = "imatge_dni") // Guardaremos la URL o ruta del archivo
+    private String imatgeDni;
+
+    private String nacionalitat;
+
     private String adreca;
 
-    private String carnetConduir;
+    // --- Datos de Conducción ---
+    @Column(name = "tipus_carnet_conduir") // Ejemplo: A, B, C...
+    private String tipusCarnetConduir;
 
+    @Column(name = "data_caducitat_carnet")
+    private LocalDate dataCaducitatCarnet;
+
+    @Column(name = "imatge_carnet") // Guardaremos la URL o ruta del archivo
+    private String imatgeCarnet;
+
+    // --- Datos Económicos ---
+    @Column(name = "numero_targeta_credit")
     private String numeroTargetaCredit;
 
     @Enumerated(EnumType.STRING)
@@ -38,12 +56,38 @@ public class Client extends Usuari{
 
     public Client() { super(); }
 
+    // --- Getters y Setters ---
+
     public String getDni() {
         return dni;
     }
 
     public void setDni(String dni) {
         this.dni = dni;
+    }
+
+    public LocalDate getDataCaducitatDni() {
+        return dataCaducitatDni;
+    }
+
+    public void setDataCaducitatDni(LocalDate dataCaducitatDni) {
+        this.dataCaducitatDni = dataCaducitatDni;
+    }
+
+    public String getImatgeDni() {
+        return imatgeDni;
+    }
+
+    public void setImatgeDni(String imatgeDni) {
+        this.imatgeDni = imatgeDni;
+    }
+
+    public String getNacionalitat() {
+        return nacionalitat;
+    }
+
+    public void setNacionalitat(String nacionalitat) {
+        this.nacionalitat = nacionalitat;
     }
 
     public String getAdreca() {
@@ -54,12 +98,28 @@ public class Client extends Usuari{
         this.adreca = adreca;
     }
 
-    public String getCarnetConduir() {
-        return carnetConduir;
+    public String getTipusCarnetConduir() {
+        return tipusCarnetConduir;
     }
 
-    public void setCarnetConduir(String carnetConduir) {
-        this.carnetConduir = carnetConduir;
+    public void setTipusCarnetConduir(String tipusCarnetConduir) {
+        this.tipusCarnetConduir = tipusCarnetConduir;
+    }
+
+    public LocalDate getDataCaducitatCarnet() {
+        return dataCaducitatCarnet;
+    }
+
+    public void setDataCaducitatCarnet(LocalDate dataCaducitatCarnet) {
+        this.dataCaducitatCarnet = dataCaducitatCarnet;
+    }
+
+    public String getImatgeCarnet() {
+        return imatgeCarnet;
+    }
+
+    public void setImatgeCarnet(String imatgeCarnet) {
+        this.imatgeCarnet = imatgeCarnet;
     }
 
     public String getNumeroTargetaCredit() {
@@ -110,16 +170,7 @@ public class Client extends Usuari{
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Client{");
-        sb.append("dni=").append(dni);
-        sb.append(", adreca=").append(adreca);
-        sb.append(", carnetConduir=").append(carnetConduir);
-        sb.append(", numeroTargetaCredit=").append(numeroTargetaCredit);
-        sb.append(", reputacio=").append(reputacio);
-        sb.append(", reservas=").append(reservas);
-        sb.append('}');
-        return sb.toString();
+        return "Client{" + "dni=" + dni + ", nacionalitat=" + nacionalitat + ", adreca=" + adreca + ", reputacio=" + reputacio + '}';
     }
 }
 
