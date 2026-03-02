@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">appVehicles</string>
+    <string name="reservations_title">Les meves reserves</string>
+    <string name="back">Tornar</string>
+    <string name="sort">ordenar</string>
+    <string name="reservation_date_range">De %1$s a %2$s</string>
+    <string name="reservation_status_label">Estat</string>
+    <string name="status_cancelled">Cancel·lada</string>
+    <string name="status_finished">Acabat</string>
+    <string name="status_active">"Activa "</string>
+    <string name="reservation_code">Reserva #%1$s</string>
+</resources>

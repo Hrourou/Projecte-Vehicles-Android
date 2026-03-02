@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">appVehicles</string>
+    <string name="reservations_title">Mis reservas</string>
+    <string name="status_cancelled">Cancelada</string>
+    <string name="status_finished">Finalizada</string>
+    <string name="reservation_code">Reserva #%1$s</string>
+    <string name="reservation_date_range">Del %1$s a %2$s</string>
+    <string name="reservation_status_label">Estado</string>
+    <string name="back">Volver</string>
+    <string name="sort">ordenar</string>
+    <string name="status_active">Activa</string>
+</resources>
