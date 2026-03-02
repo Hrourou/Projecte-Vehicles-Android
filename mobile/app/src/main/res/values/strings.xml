@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">appVehicles</string>
+
+    <string name="reservations_title">My reservations</string>
+    <string name="back">Back</string>
+    <string name="sort">Sort</string>
+    <string name="status_cancelled">Canceled</string>
+    <string name="status_finished">Finished</string>
+
+    <string name="status_active">Active</string>
+
+    <!-- Para ReserveCard (cuando lo adaptes) -->
+    <string name="reservation_code">Reservation #%1$s</string>
+    <string name="reservation_date_range">From %1$s to %2$s</string>
+    <string name="reservation_status_label">Status</string>
+    <!-- Para reservadetailscreen  -->
+    <string name="reservation_detail_title">Reservation detail</string>
+    <string name="vehicle_photo_description">Vehicle photo</string>
+
+    <string name="reservation_vehicle">Vehicle</string>
+    <string name="start_date">Start date</string>
+    <string name="end_date">End date</string>
+    <string name="deposit">Deposit</string>
+    <string name="rental_cost">Rental cost</string>
+    <string name="reservation_total">Total: %1$s</string>
+    <string name="cancel_reservation">Cancel reservation</string>
+    <!-- Para createreservascreen  -->
+    <string name="create_reservation_title">New reservation</string>
+    <string name="select_dates">Select dates</string>
+    <string name="available_vehicle">Available vehicle</string>
+    <string name="select_car">Select a car</string>
+    <string name="cost_summary">Cost summary</string>
+    <string name="rental_days">Rental days</string>
+    <string name="total_to_pay">Total to pay</string>
+    <string name="confirm_reservation">Confirm reservation</string>
+
 </resources>

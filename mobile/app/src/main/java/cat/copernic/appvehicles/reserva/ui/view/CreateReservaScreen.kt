@@ -10,9 +10,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import cat.copernic.appvehicles.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,12 +29,12 @@ fun CreateReservationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nueva Reserva") },
+                title = { Text(stringResource(R.string.create_reservation_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Volver"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -52,7 +54,7 @@ fun CreateReservationScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Selecciona las fechas",
+                text = stringResource(R.string.select_dates),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.align(Alignment.Start)
             )
@@ -66,7 +68,7 @@ fun CreateReservationScreen(
                 OutlinedTextField(
                     value = "15/11/2023",
                     onValueChange = {},
-                    label = { Text("Fecha Inicio") },
+                    label = { Text(stringResource(R.string.start_date)) },
                     readOnly = true,
                     trailingIcon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
                     modifier = Modifier.weight(1f)
@@ -74,7 +76,7 @@ fun CreateReservationScreen(
                 OutlinedTextField(
                     value = "20/11/2023",
                     onValueChange = {},
-                    label = { Text("Fecha Fin") },
+                    label = { Text(stringResource(R.string.end_date)) },
                     readOnly = true,
                     trailingIcon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
                     modifier = Modifier.weight(1f)
@@ -84,7 +86,7 @@ fun CreateReservationScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Vehículo disponible",
+                text = stringResource(R.string.available_vehicle),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.align(Alignment.Start)
             )
@@ -100,7 +102,7 @@ fun CreateReservationScreen(
                     value = selectedVehicle,
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Selecciona un coche") },
+                    label = { Text(stringResource(R.string.select_car)) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
                     colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                     modifier = Modifier
@@ -135,7 +137,7 @@ fun CreateReservationScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Resumen del Coste",
+                        text = stringResource(R.string.cost_summary),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -143,8 +145,8 @@ fun CreateReservationScreen(
 
                     Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-                    CostRow(label = "Días de alquiler (5 días)", value = "250.00 €")
-                    CostRow(label = "Fianza (Reembolsable)", value = "150.00 €")
+                    CostRow(label = stringResource(R.string.rental_days), value = "250.00 €")
+                    CostRow(label = stringResource(R.string.deposit), value = "150.00 €")
 
                     Spacer(modifier = Modifier.height(8.dp))
                     Divider()
@@ -155,7 +157,7 @@ fun CreateReservationScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Total a Pagar",
+                            text = stringResource(R.string.total_to_pay),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -179,7 +181,7 @@ fun CreateReservationScreen(
                     .height(50.dp)
             ) {
                 Text(
-                    text = "Confirmar Reserva",
+                    text = stringResource(R.string.confirm_reservation),
                     style = MaterialTheme.typography.titleMedium
                 )
             }

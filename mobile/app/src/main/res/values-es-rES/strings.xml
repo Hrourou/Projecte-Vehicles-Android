@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">appVehicles</string>
+    <string name="reservations_title">Mis reservas</string>
+    <string name="status_cancelled">Cancelada</string>
+    <string name="status_finished">Finalizada</string>
+    <string name="reservation_code">Reserva #%1$s</string>
+    <string name="reservation_date_range">Del %1$s a %2$s</string>
+    <string name="reservation_status_label">Estado</string>
+    <string name="back">Volver</string>
+    <string name="sort">ordenar</string>
+    <string name="status_active">Activa</string>
+
+    <string name="reservation_detail_title">Detalle de la reserva</string>
+    <string name="vehicle_photo_description">Foto del vehículo</string>
+    <string name="reservation_vehicle">Vehículo</string>
+    <string name="start_date">Fecha de inicio</string>
+    <string name="end_date">Fecha de fin</string>
+    <string name="deposit">Fianza</string>
+    <string name="rental_cost">Coste del alquiler</string>
+    <string name="reservation_total">Total: %1$s</string>
+    <string name="cancel_reservation">Anular reserva</string>
+
+    <string name="create_reservation_title">Nueva reserva</string>
+    <string name="select_dates">Selecciona las fechas</string>
+    <string name="available_vehicle">Vehículo disponible</string>
+    <string name="select_car">Selecciona un coche</string>
+    <string name="cost_summary">Resumen del coste</string>
+    <string name="rental_days">Días de alquiler</string>
+    <string name="total_to_pay">Total a pagar</string>
+    <string name="confirm_reservation">Confirmar reserva</string>
+</resources>

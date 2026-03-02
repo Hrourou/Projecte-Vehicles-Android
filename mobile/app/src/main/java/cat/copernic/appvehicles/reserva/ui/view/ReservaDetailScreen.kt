@@ -13,9 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import cat.copernic.appvehicles.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,12 +28,12 @@ fun ReservationDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detalle de la Reserva") },
+                title = { Text(stringResource(R.string.reservation_detail_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Volver"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -61,7 +63,7 @@ fun ReservationDetailScreen(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.DirectionsCar,
-                    contentDescription = "Foto del coche",
+                    contentDescription = stringResource(R.string.vehicle_photo_description),
                     modifier = Modifier.size(100.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -80,7 +82,7 @@ fun ReservationDetailScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Código: #RES-98765",
+                        text = stringResource(R.string.reservation_code, "RES-98765"),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -88,20 +90,20 @@ fun ReservationDetailScreen(
 
                     Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-                    DetailRow(label = "Vehículo", value = "Toyota Corolla Híbrido")
-                    DetailRow(label = "Fecha de Inicio", value = "15/11/2023 - 10:00")
-                    DetailRow(label = "Fecha de Fin", value = "20/11/2023 - 10:00")
-                    DetailRow(label = "Estado", value = "Activa")
+                    DetailRow(label = stringResource(R.string.reservation_vehicle), value = "Toyota Corolla Híbrido")
+                    DetailRow(label = stringResource(R.string.start_date), value = "15/11/2023 - 10:00")
+                    DetailRow(label = stringResource(R.string.end_date), value = "20/11/2023 - 10:00")
+                    DetailRow(label = stringResource(R.string.reservation_status_label), value = stringResource(R.string.status_active))
 
                     Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-                    DetailRow(label = "Fianza", value = "150.00 €")
-                    DetailRow(label = "Coste Alquiler", value = "250.00 €")
+                    DetailRow(label = stringResource(R.string.deposit), value = "150.00 €")
+                    DetailRow(label = stringResource(R.string.rental_cost), value = "250.00 €")
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Total: 400.00 €",
+                        text = stringResource(R.string.reservation_total, "400.00 €"),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -123,7 +125,7 @@ fun ReservationDetailScreen(
                     .height(50.dp)
             ) {
                 Text(
-                    text = "Anular Reserva",
+                    text = stringResource(R.string.cancel_reservation),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onError
                 )
