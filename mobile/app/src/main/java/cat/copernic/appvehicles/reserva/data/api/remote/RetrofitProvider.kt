@@ -5,7 +5,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitProvider {
 
-    // Emulador Android: 10.0.2.2 apunta a (localhost)
     private const val BASE_URL = "http://10.0.2.2:8080/"
 
     val reservaApi: ReservaApi by lazy {

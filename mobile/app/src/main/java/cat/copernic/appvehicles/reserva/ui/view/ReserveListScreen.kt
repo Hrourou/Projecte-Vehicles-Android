@@ -26,11 +26,11 @@ import cat.copernic.appvehicles.ui.theme.AppVehiclesTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReserveListScreen(
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onReservaSelected: (Long) -> Unit = {}   // 🔥 añadido
 ) {
-    val isPreview = LocalInspectionMode.current
 
-    // TODO: esto debe salir de la sesión del cliente
+    val isPreview = LocalInspectionMode.current
     val emailCliente = "maria@test.com"
 
     val repo = remember { ReservaRepository(RetrofitProvider.reservaApi) }
@@ -44,7 +44,6 @@ fun ReserveListScreen(
         if (!isPreview) vm.load(emailCliente)
     }
 
-    // Traducciones de estado (valores)
     val statusActive = stringResource(R.string.status_active)
     val statusCancelled = stringResource(R.string.status_cancelled)
     val statusFinished = stringResource(R.string.status_finished)
@@ -58,7 +57,6 @@ fun ReserveListScreen(
         }
     }
 
-    // Preview sigue funcionando sin backend
     val listToShow: List<ReserveMock> = if (isPreview) {
         listOf(
             ReserveMock(1, "R12345", "10/03/2025", "12/03/2025", 120.0, localizeStatus("ACTIVA")),
@@ -92,6 +90,7 @@ fun ReserveListScreen(
             )
         }
     ) { paddingValues ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,7 +108,14 @@ fun ReserveListScreen(
                         items = listToShow,
                         key = { it.id }
                     ) { reserva ->
-                        ReserveCard(reserve = reserva, onClick = { })
+
+                        // 🔥 AQUÍ NAVEGAMOS
+                        ReserveCard(
+                            reserve = reserva,
+                            onClick = {
+                                onReservaSelected(reserva.id.toLong())
+                            }
+                        )
                     }
                 }
             }
