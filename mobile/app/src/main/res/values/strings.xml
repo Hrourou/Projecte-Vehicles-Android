@@ -24,5 +24,14 @@
     <string name="rental_cost">Rental cost</string>
     <string name="reservation_total">Total: %1$s</string>
     <string name="cancel_reservation">Cancel reservation</string>
+    <!-- Para createreservascreen  -->
+    <string name="create_reservation_title">New reservation</string>
+    <string name="select_dates">Select dates</string>
+    <string name="available_vehicle">Available vehicle</string>
+    <string name="select_car">Select a car</string>
+    <string name="cost_summary">Cost summary</string>
+    <string name="rental_days">Rental days</string>
+    <string name="total_to_pay">Total to pay</string>
+    <string name="confirm_reservation">Confirm reservation</string>
 
 </resources>

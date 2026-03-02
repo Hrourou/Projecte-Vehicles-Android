@@ -22,4 +22,13 @@
     <string name="rental_cost">Cost del lloguer</string>
     <string name="reservation_total">Total: %1$s</string>
     <string name="cancel_reservation">Anul·lar reserva</string>
+
+    <string name="create_reservation_title">Nova reserva</string>
+    <string name="select_dates">Selecciona les dates</string>
+    <string name="available_vehicle">Vehicle disponible</string>
+    <string name="select_car">Selecciona un cotxe</string>
+    <string name="cost_summary">Resum del cost</string>
+    <string name="rental_days">Dies de lloguer </string>
+    <string name="total_to_pay">Total a pagar</string>
+    <string name="confirm_reservation">Confirmar reserva</string>
 </resources>
