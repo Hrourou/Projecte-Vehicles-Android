@@ -14,6 +14,7 @@ import cat.copernic.backendProjecte3.exceptions.DadesNoTrobadesException;
 import cat.copernic.backendProjecte3.exceptions.ReservaDatesNoValidsException;
 import cat.copernic.backendProjecte3.exceptions.ReservaNoTrobadaException;
 import cat.copernic.backendProjecte3.exceptions.VehicleNoDisponibleException;
+import cat.copernic.backendProjecte3.exceptions.ReservaNoCancelableException;
 import cat.copernic.backendProjecte3.repository.ClientRepository;
 import cat.copernic.backendProjecte3.repository.ReservaRepository;
 import cat.copernic.backendProjecte3.repository.VehicleRepository;
@@ -24,6 +25,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import cat.copernic.backendProjecte3.dto.CancelReservaResponse;
 
 /**
  *
@@ -43,7 +46,9 @@ public class ReservaService {
     
     @Autowired
     private UserLogic userLogic;
-
+    
+    @Value("${reserva.cancel.fullRefundDays:3}")
+    private int fullRefundDays;
 
     public List<Reserva> obtenirTotes() {
         return reservaRepo.findAll();
@@ -135,16 +140,44 @@ public class ReservaService {
 
 
     @Transactional
-    public void anularReserva(Long idReserva, String userName) throws ReservaNoTrobadaException, AccesDenegatException {
-        
-        //control de ROL
-        UserRole rol = userLogic.getRole(userName).orElseThrow();
-        if (rol != UserRole.CLIENT && rol != UserRole.AGENT && rol != UserRole.ADMIN) {
-            throw new AccesDenegatException("Rol no vàlid");
-        }
-        
-        Reserva reserva = obtenirPerId(idReserva);
-        
-        reservaRepo.delete(reserva);
-    }
+   public CancelReservaResponse anularReserva(Long idReserva, String userName)
+           throws ReservaNoTrobadaException, AccesDenegatException, ReservaNoCancelableException {
+
+       // control de ROL
+       UserRole rol = userLogic.getRole(userName).orElseThrow();
+       if (rol != UserRole.CLIENT && rol != UserRole.AGENT && rol != UserRole.ADMIN) {
+           throw new AccesDenegatException("Rol no vàlid");
+       }
+
+       Reserva reserva = obtenirPerId(idReserva);
+
+       // Validación: solo antes de que empiece
+       LocalDate today = LocalDate.now();
+       LocalDate inici = reserva.getDataInici();
+
+       // Si hoy es el mismo día o después del inicio => ya iniciada (o finalizada)
+       if (!today.isBefore(inici)) {
+           throw new ReservaNoCancelableException("No es pot anul·lar una reserva iniciada / finalitzada");
+       }
+
+       long daysAhead = ChronoUnit.DAYS.between(today, inici);
+
+       BigDecimal refund = BigDecimal.ZERO;
+       if (daysAhead >= fullRefundDays) {
+           BigDecimal importTotal = reserva.getImportTotal() != null ? reserva.getImportTotal() : BigDecimal.ZERO;
+           BigDecimal fianca = reserva.getFiancaPagada() != null ? reserva.getFiancaPagada() : BigDecimal.ZERO;
+           refund = importTotal.add(fianca);
+       }
+
+       // TODO: enviar email al client (opcional)
+       // emailService.sendCancelEmail(...)
+
+       reservaRepo.delete(reserva);
+
+       String msg = (refund.compareTo(BigDecimal.ZERO) > 0)
+               ? "Reserva anul·lada. Reemborsament: " + refund
+               : "Reserva anul·lada. Sense reemborsament.";
+
+       return new CancelReservaResponse(idReserva, refund, msg);
+   }
 }
