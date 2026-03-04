@@ -1,4 +1,4 @@
-package cat.copernic.androidretrofit3
+package cat.copernic.appvehicles.vehicle.ui.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
