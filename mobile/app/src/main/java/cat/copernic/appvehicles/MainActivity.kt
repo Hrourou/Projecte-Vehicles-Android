@@ -15,25 +15,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Configuración de Red (Retrofit)
-        // Nota: 10.0.2.2 es 'localhost' desde el emulador Android.
-        // Si usas un móvil físico, necesitarás la IP local de tu PC (ej: 192.168.1.XX)
         val retrofit = Retrofit.Builder()
             .baseUrl("http://10.51.59.239:8080/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        // 2. Crear las instancias de la Capa de Datos
         val authService = retrofit.create(AuthApiService::class.java)
         val authRepository = AuthRepository(authService)
 
         setContent {
             AppVehiclesTheme {
-                // 3. Inyectamos el repositorio en la navegación principal
-                // (Dará error aquí hasta que me pases MainScreen.kt y lo actualicemos)
                 MainScreen(authRepository)
             }
         }
