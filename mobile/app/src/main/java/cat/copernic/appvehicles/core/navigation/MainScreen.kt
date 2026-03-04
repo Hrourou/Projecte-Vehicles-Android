@@ -16,7 +16,7 @@ import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
 import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModelFactory
 
 @Composable
-fun MainScreen(repository: AuthRepository) { // 1. Recibimos el repositorio desde MainActivity
+fun MainScreen(repository: AuthRepository) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -38,11 +38,10 @@ fun MainScreen(repository: AuthRepository) { // 1. Recibimos el repositorio desd
                 ReserveListScreen()
             }
 
-            // RUTA DE REGISTRO (Actualmente en Perfil según tu código)
+
             composable(AppRoutes.Perfil.route) {
 
-                // 2. Creamos el ViewModel usando la Factory e inyectando el Repositorio
-                // Esto asegura que el ViewModel sobreviva a rotaciones de pantalla.
+
                 val registerViewModel: RegisterViewModel = viewModel(
                     factory = RegisterViewModelFactory(repository)
                 )
@@ -52,9 +51,8 @@ fun MainScreen(repository: AuthRepository) { // 1. Recibimos el repositorio desd
                     viewModel = registerViewModel,
                     onNavigateBack = { navController.popBackStack() },
                     onRegisterSuccess = {
-                        // Al terminar registro, vamos al inicio (o login)
+                        // Al terminar registro, vamos al inicio
                         navController.navigate(AppRoutes.Inici.route) {
-                            // Limpiamos la pila para que no pueda volver atrás al registro
                             popUpTo(AppRoutes.Inici.route) { inclusive = true }
                         }
                     }

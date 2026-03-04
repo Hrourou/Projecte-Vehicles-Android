@@ -14,14 +14,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun AppBottomNavigation(navController: NavHostController) {
-    // Asociamos cada ruta con su etiqueta e icono
     val items = listOf(
         Triple(AppRoutes.Inici.route, "Inici", Icons.Default.Home),
         Triple(AppRoutes.Reserves.route, "Reserves", Icons.Default.ShoppingCart),
         Triple(AppRoutes.Perfil.route, "Perfil", Icons.Default.Person)
     )
 
-    // Observamos la ruta actual para saber qué botón iluminar
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -33,13 +31,10 @@ fun AppBottomNavigation(navController: NavHostController) {
                 selected = currentRoute == route,
                 onClick = {
                     navController.navigate(route) {
-                        // Evita crear una pila infinita de pantallas al navegar
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
-                        // Evita abrir la misma pantalla múltiples veces si clicas muy rápido
                         launchSingleTop = true
-                        // Restaura el estado previo si vuelves a la pestaña
                         restoreState = true
                     }
                 }

@@ -32,8 +32,26 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
     fun register() {
         val currentState = _uiState.value
 
+        val regexData = "^\\d{4}-\\d{2}-\\d{2}$".toRegex()
+
+        if (!currentState.dataCaducitatLlicencia.matches(regexData)) {
+            _uiState.update { it.copy(errorMessage = "Format de data de llicència incorrecte (YYYY-MM-DD).") }
+            return
+        }
+
+        try {
+            val dataParsed = java.time.LocalDate.parse(currentState.dataCaducitatLlicencia)
+            if (dataParsed.isBefore(java.time.LocalDate.now())) {
+                _uiState.update { it.copy(errorMessage = "La llicència de conduir no pot estar caducada.") }
+                return
+            }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(errorMessage = "Data de llicència invàlida.") }
+            return
+        }
+
         // 1. Validación básica (RN26 Usabilidad)
-        if (currentState.email.isBlank() || currentState.password.isBlank() || currentState.numeroIdentificacio.isBlank()) {
+        if (currentState.nomComplet.isBlank() || currentState.email.isBlank() || currentState.password.isBlank() || currentState.numeroIdentificacio.isBlank()) {
             _uiState.update { it.copy(errorMessage = "Falten camps obligatoris") }
             return
         }

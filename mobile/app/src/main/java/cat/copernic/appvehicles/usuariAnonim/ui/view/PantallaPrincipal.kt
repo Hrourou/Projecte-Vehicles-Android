@@ -41,7 +41,6 @@ fun HomeScreen(onVehicleClick: (Int) -> Unit) {
                 )
             )
         },
-        // RN28: Preparación para el Bottom Navigation
 
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
@@ -59,15 +58,13 @@ fun HomeScreen(onVehicleClick: (Int) -> Unit) {
                     Icon(Icons.Default.DateRange, contentDescription = "Filtre dates")
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        // RN29: Uso de recursos de string para soportar Catalán, Castellano e Inglés
-                        // text = stringResource(R.string.filter_dates),
+                        //Uso de recursos de string para soportar Catalán, Castellano e Inglés
                         text = "Seleccionar dates de disponibilitat...",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
 
-            // RF90: Llistat de vehicles fluid (LazyColumn para RN27)
             LazyColumn {
                 items(mockVehicles) { vehicle ->
                     VehicleCard(
