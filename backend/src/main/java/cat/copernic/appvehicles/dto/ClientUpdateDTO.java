@@ -13,8 +13,6 @@ public class ClientUpdateDTO {
     private String tipusCarnetConduir;
     private LocalDate dataCaducitatCarnet;
 
-    // Getters & Setters
-
     public String getNomComplet() { return nomComplet; }
     public void setNomComplet(String nomComplet) { this.nomComplet = nomComplet; }
 

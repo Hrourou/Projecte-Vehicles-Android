@@ -24,17 +24,11 @@ import org.springframework.stereotype.Service;
 public class ClientService {
     
     private final ClientRepository clientRepository;
-
-    public ClientService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
     
     @Autowired
     private ClientRepository clientRepo;
 
     /**
-     * *
-     *
      * @return
      */
     public List<Client> obtenirTots() {
@@ -42,8 +36,6 @@ public class ClientService {
     }
 
     /**
-     * *
-     *
      * @param email
      * @return
      */
@@ -53,8 +45,6 @@ public class ClientService {
     }
 
     /**
-     * *
-     *
      * @param email
      * @throws ErrorDeleteException
      */
@@ -75,8 +65,6 @@ public class ClientService {
         return clientRepo.save(client);
     }
     /**
-     * *
-     *
      * @param dadesClient
      * @param passwordEnClar
      * @return
@@ -95,6 +83,10 @@ public class ClientService {
         // dadesClient.setActiu(true); // Si tinguessis un camp boolean
         return clientRepo.save(dadesClient);
     }
+    
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     public Client obtenirPerDni(String dni) {
         return clientRepository.findByDni(dni)
@@ -102,7 +94,6 @@ public class ClientService {
     }
 
     public Client actualitzarPerfilPerDni(String dni, ClientUpdateDTO dto) {
-
         Client client = obtenirPerDni(dni);
 
         client.setNomComplet(dto.getNomComplet());
