@@ -8,7 +8,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import cat.copernic.appvehicles.reserva.data.api.remote.RetrofitProvider
+import cat.copernic.appvehicles.reserva.data.repository.ReservaRepository
 import cat.copernic.appvehicles.reserva.ui.view.ReserveListScreen
+import cat.copernic.appvehicles.reserva.ui.view.ReservationDetailScreen
+import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
+import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModelFactory
 import cat.copernic.appvehicles.usuariAnonim.data.repository.AuthRepository
 import cat.copernic.appvehicles.usuariAnonim.ui.view.HomeScreen
 import cat.copernic.appvehicles.usuariAnonim.ui.view.RegisterScreen
@@ -18,6 +23,10 @@ import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModelFacto
 @Composable
 fun MainScreen(repository: AuthRepository) {
     val navController = rememberNavController()
+
+    val reservaViewModel: ReservaViewModel = viewModel(
+        factory = ReservaViewModelFactory(ReservaRepository(RetrofitProvider.reservaApi))
+    )
 
     Scaffold(
         bottomBar = { AppBottomNavigation(navController) }
@@ -29,29 +38,36 @@ fun MainScreen(repository: AuthRepository) {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(AppRoutes.Inici.route) {
-                HomeScreen(onVehicleClick = { vehicleId ->
-                    // Navegación al detalle
-                })
+                HomeScreen(onVehicleClick = { vehicleId -> })
             }
 
             composable(AppRoutes.Reserves.route) {
-                ReserveListScreen()
+                ReserveListScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onReservaSelected = { idReserva ->
+                        navController.navigate("reserva_detail/$idReserva")
+                    }
+                )
             }
 
+            composable("reserva_detail/{idReserva}") { backStackEntry ->
+                val idReserva = backStackEntry.arguments?.getString("idReserva")?.toLongOrNull() ?: 0L
+                ReservationDetailScreen(
+                    reservaId = idReserva,
+                    viewModel = reservaViewModel,
+                    onNavigateBack = { navController.popBackStack() },
+                    onCancelReservation = { /* Puedes llamar método anular en ViewModel y luego popBackStack() */ }
+                )
+            }
 
             composable(AppRoutes.Perfil.route) {
-
-
                 val registerViewModel: RegisterViewModel = viewModel(
                     factory = RegisterViewModelFactory(repository)
                 )
-
-                // 3. Pasamos el ViewModel a la pantalla
                 RegisterScreen(
                     viewModel = registerViewModel,
                     onNavigateBack = { navController.popBackStack() },
                     onRegisterSuccess = {
-                        // Al terminar registro, vamos al inicio
                         navController.navigate(AppRoutes.Inici.route) {
                             popUpTo(AppRoutes.Inici.route) { inclusive = true }
                         }

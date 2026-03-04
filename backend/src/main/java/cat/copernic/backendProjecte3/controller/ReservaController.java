@@ -5,6 +5,7 @@
 package cat.copernic.backendProjecte3.controller;
 
 import cat.copernic.backendProjecte3.business.ReservaService;
+import cat.copernic.backendProjecte3.dto.CancelReservaResponse;
 import cat.copernic.backendProjecte3.entities.Reserva;
 import cat.copernic.backendProjecte3.exceptions.*;
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tools.jackson.databind.ObjectMapper;
+
 /**
  *
  * @author HAMZA
@@ -25,9 +26,6 @@ public class ReservaController {
 
     @Autowired
     private ReservaService reservaService;
-    
-    @Autowired
-    private ObjectMapper objectMapper;
 
     // Listar reservas por cliente y ordenar asc/desc por fecha de inicio
     @GetMapping
@@ -70,14 +68,15 @@ public class ReservaController {
 
         return ReservaResponse.fromEntity(r);
     }
+    
 
     // Anular reserva
     @DeleteMapping("/{id}")
-    public void cancelReserva(
+    public CancelReservaResponse cancelReserva(
             @PathVariable Long id,
             @RequestParam String userName
-    ) throws ReservaNoTrobadaException, AccesDenegatException {
-        reservaService.anularReserva(id, userName);
+    ) throws ReservaNoTrobadaException, AccesDenegatException, ReservaNoCancelableException {
+        return reservaService.anularReserva(id, userName);
     }
 
     // DTO request para crear reserva

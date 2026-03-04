@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">appVehicles</string>
+    <string name="reservations_title">Les meves reserves</string>
+    <string name="back">Tornar</string>
+    <string name="sort">ordenar</string>
+    <string name="reservation_date_range">De %1$s a %2$s</string>
+    <string name="reservation_status_label">Estat</string>
+    <string name="status_cancelled">Cancel·lada</string>
+    <string name="status_finished">Acabat</string>
+    <string name="status_active">"Activa "</string>
+    <string name="reservation_code">Reserva #%1$s</string>
+
+    <!-- Para ReservationDetailScreen -->
+    <string name="reservation_detail_title">Detall de la reserva</string>
+    <string name="vehicle_photo_description">Foto del vehicle</string>
+    <string name="reservation_vehicle">Vehicle</string>
+    <string name="start_date">Data d\'inici</string>
+    <string name="end_date">Data de fi</string>
+
+    <string name="deposit">Fiança</string>
+    <string name="rental_cost">Cost del lloguer</string>
+    <string name="reservation_total">Total: %1$s</string>
+    <string name="cancel_reservation">Anul·lar reserva</string>
+
+    <string name="create_reservation_title">Nova reserva</string>
+    <string name="select_dates">Selecciona les dates</string>
+    <string name="available_vehicle">Vehicle disponible</string>
+    <string name="select_car">Selecciona un cotxe</string>
+    <string name="cost_summary">Resum del cost</string>
+    <string name="rental_days">Dies de lloguer </string>
+    <string name="total_to_pay">Total a pagar</string>
+    <string name="confirm_reservation">Confirmar reserva</string>
+</resources>
