@@ -116,6 +116,8 @@ fun RegisterScreen(
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
+    val context = androidx.compose.ui.platform.LocalContext.current
+
     var currentStep by remember { mutableIntStateOf(1) }
     val totalSteps = 3
 
@@ -238,7 +240,7 @@ fun RegisterScreen(
                                     viewModel.updateState(uiState.copy(errorMessage = missatgeFinal))
                                 } else {
                                     viewModel.updateState(uiState.copy(errorMessage = null))
-                                    viewModel.register() // Tot correcte, enviem al servidor!
+                                    viewModel.register(context) // Tot correcte, enviem al servidor!
                                 }
                             },
                             enabled = !uiState.isLoading
