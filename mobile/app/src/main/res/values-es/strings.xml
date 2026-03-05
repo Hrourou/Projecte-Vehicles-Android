@@ -61,4 +61,20 @@
     <string name="error_profile_save">Error guardando perfil</string>
 
     <string name="profile_saved">Perfil guardado</string>
+    <string name="create_reservation_title">Nueva Reserva</string>
+    <string name="select_dates">Selecciona las fechas</string>
+    <string name="start_date">Fecha inicio</string>
+    <string name="end_date">Fecha fin</string>
+    <string name="available_vehicle">Selecciona un vehículo</string>
+    <string name="reservation_vehicle">Vehículo</string>
+    <string name="cost_summary">Resumen del coste</string>
+    <string name="rental_cost">Alquiler</string>
+    <string name="deposit">Fianza</string>
+    <string name="total_to_pay">TOTAL A PAGAR</string>
+    <string name="confirm_reservation">Confirmar reserva</string>
+    <string name="ok">Aceptar</string>
+    <string name="no_vehicles_available">No hay vehículos disponibles</string>
+    <string name="reservation_created_title">Reserva creada</string>
+    <string name="reservation_amount">Importe: %1$s €</string>
+    <string name="view_detail">Ver detalle</string>
 </resources>

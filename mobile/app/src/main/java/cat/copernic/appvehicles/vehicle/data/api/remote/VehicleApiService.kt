@@ -6,7 +6,7 @@ import retrofit2.http.GET
 
 interface VehicleApiService {
 
-    // Backend: @RequestMapping("/api/vehicles")
-    @GET("vehicles")
+    // Llamada real al backend
+    @GET("api/vehicles")
     suspend fun getVehicles(): Response<List<VehicleResponse>>
 }

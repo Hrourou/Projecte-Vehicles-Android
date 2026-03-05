@@ -52,4 +52,9 @@
     <string name="maximum_rental_days">Días máximos de alquiler: %1$s</string>
     <string name="standard_deposit">Fianza estándar: %1$s</string>
     <string name="book_vehicle">Reservar vehículo</string>
+    <string name="no_vehicles_available">No hay vehículos disponibles</string>
+
+    <string name="reservation_created_title">Reserva creada</string>
+    <string name="reservation_amount">Importe: %1$s €</string>
+    <string name="view_detail">Ver detalle</string>
 </resources>

@@ -53,5 +53,9 @@
     <string name="maximum_rental_days">Dies màxims de lloguer: %1$s</string>
     <string name="standard_deposit">Fiança estàndard: %1$s</string>
     <string name="book_vehicle">Reservar vehicle</string>
+    <string name="no_vehicles_available">No hi ha vehicles disponibles</string>
+    <string name="reservation_created_title">Reserva creada</string>
+    <string name="reservation_amount">Import: %1$s €</string>
+    <string name="view_detail">Veure detall</string>
 
 </resources>
