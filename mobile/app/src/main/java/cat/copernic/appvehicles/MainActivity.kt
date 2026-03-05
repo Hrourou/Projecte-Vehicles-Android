@@ -15,12 +15,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.51.59.239:8080/api/")
+            .baseUrl("http://192.168.1.210:8080/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppVehiclesTheme {
+
                 MainScreen(authRepository)
             }
         }

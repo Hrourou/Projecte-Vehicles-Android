@@ -129,4 +129,63 @@
     <string name="error_profile_save">Error saving profile</string>
 
     <string name="profile_saved">Profile saved</string>
+
+    <!-- Para RegistrePantalla -->
+    <string name="registre_pas_de">Registration - Step %1$d of %2$d</string>
+    <string name="tornar_enrere">Go back</string>
+    <string name="enrere">Back</string>
+    <string name="seg_ent">Next</string>
+    <string name="finalitzar">Finish</string>
+
+
+    <string name="err_nom_complet_buit">Full name cannot be empty.</string>
+    <string name="err_nom_format">The name can only contain letters and spaces.</string>
+    <string name="err_numero_id_buit">Identification number cannot be empty.</string>
+    <string name="err_format_data">Incorrect date format (Use YYYY-MM-DD).</string>
+    <string name="err_data_passada">Expiration date cannot be in the past.</string>
+    <string name="err_data_invalida">Invalid date.</string>
+
+
+    <string name="err_adreca_buida">Address cannot be empty.</string>
+    <string name="err_nacionalitat_buida">Nationality cannot be empty.</string>
+    <string name="err_email_buit">Email cannot be empty.</string>
+    <string name="err_email_format">Incorrect email format.</string>
+    <string name="err_password_buida">Password cannot be empty.</string>
+
+
+    <string name="err_tipus_llicencia_buit">License type cannot be empty.</string>
+    <string name="err_llicencia_caducada">The license cannot be expired.</string>
+    <string name="err_targeta_buida">Credit card cannot be empty.</string>
+    <string name="err_targeta_format">The card must have between 13 and 19 digits.</string>
+
+
+    <string name="acceptar">Accept</string>
+    <string name="cancel_lar">Cancel</string>
+    <string name="dades_personals">Personal Data</string>
+    <string name="nom_complet">Full name</string>
+    <string name="n_mero_d_identificaci">Identification number</string>
+    <string name="data_caducitat">Expiration date</string>
+    <string name="seleccionar_data">Select date</string>
+    <string name="pujar_foto_identificaci">Upload ID photo</string>
+    <string name="dades_de_conducci_i_pagament">Driving and Payment Details</string>
+    <string name="tipus_de_llic_ncia">License type</string>
+    <string name="data_caducitat_llic_ncia">License expiration date</string>
+    <string name="pujar_foto_llic_ncia">Upload license photo</string>
+    <string name="targeta_de_cr_dit">Credit card</string>
+    <string name="dades_de_contacte_i_acc_s">Contact and Access Details</string>
+    <string name="adre_a">Address</string>
+    <string name="nacionalitat">Nationality</string>
+    <string name="email_usuari">Email (Username)</string>
+    <string name="email_example_com">email@example.com</string>
+    <string name="contrasenya">Password</string>
+    <string name="contrasenya_m_n_6_car_cters">Password (min 6 characters)</string>
+
+
+    <string name="pujar">Upload %1$s</string>
+    <string name="foto_seleccionada">Photo selected!</string>
+
+
+    <string name="err_foto_llicencia">You must upload the license photo.</string>
+    <string name="err_foto_identificacio">You must upload the identification photo.</string>
+
 </resources>

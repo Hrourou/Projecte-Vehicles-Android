@@ -1,27 +1,20 @@
 package cat.copernic.appvehicles.usuariAnonim.ui.view
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
+import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
 
-// Hemos añadido los campos de estado al final para que el ViewModel funcione.
-// No afectan al diseño visual.
 data class RegisterUiState(
     val nomComplet: String = "",
     val numeroIdentificacio: String = "",
@@ -33,86 +26,49 @@ data class RegisterUiState(
     val nacionalitat: String = "",
     val email: String = "",
     val password: String = "",
-    // --- Campos lógicos (Invisibles en UI si no quieres usarlos, pero necesarios para lógica) ---
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val isSuccess: Boolean = false
+    val isSuccess: Boolean = false,
+    val fotoIdentificacioUri: String? = null,
+    val fotoLlicenciaUri: String? = null
 )
-
-// ---------------------------------------------------------------------------
-// COMPOSABLES REUTILITZABLES (RN25)
-// ---------------------------------------------------------------------------
-
-@Composable
-fun ReusableTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier,
-    isPassword: Boolean = false
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(label) },
-        modifier = modifier.fillMaxWidth(),
-        singleLine = true,
-        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        shape = MaterialTheme.shapes.medium
-    )
-}
-
-@Composable
-fun ImageUploadButton(label: String, onClick: () -> Unit) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .clickable { onClick() },
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        shape = MaterialTheme.shapes.medium
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                imageVector = Icons.Default.AddAPhoto,
-                contentDescription = "Pujar $label",
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-
-// ---------------------------------------------------------------------------
-// PANTALLA PRINCIPAL
-// ---------------------------------------------------------------------------
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun RegisterScreen(
-    viewModel: RegisterViewModel, // CAMBIO 1: Recibimos el ViewModel
+    viewModel: RegisterViewModel,
     onNavigateBack: () -> Unit,
     onRegisterSuccess: () -> Unit
 ) {
-    // CAMBIO 2: Usamos el estado del ViewModel en lugar del local
     val uiState by viewModel.uiState.collectAsState()
-
     val scrollState = rememberScrollState()
 
-    // Controlamos en qué paso estamos (1, 2 o 3)
+    val context = androidx.compose.ui.platform.LocalContext.current
+
     var currentStep by remember { mutableIntStateOf(1) }
     val totalSteps = 3
 
-    // CAMBIO 3: Observar éxito para navegar
+    val errNomCompletBuit = stringResource(R.string.err_nom_complet_buit)
+    val errNomFormat = stringResource(R.string.err_nom_format)
+    val errNumeroIdBuit = stringResource(R.string.err_numero_id_buit)
+    val errFormatData = stringResource(R.string.err_format_data)
+    val errDataPassada = stringResource(R.string.err_data_passada)
+    val errDataInvalida = stringResource(R.string.err_data_invalida)
+
+    val errAdrecaBuida = stringResource(R.string.err_adreca_buida)
+    val errNacionalitatBuida = stringResource(R.string.err_nacionalitat_buida)
+    val errEmailBuit = stringResource(R.string.err_email_buit)
+    val errEmailFormat = stringResource(R.string.err_email_format)
+    val errPasswordBuida = stringResource(R.string.err_password_buida)
+
+    val errTipusLlicenciaBuit = stringResource(R.string.err_tipus_llicencia_buit)
+    val errLlicenciaCaducada = stringResource(R.string.err_llicencia_caducada)
+    val errTargetaBuida = stringResource(R.string.err_targeta_buida)
+    val errTargetaFormat = stringResource(R.string.err_targeta_format)
+
+    val errFotoLlicencia = stringResource(R.string.err_foto_llicencia)
+    val errFotoIdentificacio = stringResource(R.string.err_foto_identificacio)
+
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onRegisterSuccess()
@@ -122,12 +78,12 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Registre - Pas $currentStep de $totalSteps") },
+                title = { Text(stringResource(R.string.registre_pas_de, currentStep, totalSteps)) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (currentStep > 1) currentStep-- else onNavigateBack()
                     }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Tornar enrere")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.tornar_enrere))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -136,7 +92,6 @@ fun RegisterScreen(
                 )
             )
         },
-        // Mover los botones a la parte inferior de la pantalla fija
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -150,30 +105,124 @@ fun RegisterScreen(
                 ) {
                     if (currentStep > 1) {
                         OutlinedButton(onClick = { currentStep-- }, enabled = !uiState.isLoading) {
-                            Text("Enrere")
+                            Text(stringResource(R.string.enrere))
                         }
                     } else {
-                        Spacer(modifier = Modifier.width(8.dp)) // Espaciador para equilibrar si no hay botón
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
 
+
+
                     if (currentStep < totalSteps) {
-                        Button(onClick = { currentStep++ }, enabled = !uiState.isLoading) {
-                            Text("Següent")
-                        }
-                    } else {
-                        // CAMBIO 4: Acción Finalizar conectada al ViewModel
+
+
                         Button(
-                            onClick = { viewModel.register() },
+                            onClick = {
+                                val llistaErrors = mutableListOf<String>()
+                                val regexNom = "^[a-zA-ZÀ-ÿ\\s]+$".toRegex()
+                                val regexData = "^\\d{4}-\\d{2}-\\d{2}$".toRegex()
+
+                                if (currentStep == 1) {
+                                    if (uiState.nomComplet.isBlank())
+                                        llistaErrors.add("• $errNomCompletBuit")
+                                    else if (!uiState.nomComplet.matches(regexNom))
+                                        llistaErrors.add("• $errNomFormat")
+
+                                    if (uiState.numeroIdentificacio.isBlank())
+                                        llistaErrors.add("• $errNumeroIdBuit")
+
+                                    if (!uiState.dataCaducitatId.matches(regexData)) {
+                                        llistaErrors.add("• $errFormatData")
+                                    }
+
+                                    if (uiState.fotoIdentificacioUri == null) {
+                                        llistaErrors.add("• $errFotoIdentificacio")
+                                    } else {
+                                        try {
+                                            val dataParsed = java.time.LocalDate.parse(uiState.dataCaducitatId)
+                                            if (dataParsed.isBefore(java.time.LocalDate.now()))
+                                                llistaErrors.add("• $errDataPassada")
+                                        } catch (e: Exception) {
+                                            llistaErrors.add("• $errDataInvalida")
+                                        }
+                                    }
+                                } else if (currentStep == 2) {
+                                    if (uiState.adreca.isBlank())
+                                        llistaErrors.add("• $errAdrecaBuida")
+
+                                    if (uiState.nacionalitat.isBlank())
+                                        llistaErrors.add("• $errNacionalitatBuida")
+
+                                    if (uiState.email.isBlank())
+                                        llistaErrors.add("• $errEmailBuit")
+                                    else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(uiState.email).matches())
+                                        llistaErrors.add("• $errEmailFormat")
+
+                                    if (uiState.password.isBlank())
+                                        llistaErrors.add("• $errPasswordBuida")
+                                }
+
+                                if (llistaErrors.isNotEmpty()) {
+                                    val missatgeFinal = llistaErrors.joinToString(separator = "\n")
+                                    viewModel.updateState(uiState.copy(errorMessage = missatgeFinal))
+                                } else {
+                                    viewModel.updateState(uiState.copy(errorMessage = null))
+                                    currentStep++
+                                }
+                            },
                             enabled = !uiState.isLoading
                         ) {
-                            Text("Finalitzar")
+                            Text(stringResource(R.string.seg_ent))
+                        }
+                    } else {
+                        Button(
+                            onClick = {
+                                val llistaErrors = mutableListOf<String>()
+                                val regexData = "^\\d{4}-\\d{2}-\\d{2}$".toRegex()
+
+                                if (uiState.tipusLlicencia.isBlank())
+                                    llistaErrors.add("• $errTipusLlicenciaBuit")
+
+                                if (!uiState.dataCaducitatLlicencia.matches(regexData)) {
+                                    llistaErrors.add("• $errFormatData")
+                                } else {
+                                    try {
+                                        val dataParsed = java.time.LocalDate.parse(uiState.dataCaducitatLlicencia)
+                                        if (dataParsed.isBefore(java.time.LocalDate.now()))
+                                            llistaErrors.add("• $errLlicenciaCaducada")
+                                    } catch (e: Exception) {
+                                        llistaErrors.add("• $errDataInvalida")
+                                    }
+                                }
+
+                                if (uiState.fotoLlicenciaUri == null) {
+                                    llistaErrors.add("• $errFotoLlicencia")
+                                }
+
+                                val regexTargeta = "^[0-9]{13,19}$".toRegex()
+                                if (uiState.numeroTargetaCredit.isBlank()) {
+                                    llistaErrors.add("• $errTargetaBuida")
+                                } else if (!uiState.numeroTargetaCredit.matches(regexTargeta)) {
+                                    llistaErrors.add("• $errTargetaFormat")
+                                }
+
+                                if (llistaErrors.isNotEmpty()) {
+                                    val missatgeFinal = llistaErrors.joinToString(separator = "\n")
+                                    viewModel.updateState(uiState.copy(errorMessage = missatgeFinal))
+                                } else {
+                                    viewModel.updateState(uiState.copy(errorMessage = null))
+                                    viewModel.register(context)
+                                }
+                            },
+                            enabled = !uiState.isLoading
+                        ) {
+                            Text(stringResource(R.string.finalitzar))
                         }
                     }
                 }
             }
         }
     ) { paddingValues ->
-        // El contenido principal sigue teniendo scroll por si el teclado se abre
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -184,8 +233,15 @@ fun RegisterScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Usamos un simple 'when' para mostrar un bloque de campos u otro
-            // CAMBIO 5: Pasamos la función updateState del ViewModel
+            if (uiState.errorMessage != null) {
+                Text(
+                    text = uiState.errorMessage!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
             when (currentStep) {
                 1 -> Pas1DadesPersonals(uiState) { viewModel.updateState(it) }
                 2 -> Pas3DadesContacte(uiState) { viewModel.updateState(it) }
@@ -197,40 +253,3 @@ fun RegisterScreen(
     }
 }
 
-// --- BLOQUES DE CONTENIDO DIVIDIDOS ---
-
-@Composable
-fun Pas1DadesPersonals(state: RegisterUiState, onStateChange: (RegisterUiState) -> Unit) {
-    Text("Dades Personals", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-    ReusableTextField(value = state.nomComplet, onValueChange = { onStateChange(state.copy(nomComplet = it)) }, label = "Nom complet")
-    ReusableTextField(value = state.numeroIdentificacio, onValueChange = { onStateChange(state.copy(numeroIdentificacio = it)) }, label = "Número d'identificació")
-    OutlinedTextField(
-        value = state.dataCaducitatId, onValueChange = { onStateChange(state.copy(dataCaducitatId = it)) }, label = { Text("Data caducitat") },
-        modifier = Modifier.fillMaxWidth(),  trailingIcon = { Icon(Icons.Default.DateRange, "Seleccionar data") }
-    )
-    ImageUploadButton(label = "Pujar foto identificació") { /* TODO */ }
-}
-
-@Composable
-fun Pas2DadesConduccio(state: RegisterUiState, onStateChange: (RegisterUiState) -> Unit) {
-    Text("Dades de Conducció i Pagament", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-    ReusableTextField(value = state.tipusLlicencia, onValueChange = { onStateChange(state.copy(tipusLlicencia = it)) }, label = "Tipus de llicència")
-    OutlinedTextField(
-        value = state.dataCaducitatLlicencia, onValueChange = { onStateChange(state.copy(dataCaducitatLlicencia = it)) }, label = { Text("Data caducitat llicència") },
-        modifier = Modifier.fillMaxWidth(), trailingIcon = { Icon(Icons.Default.DateRange, "Seleccionar data") }
-    )
-    ImageUploadButton(label = "Pujar foto llicència") { /* TODO */ }
-    ReusableTextField(value = state.numeroTargetaCredit, onValueChange = { onStateChange(state.copy(numeroTargetaCredit = it)) }, label = "Targeta de crèdit")
-}
-
-@Composable
-fun Pas3DadesContacte(state: RegisterUiState, onStateChange: (RegisterUiState) -> Unit) {
-    Text("Dades de Contacte i Accés", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-    ReusableTextField(value = state.adreca, onValueChange = { onStateChange(state.copy(adreca = it)) }, label = "Adreça")
-    ReusableTextField(value = state.nacionalitat, onValueChange = { onStateChange(state.copy(nacionalitat = it)) }, label = "Nacionalitat")
-    ReusableTextField(value = state.email, onValueChange = { onStateChange(state.copy(email = it)) }, label = "Email (Usuari)")
-    ReusableTextField(value = state.password, onValueChange = { onStateChange(state.copy(password = it)) }, label = "Contrasenya", isPassword = true)
-}
-
-// Nota: He eliminado el Preview temporalmente porque requiere inyectar un ViewModel Mock,
-// pero tu código principal ya compilará.

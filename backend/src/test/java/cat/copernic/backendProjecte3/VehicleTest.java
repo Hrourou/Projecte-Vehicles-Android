@@ -40,13 +40,16 @@ import org.springframework.test.context.ActiveProfiles;
 @Transactional
 public class VehicleTest {
 
-    @Autowired private VehicleService vehicleService;
-    
+    @Autowired
+    private VehicleService vehicleService;
+
     // Repositoris necessaris per preparar l'escenari
-    @Autowired private VehicleRepository vehicleRepo;
-    @Autowired private ReservaRepository reservaRepo;
-    @Autowired private ClientRepository clientRepo;
-    
+    @Autowired
+    private VehicleRepository vehicleRepo;
+    @Autowired
+    private ReservaRepository reservaRepo;
+    @Autowired
+    private ClientRepository clientRepo;
 
     // Dades globals per als tests
     private Vehicle cotxeTest;
@@ -64,6 +67,9 @@ public class VehicleTest {
         // Creem un vehicle disponible 
         cotxeTest = new Vehicle();
         cotxeTest.setMatricula("1234-BCN");
+        cotxeTest.setMarca("Yamaha");
+        cotxeTest.setModel("MT-07");
+        cotxeTest.setVariant("Gasolina");
         cotxeTest.setTipusVehicle(TipusVehicle.COTXE);
         cotxeTest.setEstatVehicle(EstatVehicle.ALTA);
         cotxeTest.setPreuHora(new BigDecimal("10.00"));
@@ -75,19 +81,21 @@ public class VehicleTest {
      */
     @Test
     public void testCercarVehiclesDisponibles() {
-        
 
         Vehicle vehicle1 = new Vehicle();
         vehicle1.setMatricula("9999-MAD");
+        vehicle1.setMarca("Yamaha");
+        vehicle1.setModel("MT-07");
+        vehicle1.setVariant("Gasolina");
         vehicle1.setTipusVehicle(TipusVehicle.MOTO);
         vehicle1.setEstatVehicle(EstatVehicle.ALTA);
         vehicleRepo.save(vehicle1);
 
         // Execució: Cerquem cotxes a Barcelona
         List<Vehicle> resultats = vehicleService.cercarVehiclesDisponibles(
-                LocalDate.now(), 
-                LocalDate.now().plusDays(1), 
-                TipusVehicle.COTXE, 
+                LocalDate.now(),
+                LocalDate.now().plusDays(1),
+                TipusVehicle.COTXE,
                 "08001"
         );
 
@@ -102,19 +110,20 @@ public class VehicleTest {
      */
     @Test
     public void testDonarDeBaixaVehicle_SenseReserves() {
-        
+
         vehicleService.donarDeBaixaVehicle("1234-BCN");
-        Vehicle vActualitzat = vehicleRepo.findById("1234-BCN").orElseThrow();        
-        assertEquals(EstatVehicle.BAIXA, vActualitzat.getEstatVehicle(), 
+        Vehicle vActualitzat = vehicleRepo.findById("1234-BCN").orElseThrow();
+        assertEquals(EstatVehicle.BAIXA, vActualitzat.getEstatVehicle(),
                 "El vehicle hauria d'estar en estat BAIXA després de donar-lo de baixa");
     }
 
-    /***
+    /**
+     * *
      * * Verifica que si hi ha reserves, NO podem donar un vehicle de baixa
      */
     @Test
     public void testDonarDeBaixaVehicle_AmbReservesFutures_Error() {
-        
+
         Client client = new Client();
         client.setEmail("test@client.com");
         client.setDni("12345678A");
@@ -123,7 +132,6 @@ public class VehicleTest {
         client.setRol(UserRole.CLIENT);
         clientRepo.save(client);
 
-        
         Reserva reservaFutura = new Reserva();
         reservaFutura.setVehicle(cotxeTest);
         reservaFutura.setClient(client);
@@ -132,33 +140,33 @@ public class VehicleTest {
         reservaFutura.setImportTotal(BigDecimal.TEN);
         reservaRepo.save(reservaFutura);
 
-        
-        assertThrows(IllegalStateException.class, () -> {vehicleService.donarDeBaixaVehicle("1234-BCN");});
-        
+        assertThrows(IllegalStateException.class, () -> {
+            vehicleService.donarDeBaixaVehicle("1234-BCN");
+        });
+
         Vehicle vehicleTest = vehicleRepo.findById("1234-BCN").get();
         assertEquals(EstatVehicle.ALTA, vehicleTest.getEstatVehicle());
     }
 
-    /***
+    /**
+     * *
      * Un vehicle de baixa SEMPRE es pot donar d'alta
      */
     @Test
     public void testDonarDeAltaVehicle() {
-     
+
         cotxeTest.setEstatVehicle(EstatVehicle.BAIXA);
         vehicleRepo.save(cotxeTest);
 
-     
         vehicleService.donarDeAltaVehicle("1234-BCN", "Reparació finalitzada");
 
-     
         Vehicle vActualitzat = vehicleRepo.findById("1234-BCN").orElseThrow();
-        
-     
+
         assertTrue(vActualitzat.getEstatVehicle() == EstatVehicle.ALTA);
     }
-    
-    /***
+
+    /**
+     * *
      * Un vehicle sempre es pot eliminar
      */
     @Test

@@ -43,19 +43,23 @@ import org.springframework.test.context.ActiveProfiles;
 @Transactional
 public class ReservaTest {
 
-    @Autowired private ReservaService reservaService;
-    @Autowired private ReservaRepository reservaRepo;
-    @Autowired private ClientRepository clientRepo;
-    @Autowired private VehicleRepository vehicleRepo;
-   
-    
+    @Autowired
+    private ReservaService reservaService;
+    @Autowired
+    private ReservaRepository reservaRepo;
+    @Autowired
+    private ClientRepository clientRepo;
+    @Autowired
+    private VehicleRepository vehicleRepo;
+
     // Components per fer el Login REAL
-    @Autowired private UserLogic userLogic;
+    @Autowired
+    private UserLogic userLogic;
 
     private Client clientTest;
     private Vehicle vehicleTest;
     private Reserva reservaTest;
-    
+
     // Dades per fer escenari1
     private final String EMAIL_LOGIN = "client.real@test.com";
     private final String PASSWORD_RAW = "passwordSegur123";
@@ -66,10 +70,10 @@ public class ReservaTest {
         clientRepo.deleteAll();
         vehicleRepo.deleteAll();
     }
-    
-    /***
-     * - Rol client
-     * - Vehicle disponible
+
+    /**
+     * *
+     * - Rol client - Vehicle disponible
      */
     public void escenari1() {
         //client
@@ -84,14 +88,17 @@ public class ReservaTest {
         vehicleTest = new Vehicle();
         vehicleTest.setMatricula("9999-MAD");
         vehicleTest.setTipusVehicle(TipusVehicle.MOTO);
+        vehicleTest.setMarca("Yamaha");
+        vehicleTest.setModel("MT-07");
+        vehicleTest.setVariant("Gasolina");
         vehicleTest.setEstatVehicle(EstatVehicle.ALTA);
         vehicleTest.setPreuHora(new BigDecimal(15.55f));
         vehicleRepo.save(vehicleTest);
     }
-    
-    /***
-     * - Rol client
-     * - Vehicle de baixa
+
+    /**
+     * *
+     * - Rol client - Vehicle de baixa
      */
     public void escenari2() {
         //client
@@ -102,18 +109,21 @@ public class ReservaTest {
         clientTest.setNomComplet("Usuario de Prueba");
         clientTest.setDni("12345678A");
         clientRepo.save(clientTest);
-        
+
         vehicleTest = new Vehicle();
         vehicleTest.setMatricula("9999-MAD");
         vehicleTest.setTipusVehicle(TipusVehicle.MOTO);
+        vehicleTest.setMarca("Yamaha");
+        vehicleTest.setModel("MT-07");
+        vehicleTest.setVariant("Gasolina");
         vehicleTest.setEstatVehicle(EstatVehicle.BAIXA);
         vehicleTest.setPreuHora(new BigDecimal(15.55f));
         vehicleRepo.save(vehicleTest);
     }
-    
-    /***
-     * - Rol NONE
-     * - Vehicle disponible
+
+    /**
+     * *
+     * - Rol NONE - Vehicle disponible
      */
     public void escenari3() {
         //client
@@ -124,19 +134,21 @@ public class ReservaTest {
         clientTest.setDni("12345678A");
         clientTest.setNomComplet("Usuario de Prueba");
         clientRepo.save(clientTest);
-        
+
         vehicleTest = new Vehicle();
         vehicleTest.setMatricula("9999-MAD");
         vehicleTest.setTipusVehicle(TipusVehicle.MOTO);
+        vehicleTest.setMarca("Yamaha");
+        vehicleTest.setModel("MT-07");
+        vehicleTest.setVariant("Gasolina");
         vehicleTest.setEstatVehicle(EstatVehicle.ALTA);
         vehicleTest.setPreuHora(new BigDecimal(15.55f));
         vehicleRepo.save(vehicleTest);
     }
-    
-     /***
-     * - Rol AGENT
-     * - Vehicle disponible
-     * - reserva OK
+
+    /**
+     * *
+     * - Rol AGENT - Vehicle disponible - reserva OK
      */
     public void escenari4() {
         //client
@@ -151,26 +163,28 @@ public class ReservaTest {
         vehicleTest = new Vehicle();
         vehicleTest.setMatricula("9999-MAD");
         vehicleTest.setTipusVehicle(TipusVehicle.MOTO);
+        vehicleTest.setMarca("Yamaha");
+        vehicleTest.setModel("MT-07");
+        vehicleTest.setVariant("Gasolina");
         vehicleTest.setEstatVehicle(EstatVehicle.ALTA);
         vehicleTest.setPreuHora(new BigDecimal(15.55f));
         vehicleRepo.save(vehicleTest);
-        
+
         //reserva ok
         assertDoesNotThrow(() -> {
             this.reservaTest = reservaService.crearReserva(
-                EMAIL_LOGIN, 
-                vehicleTest.getMatricula(), 
-                LocalDate.now().plusDays(1), 
-                LocalDate.now().plusDays(3),
-                clientTest.getUsername()
+                    EMAIL_LOGIN,
+                    vehicleTest.getMatricula(),
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(3),
+                    clientTest.getUsername()
             );
         });
     }
-    
-    /***
-     * - Rol CLIENT
-     * - Vehicle disponible
-     * - reserva OK
+
+    /**
+     * *
+     * - Rol CLIENT - Vehicle disponible - reserva OK
      */
     public void escenari5() {
         //client
@@ -182,30 +196,31 @@ public class ReservaTest {
         clientTest.setDni("12345678A");
         clientRepo.save(clientTest);
 
-
         vehicleTest = new Vehicle();
         vehicleTest.setMatricula("9999-MAD");
         vehicleTest.setTipusVehicle(TipusVehicle.MOTO);
+        vehicleTest.setMarca("Yamaha");
+        vehicleTest.setModel("MT-07");
+        vehicleTest.setVariant("Gasolina");
         vehicleTest.setEstatVehicle(EstatVehicle.ALTA);
         vehicleTest.setPreuHora(new BigDecimal(15.55f));
         vehicleRepo.save(vehicleTest);
-        
+
         //reserva ok        
         assertDoesNotThrow(() -> {
             this.reservaTest = reservaService.crearReserva(
-                EMAIL_LOGIN, 
-                vehicleTest.getMatricula(), 
-                LocalDate.now().plusDays(1), 
-                LocalDate.now().plusDays(3),
-                clientTest.getUsername()
+                    EMAIL_LOGIN,
+                    vehicleTest.getMatricula(),
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(3),
+                    clientTest.getUsername()
             );
         });
     }
-    
-     /***
-     * - Rol CLIENT
-     * - Vehicle disponible
-     * - reserva OK
+
+    /**
+     * *
+     * - Rol CLIENT - Vehicle disponible - reserva OK
      */
     public void escenari6() {
         //client
@@ -220,90 +235,95 @@ public class ReservaTest {
         vehicleTest = new Vehicle();
         vehicleTest.setMatricula("9999-MAD");
         vehicleTest.setTipusVehicle(TipusVehicle.MOTO);
+        vehicleTest.setMarca("Yamaha");
+        vehicleTest.setModel("MT-07");
+        vehicleTest.setVariant("Gasolina");
         vehicleTest.setEstatVehicle(EstatVehicle.ALTA);
         vehicleTest.setPreuHora(new BigDecimal(15.55f));
         vehicleRepo.save(vehicleTest);
-        
+
         //reserva ok
         assertDoesNotThrow(() -> {
             this.reservaTest = reservaService.crearReserva(
-                EMAIL_LOGIN, 
-                vehicleTest.getMatricula(), 
-                LocalDate.now().plusDays(1), 
-                LocalDate.now().plusDays(3),
-                clientTest.getUsername()
+                    EMAIL_LOGIN,
+                    vehicleTest.getMatricula(),
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(3),
+                    clientTest.getUsername()
             );
         });
     }
-
 
     @Test
     public void crearReserva_Ok() {
-        
+
         escenari1();
-        
+
         assertDoesNotThrow(() -> {
             Reserva resultat = reservaService.crearReserva(
-                EMAIL_LOGIN, 
-                vehicleTest.getMatricula(), 
-                LocalDate.now().plusDays(1), 
-                LocalDate.now().plusDays(3),
-                clientTest.getUsername()
+                    EMAIL_LOGIN,
+                    vehicleTest.getMatricula(),
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(3),
+                    clientTest.getUsername()
             );
-            
+
             assertNotNull(resultat);
             assertEquals(EMAIL_LOGIN, resultat.getClient().getUsername());
-        
+
         });
 
-        
-    } 
-    
+    }
+
     @Test
     public void crearReserva_VehicleBaixa() {
-        
+
         escenari2();
-        
-        assertThrows(VehicleNoDisponibleException.class, () -> {reservaService.crearReserva(
-                EMAIL_LOGIN, 
-                vehicleTest.getMatricula(), 
-                LocalDate.now().plusDays(1), 
-                LocalDate.now().plusDays(3),
-                clientTest.getUsername()
-        );});
-    } 
-    
-   
-    
-    @Test
-    public void crearReserva_RolNoautoritzat() {
-        
-        escenari3();
-        
-        assertThrows(AccesDenegatException.class, () -> {reservaService.crearReserva(
-                EMAIL_LOGIN, 
-                vehicleTest.getMatricula(), 
-                LocalDate.now().plusDays(1), 
-                LocalDate.now().plusDays(3),
-                clientTest.getUsername()
+
+        assertThrows(VehicleNoDisponibleException.class, () -> {
+            reservaService.crearReserva(
+                    EMAIL_LOGIN,
+                    vehicleTest.getMatricula(),
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(3),
+                    clientTest.getUsername()
             );
         });
     }
-    
-    /***
+
+    @Test
+    public void crearReserva_RolNoautoritzat() {
+
+        escenari3();
+
+        assertThrows(AccesDenegatException.class, () -> {
+            reservaService.crearReserva(
+                    EMAIL_LOGIN,
+                    vehicleTest.getMatricula(),
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(3),
+                    clientTest.getUsername()
+            );
+        });
+    }
+
+    /**
+     * *
      * Es eeserva un vehicle i llavors es reserva de nou en dates no compatibles
      */
     @Test
     public void crearReserva_VehicleJaReservat() {
-        
+
         escenari6();
-        
-        assertThrows(ReservaDatesNoValidsException.class, () -> {reservaService.crearReserva(
-                EMAIL_LOGIN, 
-                vehicleTest.getMatricula(), 
-                reservaTest.getDataFi().minusDays(1), 
-                reservaTest.getDataFi().plusDays(10),
-                clientTest.getUsername()
-        );});
+
+        assertThrows(ReservaDatesNoValidsException.class, () -> {
+            reservaService.crearReserva(
+                    EMAIL_LOGIN,
+                    vehicleTest.getMatricula(),
+                    reservaTest.getDataFi().minusDays(1),
+                    reservaTest.getDataFi().plusDays(10),
+                    clientTest.getUsername()
+            );
+        });
     }
 }

@@ -57,7 +57,7 @@ public void testRegistrarNouClient_FluxCorrecte() {
     dto.setNumeroTargetaCredit("1111-2222-3333-4444");
 
     Client resultat = assertDoesNotThrow(() ->
-            clientService.registrarNouClient(dto)
+            clientService.registrarNouClient(dto, null, null)
     );
 
     assertNotNull(resultat);
@@ -82,7 +82,7 @@ public void testRegistrarClient_EmailDuplicat() throws ErrorAltaException {
     primer.setNomComplet("Client Existent");
     primer.setDni("99999999X");
 
-    clientService.registrarNouClient(primer);
+    clientService.registrarNouClient(primer, null, null);
 
     ClientRegistreDTO duplicat = new ClientRegistreDTO();
     duplicat.setEmail("ja.existeix@test.com"); // mismo email
@@ -91,7 +91,7 @@ public void testRegistrarClient_EmailDuplicat() throws ErrorAltaException {
     duplicat.setDni("88888888Y"); // DNI diferente
 
     assertThrows(ErrorAltaException.class, () ->
-            clientService.registrarNouClient(duplicat)
+            clientService.registrarNouClient(duplicat, null, null)
     );
 }
 }

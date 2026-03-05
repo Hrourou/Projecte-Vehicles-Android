@@ -9,18 +9,17 @@ data class ClientRegisterRequest(
     val password: String,
     val nomComplet: String,
 
-    // Datos de Identificación
     val dni: String,
     val dataCaducitatDni: String, // Formato "yyyy-MM-dd"
-    val imatgeDni: String,        // URL o Base64
+    val imatgeDni: String,
     val nacionalitat: String,
     val adreca: String,
 
     // Datos de Conducción
     val tipusCarnetConduir: String,
     val dataCaducitatCarnet: String, // Formato "yyyy-MM-dd"
-    val imatgeCarnet: String,        // URL o Base64
+    val imatgeCarnet: String,
 
-    // Datos Económicos
+
     val numeroTargetaCredit: String
 )
