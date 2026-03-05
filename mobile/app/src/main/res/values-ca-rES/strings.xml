@@ -88,6 +88,7 @@
 
     <string name="filter_by_date_range">Filtrar per rang de dates</string>
     <string name="start_date_dd_mm_yyyy">Data d\'inici (dd/mm/yyyy)</string>
+        <string name="available_vehicles">Vehicles disponibless</string>
     <string name="end_date_dd_mm_yyyy">Data de fi (dd/mm/yyyy)</string>
     <string name="apply_filter">Aplicar filtre</string>
     <string name="sort_by_price">Ordenar per preu</string>
