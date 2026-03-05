@@ -461,13 +461,15 @@ image:Imatges/BoardFinalSprint2Part2.png[Board final, width=400]
 
 ==== Board inicial
 
-image:Imatges/BoardInicialSprint2.png[Board inicial, width=400]
+image:Imatges/BoardInicialSprint3Part1.png[Board inicial, width=400]
+
+image:Imatges/BoardInicialSprint3Part2.png[Board Inicial, width=400]
 
 ==== Board final
 
-image:Imatges/BoardFinalSprint2Part1.png[Board final, width=400]
+image:Imatges/BoardFinalSprint3Part1.png[Board final, width=400]
 
-image:Imatges/BoardFinalSprint2Part2.png[Board final, width=400]
+image:Imatges/BoardFinalSprint3Part2.png[Board final, width=400]
 
 
 === RETROSPECTIVE MEETING
