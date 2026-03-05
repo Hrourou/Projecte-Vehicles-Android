@@ -9,10 +9,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import cat.copernic.appvehicles.R
 
 @Composable
 fun ReusableTextField(
@@ -52,12 +54,12 @@ fun ImageUploadButton(label: String, isUploaded: Boolean = false, onClick: () ->
         ) {
             Icon(
                 imageVector = if (isUploaded) Icons.Default.CheckCircle else Icons.Default.AddAPhoto,
-                contentDescription = "Pujar $label",
+                contentDescription = stringResource(R.string.pujar, label),
                 tint = if (isUploaded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = if (isUploaded) "Foto seleccionada!" else label,
+                text = if (isUploaded) stringResource(R.string.foto_seleccionada) else label,
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (isUploaded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = if (isUploaded) FontWeight.Bold else FontWeight.Normal

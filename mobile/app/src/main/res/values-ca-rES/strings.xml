@@ -31,4 +31,52 @@
     <string name="rental_days">Dies de lloguer </string>
     <string name="total_to_pay">Total a pagar</string>
     <string name="confirm_reservation">Confirmar reserva</string>
+
+
+    <string name="registre_pas_de">Registre - Pas %1$d de %2$d</string>
+    <string name="tornar_enrere">Tornar enrere</string>
+    <string name="enrere">Enrere</string>
+    <string name="seg_ent">Següent</string>
+    <string name="finalitzar">Finalitzar</string>
+
+    <string name="err_nom_complet_buit">El nom complet no pot estar buit.</string>
+    <string name="err_nom_format">El nom només pot contenir lletres i espais.</string>
+    <string name="err_numero_id_buit">El número d\'identificació no pot estar buit.</string>
+    <string name="err_format_data">Format de data incorrecte (Usa YYYY-MM-DD).</string>
+    <string name="err_data_passada">La data de caducitat no pot ser passada.</string>
+    <string name="err_data_invalida">Data invàlida.</string>
+
+    <string name="err_adreca_buida">L\'adreça no pot estar buida.</string>
+    <string name="err_nacionalitat_buida">La nacionalitat no pot estar buida.</string>
+    <string name="err_email_buit">L\'email no pot estar buit.</string>
+    <string name="err_email_format">Format d\'email incorrecte.</string>
+    <string name="err_password_buida">La contrasenya no pot estar buida.</string>
+
+    <string name="err_tipus_llicencia_buit">El tipus de llicència no pot estar buit.</string>
+    <string name="err_llicencia_caducada">La llicència no pot estar caducada.</string>
+    <string name="err_targeta_buida">La targeta de crèdit no pot estar buida.</string>
+    <string name="err_targeta_format">La targeta ha de tenir entre 13 i 19 números.</string>
+
+    <string name="acceptar">Acceptar</string>
+    <string name="cancel_lar">Cancel·lar</string>
+    <string name="dades_personals">Dades Personals</string>
+    <string name="nom_complet">Nom complet</string>
+    <string name="n_mero_d_identificaci">Número d\'identificació</string>
+    <string name="data_caducitat">Data caducitat</string>
+    <string name="seleccionar_data">Seleccionar data</string>
+    <string name="pujar_foto_identificaci">Pujar foto identificació</string>
+    <string name="dades_de_conducci_i_pagament">Dades de Conducció i Pagament</string>
+    <string name="tipus_de_llic_ncia">Tipus de llicència</string>
+    <string name="data_caducitat_llic_ncia">Data caducitat llicència</string>
+    <string name="pujar_foto_llic_ncia">Pujar foto llicència</string>
+    <string name="targeta_de_cr_dit">Targeta de crèdit</string>
+    <string name="dades_de_contacte_i_acc_s">Dades de Contacte i Accés</string>
+    <string name="adre_a">Adreça</string>
+    <string name="nacionalitat">Nacionalitat</string>
+    <string name="email_usuari">Email (Usuari)</string>
+    <string name="email_example_com">email@example.com</string>
+    <string name="contrasenya">Contrasenya</string>
+    <string name="contrasenya_m_n_6_car_cters">Contrasenya (mín 6 caràcters)</string>
+    <string name="pujar">Pujar %1$s</string>
+    <string name="foto_seleccionada">Foto seleccionada!</string>
 </resources>

@@ -9,8 +9,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
 
 data class RegisterUiState(
@@ -46,6 +48,24 @@ fun RegisterScreen(
     var currentStep by remember { mutableIntStateOf(1) }
     val totalSteps = 3
 
+    val errNomCompletBuit = stringResource(R.string.err_nom_complet_buit)
+    val errNomFormat = stringResource(R.string.err_nom_format)
+    val errNumeroIdBuit = stringResource(R.string.err_numero_id_buit)
+    val errFormatData = stringResource(R.string.err_format_data)
+    val errDataPassada = stringResource(R.string.err_data_passada)
+    val errDataInvalida = stringResource(R.string.err_data_invalida)
+
+    val errAdrecaBuida = stringResource(R.string.err_adreca_buida)
+    val errNacionalitatBuida = stringResource(R.string.err_nacionalitat_buida)
+    val errEmailBuit = stringResource(R.string.err_email_buit)
+    val errEmailFormat = stringResource(R.string.err_email_format)
+    val errPasswordBuida = stringResource(R.string.err_password_buida)
+
+    val errTipusLlicenciaBuit = stringResource(R.string.err_tipus_llicencia_buit)
+    val errLlicenciaCaducada = stringResource(R.string.err_llicencia_caducada)
+    val errTargetaBuida = stringResource(R.string.err_targeta_buida)
+    val errTargetaFormat = stringResource(R.string.err_targeta_format)
+
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onRegisterSuccess()
@@ -55,12 +75,12 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Registre - Pas $currentStep de $totalSteps") },
+                title = { Text(stringResource(R.string.registre_pas_de, currentStep, totalSteps)) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (currentStep > 1) currentStep-- else onNavigateBack()
                     }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Tornar enrere")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.tornar_enrere))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -75,18 +95,24 @@ fun RegisterScreen(
                 tonalElevation = 8.dp
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     if (currentStep > 1) {
                         OutlinedButton(onClick = { currentStep-- }, enabled = !uiState.isLoading) {
-                            Text("Enrere")
+                            Text(stringResource(R.string.enrere))
                         }
                     } else {
                         Spacer(modifier = Modifier.width(8.dp))
                     }
 
+
+
                     if (currentStep < totalSteps) {
+
+
                         Button(
                             onClick = {
                                 val llistaErrors = mutableListOf<String>()
@@ -94,29 +120,39 @@ fun RegisterScreen(
                                 val regexData = "^\\d{4}-\\d{2}-\\d{2}$".toRegex()
 
                                 if (currentStep == 1) {
-                                    if (uiState.nomComplet.isBlank()) llistaErrors.add("• El nom complet no pot estar buit.")
-                                    else if (!uiState.nomComplet.matches(regexNom)) llistaErrors.add("• El nom només pot contenir lletres i espais.")
+                                    if (uiState.nomComplet.isBlank())
+                                        llistaErrors.add("• $errNomCompletBuit")
+                                    else if (!uiState.nomComplet.matches(regexNom))
+                                        llistaErrors.add("• $errNomFormat")
 
-                                    if (uiState.numeroIdentificacio.isBlank()) llistaErrors.add("• El número d'identificació no pot estar buit.")
+                                    if (uiState.numeroIdentificacio.isBlank())
+                                        llistaErrors.add("• $errNumeroIdBuit")
 
                                     if (!uiState.dataCaducitatId.matches(regexData)) {
-                                        llistaErrors.add("• Format de data incorrecte (Usa YYYY-MM-DD).")
+                                        llistaErrors.add("• $errFormatData")
                                     } else {
                                         try {
                                             val dataParsed = java.time.LocalDate.parse(uiState.dataCaducitatId)
-                                            if (dataParsed.isBefore(java.time.LocalDate.now())) llistaErrors.add("• La data de caducitat no pot ser passada.")
+                                            if (dataParsed.isBefore(java.time.LocalDate.now()))
+                                                llistaErrors.add("• $errDataPassada")
                                         } catch (e: Exception) {
-                                            llistaErrors.add("• Data invàlida.")
+                                            llistaErrors.add("• $errDataInvalida")
                                         }
                                     }
                                 } else if (currentStep == 2) {
-                                    if (uiState.adreca.isBlank()) llistaErrors.add("• L'adreça no pot estar buida.")
-                                    if (uiState.nacionalitat.isBlank()) llistaErrors.add("• La nacionalitat no pot estar buida.")
+                                    if (uiState.adreca.isBlank())
+                                        llistaErrors.add("• $errAdrecaBuida")
 
-                                    if (uiState.email.isBlank()) llistaErrors.add("• L'email no pot estar buit.")
-                                    else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(uiState.email).matches()) llistaErrors.add("• Format d'email incorrecte.")
+                                    if (uiState.nacionalitat.isBlank())
+                                        llistaErrors.add("• $errNacionalitatBuida")
 
-                                    if (uiState.password.isBlank()) llistaErrors.add("• La contrasenya no pot estar buida.")
+                                    if (uiState.email.isBlank())
+                                        llistaErrors.add("• $errEmailBuit")
+                                    else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(uiState.email).matches())
+                                        llistaErrors.add("• $errEmailFormat")
+
+                                    if (uiState.password.isBlank())
+                                        llistaErrors.add("• $errPasswordBuida")
                                 }
 
                                 if (llistaErrors.isNotEmpty()) {
@@ -129,7 +165,7 @@ fun RegisterScreen(
                             },
                             enabled = !uiState.isLoading
                         ) {
-                            Text("Següent")
+                            Text(stringResource(R.string.seg_ent))
                         }
                     } else {
                         Button(
@@ -137,24 +173,26 @@ fun RegisterScreen(
                                 val llistaErrors = mutableListOf<String>()
                                 val regexData = "^\\d{4}-\\d{2}-\\d{2}$".toRegex()
 
-                                if (uiState.tipusLlicencia.isBlank()) llistaErrors.add("• El tipus de llicència no pot estar buit.")
+                                if (uiState.tipusLlicencia.isBlank())
+                                    llistaErrors.add("• $errTipusLlicenciaBuit")
 
                                 if (!uiState.dataCaducitatLlicencia.matches(regexData)) {
-                                    llistaErrors.add("• Format de data incorrecte (Usa YYYY-MM-DD).")
+                                    llistaErrors.add("• $errFormatData")
                                 } else {
                                     try {
                                         val dataParsed = java.time.LocalDate.parse(uiState.dataCaducitatLlicencia)
-                                        if (dataParsed.isBefore(java.time.LocalDate.now())) llistaErrors.add("• La llicència no pot estar caducada.")
+                                        if (dataParsed.isBefore(java.time.LocalDate.now()))
+                                            llistaErrors.add("• $errLlicenciaCaducada")
                                     } catch (e: Exception) {
-                                        llistaErrors.add("• Data invàlida.")
+                                        llistaErrors.add("• $errDataInvalida")
                                     }
                                 }
 
                                 val regexTargeta = "^[0-9]{13,19}$".toRegex()
                                 if (uiState.numeroTargetaCredit.isBlank()) {
-                                    llistaErrors.add("• La targeta de crèdit no pot estar buida.")
+                                    llistaErrors.add("• $errTargetaBuida")
                                 } else if (!uiState.numeroTargetaCredit.matches(regexTargeta)) {
-                                    llistaErrors.add("• La targeta ha de tenir entre 13 i 19 números.")
+                                    llistaErrors.add("• $errTargetaFormat")
                                 }
 
                                 if (llistaErrors.isNotEmpty()) {
@@ -167,7 +205,7 @@ fun RegisterScreen(
                             },
                             enabled = !uiState.isLoading
                         ) {
-                            Text("Finalitzar")
+                            Text(stringResource(R.string.finalitzar))
                         }
                     }
                 }
@@ -175,7 +213,11 @@ fun RegisterScreen(
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp).verticalScroll(scrollState),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))
@@ -199,3 +241,4 @@ fun RegisterScreen(
         }
     }
 }
+
