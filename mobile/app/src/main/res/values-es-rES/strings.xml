@@ -81,4 +81,7 @@
 
     <string name="pujar">Subir %1$s</string>
     <string name="foto_seleccionada">¡Foto seleccionada!</string>
+
+    <string name="err_foto_llicencia">Tienes que subir la foto de la licencia.</string>
+    <string name="err_foto_identificacio">Tienes que subir la foto de identificación.</string>
 </resources>

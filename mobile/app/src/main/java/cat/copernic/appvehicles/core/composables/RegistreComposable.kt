@@ -15,6 +15,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import cat.copernic.appvehicles.R
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 
 @Composable
 fun ReusableTextField(
@@ -38,32 +49,72 @@ fun ReusableTextField(
 }
 
 @Composable
-fun ImageUploadButton(label: String, isUploaded: Boolean = false, onClick: () -> Unit) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .clickable { onClick() },
-        color = if (isUploaded) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
-        shape = MaterialTheme.shapes.medium
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+fun ImageUploadOrPreview(
+    label: String,
+    imageUri: String?, // Si es null, mostramos botón. Si tiene texto, mostramos foto.
+    onUploadClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    if (imageUri == null) {
+        // NO HAY FOTO: Mostramos el botón de subir
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .clickable { onUploadClick() },
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = MaterialTheme.shapes.medium
         ) {
-            Icon(
-                imageVector = if (isUploaded) Icons.Default.CheckCircle else Icons.Default.AddAPhoto,
-                contentDescription = stringResource(R.string.pujar, label),
-                tint = if (isUploaded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AddAPhoto,
+                    contentDescription = "Pujar $label",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    } else {
+        // SÍ HAY FOTO: Mostramos la previsualización y el botón de borrar
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp) // Altura de la foto de previsualización
+        ) {
+            AsyncImage(
+                model = imageUri,
+                contentDescription = "Previsualització de $label",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.medium),
+                contentScale = ContentScale.Crop // Recorta la imagen para que llene el rectángulo bonito
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = if (isUploaded) stringResource(R.string.foto_seleccionada) else label,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (isUploaded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = if (isUploaded) FontWeight.Bold else FontWeight.Normal
-            )
+
+            // Botón de la Papelera (Arriba a la derecha)
+            IconButton(
+                onClick = onDeleteClick,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f), shape = CircleShape)
+                    .size(36.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar foto",
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     }
 }

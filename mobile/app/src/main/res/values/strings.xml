@@ -87,4 +87,7 @@
     <string name="pujar">Upload %1$s</string>
     <string name="foto_seleccionada">Photo selected!</string>
 
+    <string name="err_foto_llicencia">You must upload the license photo.</string>
+    <string name="err_foto_identificacio">You must upload the identification photo.</string>
+
 </resources>

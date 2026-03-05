@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import cat.copernic.appvehicles.R
-import cat.copernic.appvehicles.core.composables.ImageUploadButton
+import cat.copernic.appvehicles.core.composables.ImageUploadOrPreview
 import cat.copernic.appvehicles.core.composables.ReusableTextField
 import java.time.Instant
 import java.time.ZoneId
@@ -66,9 +66,17 @@ fun Pas1DadesPersonals(state: RegisterUiState, onStateChange: (RegisterUiState) 
         ) } }
     )
 
-    ImageUploadButton(label = stringResource(R.string.pujar_foto_identificaci), isUploaded = state.fotoIdentificacioUri != null) {
-        photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-    }
+    ImageUploadOrPreview(
+        label = "Pujar foto identificació", // O tu stringResource
+        imageUri = state.fotoIdentificacioUri,
+        onUploadClick = {
+            photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        },
+        onDeleteClick = {
+            // Si el usuario le da a la papelera, volvemos a poner la URI a null
+            onStateChange(state.copy(fotoIdentificacioUri = null))
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,7 +119,7 @@ fun Pas2DadesConduccio(state: RegisterUiState, onStateChange: (RegisterUiState) 
             value = state.tipusLlicencia,
             onValueChange = {},
             readOnly = true,
-            label = { Text("Tipus de llicència") },
+            label = { Text(stringResource(R.string.tipus_de_llic_ncia)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expaditLlicencia) },
             modifier = Modifier.menuAnchor().fillMaxWidth(),
             shape = MaterialTheme.shapes.medium
@@ -138,9 +146,17 @@ fun Pas2DadesConduccio(state: RegisterUiState, onStateChange: (RegisterUiState) 
             stringResource(R.string.seleccionar_data) )}}
     )
 
-    ImageUploadButton(label = stringResource(R.string.pujar_foto_llic_ncia), isUploaded = state.fotoLlicenciaUri != null) {
-        photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-    }
+    ImageUploadOrPreview(
+        label = "Pujar foto llicència", // <-- TEXTO CORREGIDO
+        imageUri = state.fotoLlicenciaUri, // <-- VARIABLE CORREGIDA
+        onUploadClick = {
+            photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        },
+        onDeleteClick = {
+            // <-- VARIABLE CORREGIDA AL BORRAR
+            onStateChange(state.copy(fotoLlicenciaUri = null))
+        }
+    )
 
     OutlinedTextField(
         value = state.numeroTargetaCredit,

@@ -82,4 +82,7 @@
     <string name="contrasenya_m_n_6_car_cters">Contrasenya (mín 6 caràcters)</string>
     <string name="pujar">Pujar %1$s</string>
     <string name="foto_seleccionada">Foto seleccionada!</string>
+
+    <string name="err_foto_llicencia">Has de pujar la foto de la llicència.</string>
+    <string name="err_foto_identificacio">Has de pujar la foto d\'identificació.</string>
 </resources>

@@ -66,6 +66,9 @@ fun RegisterScreen(
     val errTargetaBuida = stringResource(R.string.err_targeta_buida)
     val errTargetaFormat = stringResource(R.string.err_targeta_format)
 
+    val errFotoLlicencia = stringResource(R.string.err_foto_llicencia)
+    val errFotoIdentificacio = stringResource(R.string.err_foto_identificacio)
+
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onRegisterSuccess()
@@ -130,6 +133,10 @@ fun RegisterScreen(
 
                                     if (!uiState.dataCaducitatId.matches(regexData)) {
                                         llistaErrors.add("• $errFormatData")
+                                    }
+
+                                    if (uiState.fotoIdentificacioUri == null) {
+                                        llistaErrors.add("• $errFotoIdentificacio")
                                     } else {
                                         try {
                                             val dataParsed = java.time.LocalDate.parse(uiState.dataCaducitatId)
@@ -186,6 +193,10 @@ fun RegisterScreen(
                                     } catch (e: Exception) {
                                         llistaErrors.add("• $errDataInvalida")
                                     }
+                                }
+
+                                if (uiState.fotoLlicenciaUri == null) {
+                                    llistaErrors.add("• $errFotoLlicencia")
                                 }
 
                                 val regexTargeta = "^[0-9]{13,19}$".toRegex()
