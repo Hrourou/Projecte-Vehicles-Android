@@ -17,6 +17,7 @@ fun AppBottomNavigation(navController: NavHostController) {
     val items = listOf(
         Triple(AppRoutes.Inici.route, "Inici", Icons.Default.Home),
         Triple(AppRoutes.Reserves.route, "Reserves", Icons.Default.ShoppingCart),
+        Triple(AppRoutes.Vehicles.route, "Vehicles", Icons.Default.Home),
         Triple(AppRoutes.Perfil.route, "Perfil", Icons.Default.Person)
     )
 

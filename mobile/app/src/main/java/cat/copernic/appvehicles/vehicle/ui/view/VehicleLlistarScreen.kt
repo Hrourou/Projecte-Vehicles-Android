@@ -15,6 +15,7 @@ import cat.copernic.appvehicles.ui.theme.AppVehiclesTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VehicleLlistarScreen(
+    onVehicleClick: (Int) -> Unit,
     onBackClick: () -> Unit = {}
 ) {
 
@@ -169,7 +170,7 @@ fun VehicleLlistarScreen(
                 VehicleCard(
                     vehicle = vehiculo,
                     onClick = {
-                        // RF91 futuro
+                        onVehicleClick(vehiculo.id)
                     }
                 )
             }
@@ -218,6 +219,8 @@ fun VehicleCard(vehicle: VehicleMock, onClick: () -> Unit) {
 @Composable
 fun VehicleListUnifiedScreenPreview() {
     AppVehiclesTheme {
-        VehicleLlistarScreen()
+        VehicleLlistarScreen(
+            onVehicleClick = {}
+        )
     }
 }

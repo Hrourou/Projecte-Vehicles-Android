@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import cat.copernic.appvehicles.reserva.data.model.CreateReservaRequest
 import cat.copernic.appvehicles.reserva.data.model.ReservaResponse
 import cat.copernic.appvehicles.reserva.data.repository.ReservaRepository
+import cat.copernic.appvehicles.reserva.data.model.CancelReservaResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +26,25 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
 
     private val _reservaDetail = MutableStateFlow<ReservaResponse?>(null)
     val reservaDetail = _reservaDetail.asStateFlow()
+    private val _cancelResult = MutableStateFlow<Result<CancelReservaResponse>?>(null)
+    val cancelResult = _cancelResult.asStateFlow()
 
+    fun cancelReserva(id: Long, userName: String) {
+        viewModelScope.launch {
+            _loading.value = true
+            _cancelResult.value = try {
+                val response = repo.cancelReserva(id, userName)
+                Result.success(response)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+            _loading.value = false
+        }
+    }
+
+    fun clearCancelResult() {
+        _cancelResult.value = null
+    }
     fun loadReservaDetalle(id: Long) {
         viewModelScope.launch {
             try {
