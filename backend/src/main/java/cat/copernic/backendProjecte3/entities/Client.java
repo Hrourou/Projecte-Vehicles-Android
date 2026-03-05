@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cat.copernic.backendProjecte3.entities;
 
 import cat.copernic.backendProjecte3.enums.Reputacio;
@@ -23,21 +19,27 @@ public class Client extends Usuari {
     @Column(name = "data_caducitat_dni")
     private LocalDate dataCaducitatDni;
 
-    @Column(name = "imatge_dni") // Guardaremos la URL o ruta del archivo
+    @Column(name = "imatge_dni")
     private String imatgeDni;
 
+    @Column(name = "nacionalitat")
     private String nacionalitat;
 
+    @Column(name = "adreca")
     private String adreca;
 
+    // Campo que tu backend ya usa en DTO/Service pero faltaba en Entity
+    @Column(name = "telefon")
+    private String telefon;
+
     // --- Datos de Conducción ---
-    @Column(name = "tipus_carnet_conduir") // Ejemplo: A, B, C...
+    @Column(name = "tipus_carnet_conduir")
     private String tipusCarnetConduir;
 
     @Column(name = "data_caducitat_carnet")
     private LocalDate dataCaducitatCarnet;
 
-    @Column(name = "imatge_carnet") // Guardaremos la URL o ruta del archivo
+    @Column(name = "imatge_carnet")
     private String imatgeCarnet;
 
     // --- Datos Económicos ---
@@ -47,182 +49,73 @@ public class Client extends Usuari {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(20) DEFAULT 'NORMAL'")
     private Reputacio reputacio;
-    
-    @OneToMany(
-        mappedBy = "client", 
-        cascade = CascadeType.ALL
-    )
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Reserva> reservas = new ArrayList<>();
 
-    public Client() { super(); }
+    public Client() {
+        super();
+    }
 
     // --- Getters y Setters ---
 
-    public String getDni() {
-        return dni;
-    }
+    public String getDni() { return dni; }
+    public void setDni(String dni) { this.dni = dni; }
 
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
+    public LocalDate getDataCaducitatDni() { return dataCaducitatDni; }
+    public void setDataCaducitatDni(LocalDate dataCaducitatDni) { this.dataCaducitatDni = dataCaducitatDni; }
 
-    public LocalDate getDataCaducitatDni() {
-        return dataCaducitatDni;
-    }
+    public String getImatgeDni() { return imatgeDni; }
+    public void setImatgeDni(String imatgeDni) { this.imatgeDni = imatgeDni; }
 
-    public void setDataCaducitatDni(LocalDate dataCaducitatDni) {
-        this.dataCaducitatDni = dataCaducitatDni;
-    }
+    public String getNacionalitat() { return nacionalitat; }
+    public void setNacionalitat(String nacionalitat) { this.nacionalitat = nacionalitat; }
 
-    public String getImatgeDni() {
-        return imatgeDni;
-    }
+    public String getAdreca() { return adreca; }
+    public void setAdreca(String adreca) { this.adreca = adreca; }
 
-    public void setImatgeDni(String imatgeDni) {
-        this.imatgeDni = imatgeDni;
-    }
+    public String getTelefon() { return telefon; }
+    public void setTelefon(String telefon) { this.telefon = telefon; }
 
-    public String getNacionalitat() {
-        return nacionalitat;
-    }
+    public String getTipusCarnetConduir() { return tipusCarnetConduir; }
+    public void setTipusCarnetConduir(String tipusCarnetConduir) { this.tipusCarnetConduir = tipusCarnetConduir; }
 
-    public void setNacionalitat(String nacionalitat) {
-        this.nacionalitat = nacionalitat;
-    }
+    public LocalDate getDataCaducitatCarnet() { return dataCaducitatCarnet; }
+    public void setDataCaducitatCarnet(LocalDate dataCaducitatCarnet) { this.dataCaducitatCarnet = dataCaducitatCarnet; }
 
-    public String getAdreca() {
-        return adreca;
-    }
+    public String getImatgeCarnet() { return imatgeCarnet; }
+    public void setImatgeCarnet(String imatgeCarnet) { this.imatgeCarnet = imatgeCarnet; }
 
-    public void setAdreca(String adreca) {
-        this.adreca = adreca;
-    }
+    public String getNumeroTargetaCredit() { return numeroTargetaCredit; }
+    public void setNumeroTargetaCredit(String numeroTargetaCredit) { this.numeroTargetaCredit = numeroTargetaCredit; }
 
-    public String getTipusCarnetConduir() {
-        return tipusCarnetConduir;
-    }
+    public Reputacio getReputacio() { return reputacio; }
+    public void setReputacio(Reputacio reputacio) { this.reputacio = reputacio; }
 
-    public void setTipusCarnetConduir(String tipusCarnetConduir) {
-        this.tipusCarnetConduir = tipusCarnetConduir;
-    }
-
-    public LocalDate getDataCaducitatCarnet() {
-        return dataCaducitatCarnet;
-    }
-
-    public void setDataCaducitatCarnet(LocalDate dataCaducitatCarnet) {
-        this.dataCaducitatCarnet = dataCaducitatCarnet;
-    }
-
-    public String getImatgeCarnet() {
-        return imatgeCarnet;
-    }
-
-    public void setImatgeCarnet(String imatgeCarnet) {
-        this.imatgeCarnet = imatgeCarnet;
-    }
-
-    public String getNumeroTargetaCredit() {
-        return numeroTargetaCredit;
-    }
-
-    public void setNumeroTargetaCredit(String numeroTargetaCredit) {
-        this.numeroTargetaCredit = numeroTargetaCredit;
-    }
-
-    public Reputacio getReputacio() {
-        return reputacio;
-    }
-
-    public void setReputacio(Reputacio reputacio) {
-        this.reputacio = reputacio;
-    }
-
-    public List<Reserva> getReservas() {
-        return reservas;
-    }
-
-    public void setReservas(List<Reserva> reservas) {
-        this.reservas = reservas;
-    }
+    public List<Reserva> getReservas() { return reservas; }
+    public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.dni);
-        return hash;
+        return Objects.hashCode(this.dni);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Client other = (Client) obj;
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Client other = (Client) obj;
         return Objects.equals(this.dni, other.dni);
     }
 
     @Override
     public String toString() {
-        return "Client{" + "dni=" + dni + ", nacionalitat=" + nacionalitat + ", adreca=" + adreca + ", reputacio=" + reputacio + '}';
-    }
-
-    public String getNomComplet() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public String getEmail() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public String getTelefon() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public String getNacionalitat() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public LocalDate getDataCaducitatDni() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public String getTipusCarnetConduir() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public LocalDate getDataCaducitatCarnet() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public void setNomComplet(String nomComplet) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public void setTelefon(String telefon) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public void setNacionalitat(String nacionalitat) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public void setDataCaducitatDni(LocalDate dataCaducitatDni) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public void setTipusCarnetConduir(String tipusCarnetConduir) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public void setDataCaducitatCarnet(LocalDate dataCaducitatCarnet) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "Client{" +
+                "dni='" + dni + '\'' +
+                ", nacionalitat='" + nacionalitat + '\'' +
+                ", adreca='" + adreca + '\'' +
+                ", telefon='" + telefon + '\'' +
+                ", reputacio=" + reputacio +
+                '}';
     }
 }
-

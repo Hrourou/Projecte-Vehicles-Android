@@ -13,6 +13,10 @@ public class ClientUpdateDTO {
     private String tipusCarnetConduir;
     private LocalDate dataCaducitatCarnet;
 
+    // RF04: permitir actualizar documentación
+    private String imatgeDni;
+    private String imatgeCarnet;
+
     public String getNomComplet() { return nomComplet; }
     public void setNomComplet(String nomComplet) { this.nomComplet = nomComplet; }
 
@@ -36,4 +40,10 @@ public class ClientUpdateDTO {
 
     public LocalDate getDataCaducitatCarnet() { return dataCaducitatCarnet; }
     public void setDataCaducitatCarnet(LocalDate dataCaducitatCarnet) { this.dataCaducitatCarnet = dataCaducitatCarnet; }
+
+    public String getImatgeDni() { return imatgeDni; }
+    public void setImatgeDni(String imatgeDni) { this.imatgeDni = imatgeDni; }
+
+    public String getImatgeCarnet() { return imatgeCarnet; }
+    public void setImatgeCarnet(String imatgeCarnet) { this.imatgeCarnet = imatgeCarnet; }
 }

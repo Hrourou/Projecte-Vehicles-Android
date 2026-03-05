@@ -1,6 +1,5 @@
 package cat.copernic.appvehicles.dto;
 
-
 import cat.copernic.backendProjecte3.entities.Client;
 import java.time.LocalDate;
 
@@ -17,6 +16,10 @@ public class ClientProfileDTO {
     public String tipusCarnetConduir;
     public LocalDate dataCaducitatCarnet;
 
+    // Añadimos documentación
+    public String imatgeDni;
+    public String imatgeCarnet;
+
     public static ClientProfileDTO from(Client c) {
         ClientProfileDTO dto = new ClientProfileDTO();
         dto.dni = c.getDni();
@@ -29,6 +32,10 @@ public class ClientProfileDTO {
         dto.dataCaducitatDni = c.getDataCaducitatDni();
         dto.tipusCarnetConduir = c.getTipusCarnetConduir();
         dto.dataCaducitatCarnet = c.getDataCaducitatCarnet();
+
+        dto.imatgeDni = c.getImatgeDni();
+        dto.imatgeCarnet = c.getImatgeCarnet();
+
         return dto;
     }
 }
