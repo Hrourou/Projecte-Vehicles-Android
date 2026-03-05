@@ -33,6 +33,10 @@
     <string name="rental_days">Rental days</string>
     <string name="total_to_pay">Total to pay</string>
     <string name="confirm_reservation">Confirm reservation</string>
+    <string name="confirm_cancel_question">Are you sure you want to cancel this reservation?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
 
     <!-- Para RegistrePantalla -->
     <string name="registre_pas_de">Registration - Step %1$d of %2$d</string>
