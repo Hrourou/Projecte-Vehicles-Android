@@ -5,13 +5,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.appvehicles.core.auth.SessionStore
+import cat.copernic.appvehicles.usuariAnonim.data.repository.AuthRepository
+import cat.copernic.appvehicles.usuariAnonim.ui.view.RegisterScreen
+import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
+import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModelFactory
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 private enum class ProfileMode { LOGIN, RECOVER, REGISTER }
 
 @Composable
-fun ProfileEntryScreen() {
+fun ProfileEntryScreen(
+    authRepository: AuthRepository
+) {
     val context = LocalContext.current
     val sessionStore = remember { SessionStore(context) }
 
@@ -34,18 +39,12 @@ fun ProfileEntryScreen() {
         return
     }
 
-    //No hay sesión -> pantallas auth
+    // No hay sesión -> pantallas auth
     when (mode) {
         ProfileMode.LOGIN -> LoginScreen(
             onLoginSuccess = {
-                // IMPORTANTE: depende de dni en sesión.
-                // Si tu login real devuelve dni, guárdalo aquí.
-                // Ahora mismo NO hay API de login
-                //
-                // TODO: login real:
+                // TODO: cuando tengas login real, guarda dni en SessionStore:
                 // sessionStore.saveDni(dniFromBackend)
-                //
-                // De momento no cambiar dni aquí para no inventarlo.
             },
             onNavigateToRecover = { mode = ProfileMode.RECOVER },
             onNavigateToRegister = { mode = ProfileMode.REGISTER }
@@ -56,12 +55,15 @@ fun ProfileEntryScreen() {
         )
 
         ProfileMode.REGISTER -> {
-            // En tu proyecto el composable se llama RegisterScreen (está en RegistrePantalla.kt)
-            cat.copernic.appvehicles.usuariAnonim.ui.view.RegisterScreen(
+            val registerViewModel: RegisterViewModel = viewModel(
+                factory = RegisterViewModelFactory(authRepository)
+            )
+
+            RegisterScreen(
+                viewModel = registerViewModel,
                 onNavigateBack = { mode = ProfileMode.LOGIN },
                 onRegisterSuccess = {
-                    // Si al registrar obtienes dni, guárdalo (ideal).
-                    // sessionStore.saveDni(dniFromBackend)
+                    // Si tras registrar guardas DNI en SessionStore, aquí ya entrarías al perfil.
                     mode = ProfileMode.LOGIN
                 }
             )
