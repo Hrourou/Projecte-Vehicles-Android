@@ -2,8 +2,6 @@ package cat.copernic.appvehicles.client.ui.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,33 +9,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.appvehicles.R
+import cat.copernic.appvehicles.client.ui.viewmodel.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    onLoginClick: () -> Unit = {}
+    onLoginSuccess: () -> Unit = {},
+    onNavigateToRecover: () -> Unit = {},
+    onNavigateToRegister: () -> Unit = {}
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val vm: LoginViewModel = viewModel()
+    val state by vm.uiState.collectAsState()
+
     var passwordVisible by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
+    LaunchedEffect(state.isLoggedIn) {
+        if (state.isLoggedIn) onLoginSuccess()
+    }
+
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.iniciar_sesi_n)) }
-            )
-        }
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.login_title)) }) }
     ) { padding ->
 
         Column(
@@ -58,79 +57,97 @@ fun LoginScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
 
                     Text(
-                        text = "Accede con tu cuenta",
+                        text = stringResource(R.string.login_subtitle),
                         style = MaterialTheme.typography.titleMedium
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Campo Email
                     OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
+                        value = state.email,
+                        onValueChange = vm::onEmailChanged,
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text(stringResource(R.string.correo_electr_nico)) },
+                        label = { Text(stringResource(R.string.email_label)) },
                         singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            imeAction = ImeAction.Next
-                        )
+                        isError = state.emailError != null
                     )
+
+                    state.emailError?.let {
+                        Text(
+                            text = stringResource(errorKeyToRes(it)),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Campo Password
                     OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
+                        value = state.password,
+                        onValueChange = vm::onPasswordChanged,
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text("Contraseña") },
+                        label = { Text(stringResource(R.string.password_label)) },
                         singleLine = true,
-                        visualTransformation = if (passwordVisible)
-                            VisualTransformation.None
-                        else
-                            PasswordVisualTransformation(),
+                        isError = state.passwordError != null,
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
-                            TextButton(
-                                onClick = { passwordVisible = !passwordVisible }
-                            ) {
-                                Text(if (passwordVisible) "Ocultar" else "Mostrar")
+                            TextButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Text(
+                                    stringResource(
+                                        if (passwordVisible) R.string.hide else R.string.show
+                                    )
+                                )
                             }
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = { focusManager.clearFocus() }
-                        )
+                        }
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    if (errorMessage != null) {
+                    state.passwordError?.let {
                         Text(
-                            text = errorMessage!!,
+                            text = stringResource(errorKeyToRes(it)),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    state.generalError?.let {
+                        Text(
+                            text = stringResource(errorKeyToRes(it)),
                             color = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                     }
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Extras: links recuperar + registrar
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        TextButton(onClick = onNavigateToRecover) {
+                            Text(stringResource(R.string.forgot_password))
+                        }
+                        TextButton(onClick = onNavigateToRegister) {
+                            Text(stringResource(R.string.go_to_register))
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Button(
                         onClick = {
                             focusManager.clearFocus()
-
-                            // Validación mínima visual (no funcional real)
-                            if (email.isBlank() || password.isBlank()) {
-                                errorMessage = "Completa todos los campos"
-                            } else {
-                                errorMessage = null
-                                onLoginClick()
-                            }
+                            vm.onLoginClick()
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = state.isLoginEnabled && !state.isLoading
                     ) {
-                        Text("Entrar")
+                        Text(stringResource(R.string.login_action))
+                    }
+
+                    if (state.isLoading) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }
             }
@@ -140,14 +157,10 @@ fun LoginScreen(
     }
 }
 
-/**
- * Preview para ver la pantalla en Android Studio.
- * No navega, solo pinta la UI.
- */
-@Preview(showBackground = true, widthDp = 360)
-@Composable
-private fun LoginScreenPreview() {
-    MaterialTheme {
-        LoginScreen()
-    }
+private fun errorKeyToRes(key: String): Int = when (key) {
+    "email_required" -> R.string.error_email_required
+    "email_invalid" -> R.string.error_email_invalid
+    "password_required" -> R.string.error_password_required
+    "invalid_credentials" -> R.string.error_invalid_credentials
+    else -> R.string.error_generic
 }

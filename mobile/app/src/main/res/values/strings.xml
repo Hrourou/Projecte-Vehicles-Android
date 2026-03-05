@@ -1,5 +1,71 @@
 <resources>
     <string name="app_name">appVehicles</string>
-    <string name="iniciar_sesi_n">Iniciar sesión</string>
-    <string name="correo_electr_nico">Correo electrónico</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_home">Home</string>
+    <string name="nav_reservations">Reservations</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Common -->
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="logout">Logout</string>
+
+    <!-- Login -->
+    <string name="login_title">Login</string>
+    <string name="login_subtitle">Sign in with your account</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="show">Show</string>
+    <string name="hide">Hide</string>
+    <string name="login_action">Sign in</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="go_to_register">Create account</string>
+
+    <!-- Recover -->
+    <string name="recover_title">Recover password</string>
+    <string name="recover_subtitle">Forgot your password?</string>
+    <string name="recover_hint">Enter your email and we will send you a reset link.</string>
+    <string name="recover_action">Send link</string>
+    <string name="recover_success">If the email exists, you will receive a link in a few minutes.</string>
+
+    <!-- Edit profile -->
+    <string name="edit_profile_title">Edit profile</string>
+    <string name="profile_photo">Profile photo</string>
+    <string name="pick_profile_photo">Choose profile photo</string>
+    <string name="full_name_label">Full name *</string>
+    <string name="email_readonly">Email (not editable)</string>
+    <string name="phone_label">Phone</string>
+    <string name="address_label">Address</string>
+    <string name="nationality_label">Nationality</string>
+
+    <string name="documentation">Documentation</string>
+    <string name="id_expiry_label">ID expiry (YYYY-MM-DD)</string>
+    <string name="id_image">ID image</string>
+    <string name="pick_id_image">Choose ID image</string>
+    <string name="license_type_label">Driving license type</string>
+    <string name="license_expiry_label">License expiry (YYYY-MM-DD)</string>
+    <string name="license_image">License image</string>
+    <string name="pick_license_image">Choose license image</string>
+
+    <string name="payment">Payment</string>
+    <string name="credit_card_label">Credit card number</string>
+    <string name="save_changes">Save changes</string>
+
+    <string name="logout_confirm_title">Confirm logout</string>
+    <string name="logout_confirm_text">Are you sure you want to log out?</string>
+
+    <!-- Errors -->
+    <string name="error_generic">Something went wrong</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_email_invalid">Invalid email</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_invalid_credentials">Invalid credentials</string>
+
+    <string name="error_session_missing_dni">No DNI saved in session</string>
+    <string name="error_full_name_required">Full name is required</string>
+    <string name="error_profile_load">Error loading profile</string>
+    <string name="error_profile_save">Error saving profile</string>
+
+    <string name="profile_saved">Profile saved</string>
 </resources>

@@ -25,8 +25,14 @@ data class EditProfileUiState(
     val dataCaducitatDni: String = "",
     val tipusCarnetConduir: String = "",
     val dataCaducitatCarnet: String = "",
-    val message: String? = null,
-    val error: String? = null
+
+    // RF04: foto + documentación (UI)
+    val photoUri: String? = null,
+    val dniImageUri: String? = null,
+    val licenseImageUri: String? = null,
+
+    val messageKey: String? = null,
+    val errorKey: String? = null
 )
 
 class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
@@ -43,11 +49,14 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
 
     fun loadProfile() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null, message = null)
+            _uiState.value = _uiState.value.copy(isLoading = true, errorKey = null, messageKey = null)
 
             val dni = sessionStore.dniFlow().first()
             if (dni.isNullOrBlank()) {
-                _uiState.value = _uiState.value.copy(isLoading = false, error = "No hi ha DNI guardat. Registra't.")
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorKey = "session_missing_dni"
+                )
                 return@launch
             }
 
@@ -65,12 +74,17 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
                     numeroTargetaCredit = p.numeroTargetaCredit.orEmpty(),
                     dataCaducitatDni = p.dataCaducitatDni.orEmpty(),
                     tipusCarnetConduir = p.tipusCarnetConduir.orEmpty(),
-                    dataCaducitatCarnet = p.dataCaducitatCarnet.orEmpty()
+                    dataCaducitatCarnet = p.dataCaducitatCarnet.orEmpty(),
+
+                    // El backend no devuelve uris/imagenes: se mantienen null
+                    photoUri = null,
+                    dniImageUri = null,
+                    licenseImageUri = null
                 )
             } else {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = response.errorBody()?.string() ?: "Error carregant perfil (${response.code()})"
+                    errorKey = "profile_load_error"
                 )
             }
         }
@@ -96,9 +110,21 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
             dataCaducitatDni = dataCaducitatDni ?: s.dataCaducitatDni,
             tipusCarnetConduir = tipusCarnetConduir ?: s.tipusCarnetConduir,
             dataCaducitatCarnet = dataCaducitatCarnet ?: s.dataCaducitatCarnet,
-            message = null,
-            error = null
+            messageKey = null,
+            errorKey = null
         )
+    }
+
+    fun onPhotoPicked(uri: String?) {
+        _uiState.value = _uiState.value.copy(photoUri = uri, messageKey = null, errorKey = null)
+    }
+
+    fun onDniImagePicked(uri: String?) {
+        _uiState.value = _uiState.value.copy(dniImageUri = uri, messageKey = null, errorKey = null)
+    }
+
+    fun onLicenseImagePicked(uri: String?) {
+        _uiState.value = _uiState.value.copy(licenseImageUri = uri, messageKey = null, errorKey = null)
     }
 
     fun saveChanges() {
@@ -106,15 +132,15 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
             val s = _uiState.value
             val dni = s.dni
             if (dni.isNullOrBlank()) {
-                _uiState.value = s.copy(error = "DNI no disponible")
+                _uiState.value = s.copy(errorKey = "session_missing_dni")
                 return@launch
             }
             if (s.nomComplet.isBlank()) {
-                _uiState.value = s.copy(error = "Nom complet obligatori")
+                _uiState.value = s.copy(errorKey = "full_name_required")
                 return@launch
             }
 
-            _uiState.value = s.copy(isLoading = true, error = null, message = null)
+            _uiState.value = s.copy(isLoading = true, errorKey = null, messageKey = null)
 
             val req = ClientUpdateRequest(
                 nomComplet = s.nomComplet,
@@ -125,17 +151,23 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
                 dataCaducitatDni = s.dataCaducitatDni.ifBlank { null },
                 tipusCarnetConduir = s.tipusCarnetConduir.ifBlank { null },
                 dataCaducitatCarnet = s.dataCaducitatCarnet.ifBlank { null }
+
+                // TODO RF04 real:
+                // Falta API/DTO para subir photoUri/dniImageUri/licenseImageUri.
             )
 
             val response = repo.updateClient(dni, req)
             if (response.isSuccessful) {
-                _uiState.value = _uiState.value.copy(isLoading = false, message = "Canvis guardats correctament ✅")
+                _uiState.value = _uiState.value.copy(isLoading = false, messageKey = "profile_saved")
             } else {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = response.errorBody()?.string() ?: "Error guardant (${response.code()})"
-                )
+                _uiState.value = _uiState.value.copy(isLoading = false, errorKey = "profile_save_error")
             }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            sessionStore.clear()
         }
     }
 }

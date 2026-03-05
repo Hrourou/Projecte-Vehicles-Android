@@ -1,0 +1,63 @@
+<resources>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_reservations">Reservas</string>
+    <string name="nav_profile">Perfil</string>
+
+    <string name="back">Volver</string>
+    <string name="cancel">Cancelar</string>
+    <string name="logout">Cerrar sesión</string>
+
+    <string name="login_title">Iniciar sesión</string>
+    <string name="login_subtitle">Accede con tu cuenta</string>
+    <string name="email_label">Correo electrónico</string>
+    <string name="password_label">Contraseña</string>
+    <string name="show">Mostrar</string>
+    <string name="hide">Ocultar</string>
+    <string name="login_action">Entrar</string>
+    <string name="forgot_password">¿Olvidaste la contraseña?</string>
+    <string name="go_to_register">Crear cuenta</string>
+
+    <string name="recover_title">Recuperar contraseña</string>
+    <string name="recover_subtitle">¿Has olvidado tu contraseña?</string>
+    <string name="recover_hint">Introduce tu correo y te enviaremos un enlace para restablecerla.</string>
+    <string name="recover_action">Enviar enlace</string>
+    <string name="recover_success">Si el correo existe, recibirás un enlace en unos minutos.</string>
+
+    <string name="edit_profile_title">Editar perfil</string>
+    <string name="profile_photo">Foto de perfil</string>
+    <string name="pick_profile_photo">Elegir foto de perfil</string>
+    <string name="full_name_label">Nombre completo *</string>
+    <string name="email_readonly">Correo (no editable)</string>
+    <string name="phone_label">Teléfono</string>
+    <string name="address_label">Dirección</string>
+    <string name="nationality_label">Nacionalidad</string>
+
+    <string name="documentation">Documentación</string>
+    <string name="id_expiry_label">Caducidad DNI (YYYY-MM-DD)</string>
+    <string name="id_image">Imagen del DNI</string>
+    <string name="pick_id_image">Elegir imagen DNI</string>
+    <string name="license_type_label">Tipo de carnet</string>
+    <string name="license_expiry_label">Caducidad carnet (YYYY-MM-DD)</string>
+    <string name="license_image">Imagen del carnet</string>
+    <string name="pick_license_image">Elegir imagen carnet</string>
+
+    <string name="payment">Pago</string>
+    <string name="credit_card_label">Tarjeta de crédito</string>
+    <string name="save_changes">Guardar cambios</string>
+
+    <string name="logout_confirm_title">Confirmar cierre</string>
+    <string name="logout_confirm_text">¿Seguro que quieres cerrar sesión?</string>
+
+    <string name="error_generic">Ha ocurrido un error</string>
+    <string name="error_email_required">El correo es obligatorio</string>
+    <string name="error_email_invalid">Correo no válido</string>
+    <string name="error_password_required">La contraseña es obligatoria</string>
+    <string name="error_invalid_credentials">Credenciales incorrectas</string>
+
+    <string name="error_session_missing_dni">No hay DNI guardado en sesión</string>
+    <string name="error_full_name_required">El nombre completo es obligatorio</string>
+    <string name="error_profile_load">Error cargando perfil</string>
+    <string name="error_profile_save">Error guardando perfil</string>
+
+    <string name="profile_saved">Perfil guardado</string>
+</resources>
