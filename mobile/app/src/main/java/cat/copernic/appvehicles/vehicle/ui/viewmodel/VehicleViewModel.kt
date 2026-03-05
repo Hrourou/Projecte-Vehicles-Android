@@ -26,20 +26,25 @@ class VehicleViewModel(
 
             result.fold(
                 onSuccess = { vehicleResponseList ->
-
                     _vehicles.value = vehicleResponseList.map { response ->
+
+                        // Protecció contra nuls (si el backend no envia marca, posem text per defecte)
+                        val marcaSafe = response.marca ?: "Sense marca"
+                        val modelSafe = response.model ?: "Sense model"
+                        val variantSafe = response.variant ?: ""
+                        val preuHoraSafe = response.preuHora ?: 0.0
+
                         Vehicle(
                             id = response.matricula,
-                            marca = response.marca,
-                            model = response.model,
-                            variant = response.variant,
-                            preuHora = response.preuHora
+                            marca = marcaSafe,
+                            model = modelSafe,
+                            variant = variantSafe,
+                            preuHora = preuHoraSafe
                         )
                     }
-
                 },
                 onFailure = {
-                    // aquí luego gestionas error
+                    _vehicles.value = emptyList()
                 }
             )
 

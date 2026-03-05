@@ -61,4 +61,23 @@
     <string name="error_profile_save">Error desant el perfil</string>
 
     <string name="profile_saved">Perfil desat</string>
+
+    <string name="create_reservation_title">Nova Reserva</string>
+    <string name="select_dates">Selecciona les dates</string>
+    <string name="start_date">Data inici</string>
+    <string name="end_date">Data fi</string>
+    <string name="available_vehicle">Selecciona un vehicle</string>
+    <string name="reservation_vehicle">Vehicle</string>
+    <string name="cost_summary">Resum del cost</string>
+    <string name="rental_cost">Lloguer</string>
+    <string name="deposit">Fiança</string>
+    <string name="total_to_pay">TOTAL A PAGAR</string>
+    <string name="confirm_reservation">Confirmar reserva</string>
+
+    <string name="reservation_code">Codi reserva: %1$s</string>
+    <string name="ok">D\'acord</string>
+    <string name="no_vehicles_available">No hi ha vehicles disponibles</string>
+    <string name="reservation_created_title">Reserva creada</string>
+    <string name="reservation_amount">Import: %1$s €</string>
+    <string name="view_detail">Veure detall</string>
 </resources>
