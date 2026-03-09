@@ -19,11 +19,12 @@ import cat.copernic.appvehicles.client.ui.viewmodel.LoginViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+    vm: LoginViewModel,
     onLoginSuccess: () -> Unit = {},
     onNavigateToRecover: () -> Unit = {},
     onNavigateToRegister: () -> Unit = {}
 ) {
-    val vm: LoginViewModel = viewModel()
+
     val state by vm.uiState.collectAsState()
 
     var passwordVisible by remember { mutableStateOf(false) }
