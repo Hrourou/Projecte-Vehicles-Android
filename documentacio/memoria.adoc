@@ -355,10 +355,10 @@ image:Imatges/BoardFinalSprint2Part2.png[Board final, width=400]
 |3H/0H
 
 |JOEL
-|
-|
-|
-|4h
+|intentar acabar el RF i cercar informació de com enllaçar les parts del projecte
+|La correció del sprint i la planificació del seguent, a mes de continuar amb el rf i analitzar com poder solucionar els problemes i completar les tasques.
+|Em preocupa el temps i que no donin problemes d'ultima hora.
+|5h
 |===
 
 ==== 02/03/2026
@@ -387,10 +387,10 @@ image:Imatges/BoardFinalSprint2Part2.png[Board final, width=400]
 |6H/0H
 
 |JOEL
-|
-|
-|
-|4h
+|La correció del sprint i la planificació del seguent, a mes de continuar amb el rf i analitzar com poder solucionar els problemes i completar les tasques.
+|Seguir el RF perque me adonat de que no estaba fent-ho bé i donaba problemes
+|Em preocupa el temps i que no donin problemes d'ultima hora.
+|5h
 |===
 
 ==== 04/03/2026
@@ -419,10 +419,10 @@ image:Imatges/BoardFinalSprint2Part2.png[Board final, width=400]
 |3H/1H
 
 |JOEL
-|
-|
-|
-|4h
+|Practicament reinitciar o fer camvis a la manera de fer el rf perque ho estaba fent malament
+|Posarme a tope per poder acabar el rf per aquest sprint
+|Em preocupa el temps i que no donin problemes d'ultima hora.
+|2h
 |===
 
 ==== 05/03/2026
@@ -451,10 +451,10 @@ image:Imatges/BoardFinalSprint2Part2.png[Board final, width=400]
 |4H/2H
 
 |JOEL
-|
-|
-|
-|4h
+|Treballar i deixar prop d'acabar el rf04
+|Avui acabare el rf04 i modificare i també acabare del tot totes les pantalles fetas al sprint passat per aixi aconseguir el demanat per els profes i assolir les tasques, a mes fare merge i resolució de conflictes que sortiran al fusionar les branques.
+|Em preocupa el temps i que no donin problemes d'ultima hora.
+|5h
 |===
 
 === Captures board
