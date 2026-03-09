@@ -1,6 +1,6 @@
 package cat.copernic.backendProjecte3.business;
 
-import cat.copernic.appvehicles.dto.ClientUpdateDTO;
+import cat.copernic.backendProjecte3.dto.ClientUpdateDTO;
 import cat.copernic.backendProjecte3.config.PasswordHasher;
 import cat.copernic.backendProjecte3.dto.ClientRegistreDTO;
 import cat.copernic.backendProjecte3.entities.Client;

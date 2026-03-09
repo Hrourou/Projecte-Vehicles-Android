@@ -1,4 +1,4 @@
-package cat.copernic.appvehicles.dto;
+package cat.copernic.backendProjecte3.dto;
 
 import java.time.LocalDate;
 

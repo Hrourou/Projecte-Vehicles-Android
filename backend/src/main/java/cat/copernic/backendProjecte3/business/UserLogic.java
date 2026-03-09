@@ -20,24 +20,24 @@ public class UserLogic {
     UsuariRepository usuariRepository;
 
     /***
-     * 
-     * @param email
-     * @param rawPassword
-     * @return
-     * @throws AccesDenegatException 
+     * Metodo para autenticar un usuario
+     * @param email email del usuario
+     * @param rawPassword contraseña en texto plano recibida del cliente
+     * @return Entidad Usuari si las credenciales son correctas
+     * @throws AccesDenegatException si el usuario no existe o la contraseña es incorrecta
      */
-    public Optional<UserRole> login(String email, String rawPassword) throws AccesDenegatException{
+    public Usuari login(String email, String rawPassword) throws AccesDenegatException {
         
-        UserRole ret = UserRole.NONE;
-        
-        Usuari user = usuariRepository.findByEmail(email).orElseThrow(()-> new AccesDenegatException("Usuari no existeix"));
+        Usuari user = usuariRepository.findByEmail(email)
+                .orElseThrow(() -> new AccesDenegatException("Usuari o contrasenya incorrectes")); // Mensaje genérico por seguridad
         
         if (PasswordHasher.check(rawPassword, user.getPassword())) {
-           ret = user.getRol();
+            return user; // Devolvemos el usuario completo si el login es correcto
+        } else {
+            // Por seguridad, es mejor no decir explícitamente "Bad Password", 
+            // sino un mensaje genérico para no dar pistas a atacantes.
+            throw new AccesDenegatException("Usuari o contrasenya incorrectes");
         }
-        else throw new AccesDenegatException("Bad Password");
-        
-        return Optional.of(ret);
     }
     
     public Optional<UserRole> getRole(String email) throws AccesDenegatException{

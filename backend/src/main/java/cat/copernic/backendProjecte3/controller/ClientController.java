@@ -1,7 +1,7 @@
-package cat.copernic.appvehicles.controller;
+package cat.copernic.backendProjecte3.controller;
 
-import cat.copernic.appvehicles.dto.ClientProfileDTO;
-import cat.copernic.appvehicles.dto.ClientUpdateDTO;
+import cat.copernic.backendProjecte3.dto.ClientProfileDTO;
+import cat.copernic.backendProjecte3.dto.ClientUpdateDTO;
 import cat.copernic.backendProjecte3.business.ClientService;
 import cat.copernic.backendProjecte3.entities.Client;
 import org.springframework.http.ResponseEntity;
