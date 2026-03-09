@@ -112,4 +112,7 @@
     <string name="reservation_created_title">Reserva creada</string>
     <string name="reservation_amount">Importe: %1$s €</string>
     <string name="view_detail">Ver detalle</string>
+
+    <string name="nav_vehicles">Vehiculos</string>
+    <string name="nav_register">Registro</string>
 </resources>

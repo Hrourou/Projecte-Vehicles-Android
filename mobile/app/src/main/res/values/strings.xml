@@ -188,4 +188,7 @@
     <string name="err_foto_llicencia">You must upload the license photo.</string>
     <string name="err_foto_identificacio">You must upload the identification photo.</string>
 
+    <string name="nav_vehicles">Vehicles</string>
+    <string name="nav_register">Register</string>
+
 </resources>

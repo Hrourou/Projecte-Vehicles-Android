@@ -24,6 +24,9 @@ import cat.copernic.appvehicles.reserva.ui.view.ReservationDetailScreen
 import cat.copernic.appvehicles.reserva.ui.view.CreateReservationScreen // <-- PANTALLA NOVA
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModelFactory
+import cat.copernic.appvehicles.usuariAnonim.ui.view.RegisterScreen
+import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
+import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModelFactory
 
 import cat.copernic.appvehicles.vehicle.data.api.remote.VehicleRetrofitProvider
 import cat.copernic.appvehicles.vehicle.data.repository.VehicleRepository
@@ -51,6 +54,7 @@ fun MainScreen(
             VehicleRepository(VehicleRetrofitProvider.vehicleApi)
         )
     )
+
 
     Scaffold(
         bottomBar = { AppBottomNavigation(navController) }
@@ -160,6 +164,27 @@ fun MainScreen(
                     onBackClick = { navController.popBackStack() },
                     // Connectem el botó de reservar amb la ruta de reserva_create!
                     onReservarClick = { navController.navigate("reserva_create") }
+                )
+            }
+
+            // -----------------------------
+// REGISTER
+// -----------------------------
+            composable(AppRoutes.Register.route) {
+
+                val registerViewModel: RegisterViewModel = viewModel(
+                    factory = RegisterViewModelFactory(repository)
+                )
+
+                RegisterScreen(
+                    viewModel = registerViewModel,
+                    onNavigateBack = { navController.popBackStack() },
+                    onRegisterSuccess = {
+                        // Cuando el registro se complete
+                        navController.navigate(AppRoutes.Inici.route) {
+                            popUpTo(AppRoutes.Register.route) { inclusive = true }
+                        }
+                    }
                 )
             }
         }

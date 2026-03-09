@@ -111,6 +111,9 @@
     <string name="reservation_amount">Import: %1$s €</string>
     <string name="view_detail">Veure detall</string>
 
+    <string name="nav_vehicles">Vehicles</string>
+    <string name="nav_register">Registre</string>
+
 
 
 </resources>
