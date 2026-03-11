@@ -68,9 +68,10 @@ public class BackendProjecte3Application implements CommandLineRunner {
             );
 
             // 3. CREACIÓ DE 3 VEHICLES
-            Vehicle tesla = crearVehicleExemple("1111AAA", "Tesla", "Model 3", "Elèctric", "25.00", "400.00");
-            Vehicle toyota = crearVehicleExemple("2222BBB", "Toyota", "Corolla", "Híbrid", "15.00", "200.00");
-            Vehicle seat = crearVehicleExemple("3333CCC", "Seat", "Ibiza", "Combustió", "10.00", "150.00");
+            // 3. CREACIÓ DE 3 VEHICLES (Ara amb fotos!)
+            Vehicle tesla = crearVehicleExemple("1111AAA", "Tesla", "Model 3", "Elèctric", "25.00", "400.00", "src/main/resources/demo-imatges/Tesla_Model_3.png");
+            Vehicle toyota = crearVehicleExemple("2222BBB", "Toyota", "Corolla", "Híbrid", "15.00", "200.00", "src/main/resources/demo-imatges/Toyota_Corolla.jpg");
+            Vehicle seat = crearVehicleExemple("3333CCC", "Seat", "Ibiza", "Combustió", "10.00", "150.00", "src/main/resources/demo-imatges/Seat_Ibiza.jpg");
 
             // 4. CREACIÓ DE 6 RESERVES (2 per vehicle, en diferents dates i clients)
             // Reserves pel Tesla
@@ -132,7 +133,7 @@ public class BackendProjecte3Application implements CommandLineRunner {
         return clientRepo.save(c);
     }
 
-    private Vehicle crearVehicleExemple(String matricula, String marca, String model, String variant, String preu, String fianca) {
+    private Vehicle crearVehicleExemple(String matricula, String marca, String model, String variant, String preu, String fianca, String rutaImatge) {
         Vehicle v = new Vehicle();
         v.setMatricula(matricula);
         v.setMarca(marca);
@@ -142,6 +143,10 @@ public class BackendProjecte3Application implements CommandLineRunner {
         v.setEstatVehicle(EstatVehicle.ALTA);
         v.setPreuHora(new BigDecimal(preu));
         v.setFiancaEstandard(new BigDecimal(fianca));
+        
+        // ¡NUEVO! Leemos el archivo y lo guardamos como BLOB
+        v.setFotoBinario(llegirImatge(rutaImatge));
+        
         return vehicleRepo.save(v);
     }
 
