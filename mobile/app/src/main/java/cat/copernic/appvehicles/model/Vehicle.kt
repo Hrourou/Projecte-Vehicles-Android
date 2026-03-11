@@ -5,5 +5,6 @@ data class Vehicle(
     val marca: String,
     val model: String,
     val variant: String,
-    val preuHora: Double
+    val preuHora: Double,
+    val fotoBase64: String? = null  // NUEVO
 )
