@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import cat.copernic.backendProjecte3.dto.CancelReservaResponse;
+import cat.copernic.backendProjecte3.enums.EstatReserva;
 
 /**
  *
@@ -140,44 +141,55 @@ public class ReservaService {
 
 
     @Transactional
-   public CancelReservaResponse anularReserva(Long idReserva, String userName)
-           throws ReservaNoTrobadaException, AccesDenegatException, ReservaNoCancelableException {
+    public CancelReservaResponse anularReserva(Long idReserva, String userName)
+            throws ReservaNoTrobadaException, AccesDenegatException, ReservaNoCancelableException {
 
-       // control de ROL
-       UserRole rol = userLogic.getRole(userName).orElseThrow();
-       if (rol != UserRole.CLIENT && rol != UserRole.AGENT && rol != UserRole.ADMIN) {
-           throw new AccesDenegatException("Rol no vàlid");
-       }
+        // control de ROL
+        UserRole rol = userLogic.getRole(userName).orElseThrow();
+        if (rol != UserRole.CLIENT && rol != UserRole.AGENT && rol != UserRole.ADMIN) {
+            throw new AccesDenegatException("Rol no vàlid");
+        }
 
-       Reserva reserva = obtenirPerId(idReserva);
+        Reserva reserva = obtenirPerId(idReserva);
 
-       // Validación: solo antes de que empiece
-       LocalDate today = LocalDate.now();
-       LocalDate inici = reserva.getDataInici();
+        LocalDate today = LocalDate.now();
+        LocalDate inici = reserva.getDataInici();
 
-       // Si hoy es el mismo día o después del inicio => ya iniciada (o finalizada)
-       if (!today.isBefore(inici)) {
-           throw new ReservaNoCancelableException("No es pot anul·lar una reserva iniciada / finalitzada");
-       }
+        // Si hoy es el mismo día o después del inicio => ya iniciada (o finalizada)
+        if (!today.isBefore(inici)) {
+            throw new ReservaNoCancelableException("No es pot anul·lar una reserva iniciada o finalitzada.");
+        }
 
-       long daysAhead = ChronoUnit.DAYS.between(today, inici);
+        long daysAhead = ChronoUnit.DAYS.between(today, inici);
+        BigDecimal refund = BigDecimal.ZERO;
+        
+        if (daysAhead >= fullRefundDays) {
+            BigDecimal importTotal = reserva.getImportTotal() != null ? reserva.getImportTotal() : BigDecimal.ZERO;
+            BigDecimal fianca = reserva.getFiancaPagada() != null ? reserva.getFiancaPagada() : BigDecimal.ZERO;
+            refund = importTotal.add(fianca);
+        }
 
-       BigDecimal refund = BigDecimal.ZERO;
-       if (daysAhead >= fullRefundDays) {
-           BigDecimal importTotal = reserva.getImportTotal() != null ? reserva.getImportTotal() : BigDecimal.ZERO;
-           BigDecimal fianca = reserva.getFiancaPagada() != null ? reserva.getFiancaPagada() : BigDecimal.ZERO;
-           refund = importTotal.add(fianca);
-       }
+        // ==========================================
+        // RF55: CANVIEM L'ESTAT, NO L'ESBORREM
+        // ==========================================
+        reserva.setEstat(EstatReserva.CANCELADA);
+        reservaRepo.save(reserva);
 
-       // TODO: enviar email al client (opcional)
-       // emailService.sendCancelEmail(...)
+        // ==========================================
+        // SIMULACIÓ D'ENVIAMENT D'EMAIL
+        // ==========================================
+        System.out.println("====== ENVIANT EMAIL AL CLIENT ======");
+        System.out.println("Per a: " + reserva.getClient().getEmail());
+        System.out.println("Assumpte: Confirmació d'anul·lació de reserva");
+        System.out.println("Cos del missatge: Hola " + reserva.getClient().getNomComplet() + ",");
+        System.out.println("La teva reserva del vehicle " + reserva.getVehicle().getMatricula() + " ha estat anul·lada amb èxit.");
+        System.out.println("Se t'ha aplicat un reemborsament de: " + refund + " €");
+        System.out.println("=====================================");
 
-       reservaRepo.delete(reserva);
+        String msg = (refund.compareTo(BigDecimal.ZERO) > 0)
+                ? "Reserva anul·lada. Reemborsament: " + refund + " €"
+                : "Reserva anul·lada. Sense reemborsament.";
 
-       String msg = (refund.compareTo(BigDecimal.ZERO) > 0)
-               ? "Reserva anul·lada. Reemborsament: " + refund
-               : "Reserva anul·lada. Sense reemborsament.";
-
-       return new CancelReservaResponse(idReserva, refund, msg);
-   }
+        return new CancelReservaResponse(idReserva, refund, msg);
+    }
 }

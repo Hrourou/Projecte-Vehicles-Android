@@ -41,9 +41,9 @@ public class ReservaController {
         }
 
         return reserves.stream()
-                .sorted(cmp)
-                .map(ReservaResponse::fromEntity)
-                .collect(Collectors.toList());
+            .sorted(cmp)
+            .map(ReservaResponse::fromEntity)
+            .collect(Collectors.toList());
     }
 
     // Obtener detalle por id
@@ -69,7 +69,6 @@ public class ReservaController {
         return ReservaResponse.fromEntity(r);
     }
     
-
     // Anular reserva
     @DeleteMapping("/{id}")
     public CancelReservaResponse cancelReserva(
@@ -108,6 +107,7 @@ public class ReservaController {
         private String vehicleMatricula;
         private String importTotal;
         private String fiancaPagada;
+        private String estat; // <-- AFEGIT PER L'APP
 
         public static ReservaResponse fromEntity(Reserva r) {
             ReservaResponse dto = new ReservaResponse();
@@ -118,6 +118,7 @@ public class ReservaController {
             dto.vehicleMatricula = r.getVehicle() != null ? r.getVehicle().getMatricula() : null;
             dto.importTotal = r.getImportTotal() != null ? r.getImportTotal().toPlainString() : null;
             dto.fiancaPagada = r.getFiancaPagada() != null ? r.getFiancaPagada().toPlainString() : null;
+            dto.estat = r.getEstat() != null ? r.getEstat().name() : "ACTIVA"; // <-- LLEGIM L'ESTAT
             return dto;
         }
 
@@ -128,5 +129,6 @@ public class ReservaController {
         public String getVehicleMatricula() { return vehicleMatricula; }
         public String getImportTotal() { return importTotal; }
         public String getFiancaPagada() { return fiancaPagada; }
+        public String getEstat() { return estat; } // <-- AFEGIT
     }
 }

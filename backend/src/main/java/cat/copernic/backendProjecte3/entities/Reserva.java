@@ -4,6 +4,7 @@
  */
 package cat.copernic.backendProjecte3.entities;
 
+import cat.copernic.backendProjecte3.enums.EstatReserva;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -50,6 +51,17 @@ public class Reserva {
     private Vehicle vehicle;
 
     public Reserva() {}
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstatReserva estat = EstatReserva.ACTIVA; // Per defecte és activa
+
+    public EstatReserva getEstat() {
+        return estat;
+    }
+
+    public void setEstat(EstatReserva estat) {
+        this.estat = estat;
+    }
 
     public Long getIdReserva() {
         return idReserva;
