@@ -7,9 +7,12 @@ import cat.copernic.backendProjecte3.dto.PasswordRecoveryRequest;
 import cat.copernic.backendProjecte3.dto.PasswordRecoveryResponse;
 import cat.copernic.backendProjecte3.dto.ResetPasswordRequest;
 import cat.copernic.backendProjecte3.entities.Client;
+import cat.copernic.backendProjecte3.entities.Usuari;
+import cat.copernic.backendProjecte3.exceptions.AccesDenegatException;
 import cat.copernic.backendProjecte3.exceptions.ErrorAltaException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +25,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile; // IMPORTANTE
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -89,5 +96,38 @@ public class AuthController {
                         "Your password has been updated successfully."
                 )
         );
+    }
+    /**
+     * Endpoint para el inicio de sesión (RF01).
+     */
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            // 1. Llamamos a la lógica de negocio
+            Usuari usuari = userLogic.login(loginRequest.getEmail(), loginRequest.getPassword());
+
+            // 2. Mapeamos la entidad al DTO de respuesta
+            LoginResponse response = new LoginResponse();
+            response.setEmail(usuari.getEmail());
+            response.setNomComplet(usuari.getNomComplet());
+
+            // Generamos un token básico (UUID) para que el móvil guarde el estado de la sesión
+            response.setToken(UUID.randomUUID().toString());
+
+            // 3. Devolvemos 200 OK con los datos
+            return ResponseEntity.ok(response);
+
+        } catch (AccesDenegatException e) {
+            // Si fallan las credenciales, devolvemos 401 Unauthorized
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+
+        } catch (Exception e) {
+            // Error genérico del servidor 500
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error intern del servidor");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 }
