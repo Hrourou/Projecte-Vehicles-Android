@@ -1,119 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">appVehicles</string>
-    <string name="reservations_title">Les meves reserves</string>
-    <string name="back">Tornar</string>
-    <string name="sort">ordenar</string>
-    <string name="reservation_date_range">De %1$s a %2$s</string>
-    <string name="reservation_status_label">Estat</string>
-    <string name="status_cancelled">Cancel·lada</string>
-    <string name="status_finished">Acabat</string>
-    <string name="status_active">"Activa "</string>
-    <string name="reservation_code">Reserva #%1$s</string>
+    <string name="app_name">AppVehicles</string>
 
-    <!-- Para ReservationDetailScreen -->
-    <string name="reservation_detail_title">Detall de la reserva</string>
-    <string name="vehicle_photo_description">Foto del vehicle</string>
-    <string name="reservation_vehicle">Vehicle</string>
-    <string name="start_date">Data d\'inici</string>
-    <string name="end_date">Data de fi</string>
+    <!-- Navegació -->
+    <string name="nav_vehicles">Vehicles</string>
+    <string name="nav_register">Registrar-se</string>
 
-    <string name="deposit">Fiança</string>
-    <string name="rental_cost">Cost del lloguer</string>
-    <string name="reservation_total">Total: %1$s</string>
-    <string name="cancel_reservation">Anul·lar reserva</string>
-
-    <string name="create_reservation_title">Nova reserva</string>
-    <string name="select_dates">Selecciona les dates</string>
-    <string name="available_vehicle">Vehicle disponible</string>
-    <string name="select_car">Selecciona un cotxe</string>
-    <string name="cost_summary">Resum del cost</string>
-    <string name="rental_days">Dies de lloguer </string>
-    <string name="total_to_pay">Total a pagar</string>
-    <string name="confirm_reservation">Confirmar reserva</string>
-    <string name="confirm_cancel_question">Esteu segur que voleu cancel·lar aquesta reserva?</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel·la</string>
-
-
-    <string name="registre_pas_de">Registre - Pas %1$d de %2$d</string>
-    <string name="tornar_enrere">Tornar enrere</string>
-    <string name="enrere">Enrere</string>
-    <string name="seg_ent">Següent</string>
-    <string name="finalitzar">Finalitzar</string>
-
-    <string name="err_nom_complet_buit">El nom complet no pot estar buit.</string>
-    <string name="err_nom_format">El nom només pot contenir lletres i espais.</string>
-    <string name="err_numero_id_buit">El número d\'identificació no pot estar buit.</string>
-    <string name="err_format_data">Format de data incorrecte (Usa YYYY-MM-DD).</string>
-    <string name="err_data_passada">La data de caducitat no pot ser passada.</string>
-    <string name="err_data_invalida">Data invàlida.</string>
-
-    <string name="err_adreca_buida">L\'adreça no pot estar buida.</string>
-    <string name="err_nacionalitat_buida">La nacionalitat no pot estar buida.</string>
-    <string name="err_email_buit">L\'email no pot estar buit.</string>
-    <string name="err_email_format">Format d\'email incorrecte.</string>
-    <string name="err_password_buida">La contrasenya no pot estar buida.</string>
-
-    <string name="err_tipus_llicencia_buit">El tipus de llicència no pot estar buit.</string>
-    <string name="err_llicencia_caducada">La llicència no pot estar caducada.</string>
-    <string name="err_targeta_buida">La targeta de crèdit no pot estar buida.</string>
-    <string name="err_targeta_format">La targeta ha de tenir entre 13 i 19 números.</string>
-
-    <string name="acceptar">Acceptar</string>
-    <string name="cancel_lar">Cancel·lar</string>
-    <string name="dades_personals">Dades Personals</string>
-    <string name="nom_complet">Nom complet</string>
-    <string name="n_mero_d_identificaci">Número d\'identificació</string>
-    <string name="data_caducitat">Data caducitat</string>
-    <string name="seleccionar_data">Seleccionar data</string>
-    <string name="pujar_foto_identificaci">Pujar foto identificació</string>
-    <string name="dades_de_conducci_i_pagament">Dades de Conducció i Pagament</string>
-    <string name="tipus_de_llic_ncia">Tipus de llicència</string>
-    <string name="data_caducitat_llic_ncia">Data caducitat llicència</string>
-    <string name="pujar_foto_llic_ncia">Pujar foto llicència</string>
-    <string name="targeta_de_cr_dit">Targeta de crèdit</string>
-    <string name="dades_de_contacte_i_acc_s">Dades de Contacte i Accés</string>
-    <string name="adre_a">Adreça</string>
-    <string name="nacionalitat">Nacionalitat</string>
-    <string name="email_usuari">Email (Usuari)</string>
+    <!-- Login -->
+    <string name="email">Correu electrònic</string>
     <string name="email_example_com">email@example.com</string>
     <string name="contrasenya">Contrasenya</string>
-    <string name="contrasenya_m_n_6_car_cters">Contrasenya (mín 6 caràcters)</string>
+    <string name="contrasenya_m_n_6_car_cters">La contrasenya ha de tenir almenys 6 caràcters</string>
+    <string name="iniciar_sessio">Iniciar sessió</string>
+    <string name="login_error">Error d'inici de sessió</string>
+    <string name="login_success">Inici de sessió correcte</string>
+
+    <!-- Registre -->
     <string name="pujar">Pujar %1$s</string>
-    <string name="foto_seleccionada">Foto seleccionada!</string>
+    <string name="foto_seleccionada">Foto seleccionada</string>
+    <string name="err_foto_llicencia">Has de pujar la foto del permís de conduir</string>
+    <string name="err_foto_identificacio">Has de pujar la foto del document identificatiu</string>
+    <string name="register_success">Usuari registrat correctament</string>
+    <string name="register_error">Error en el registre</string>
 
-    <string name="err_foto_llicencia">Has de pujar la foto de la llicència.</string>
-    <string name="err_foto_identificacio">Has de pujar la foto d\'identificació.</string>
+    <!-- Recuperació de contrasenya -->
+    <string name="recover_password_title">Recuperar contrasenya</string>
+    <string name="recover_password_description">Introdueix el teu correu per rebre instruccions de recuperació</string>
+    <string name="send_recovery_email">Enviar correu de recuperació</string>
+    <string name="recovery_token">Token de recuperació</string>
+    <string name="new_password">Nova contrasenya</string>
+    <string name="confirm_password">Confirma la contrasenya</string>
+    <string name="reset_password">Restablir contrasenya</string>
 
-    <string name="filter_by_date_range">Filtrar per rang de dates</string>
-    <string name="start_date_dd_mm_yyyy">Data d\'inici (dd/mm/yyyy)</string>
-        <string name="available_vehicles">Vehicles disponibless</string>
-    <string name="end_date_dd_mm_yyyy">Data de fi (dd/mm/yyyy)</string>
-    <string name="apply_filter">Aplicar filtre</string>
-    <string name="sort_by_price">Ordenar per preu</string>
-    <string name="ascending">Ascendent</string>
-    <string name="descending">Descendent</string>
-    <string name="hour">%1$s €/hora</string>
-    <string name="electric">Elèctric</string>
-    <string name="hybrid">Híbrid</string>
-    <string name="diesel">Dièsel</string>
-    <string name="vehicle_details">Detall del vehicle</string>
-    <string name="power">Potència: %1$s</string>
-    <string name="color">Color: %1$s</string>
-    <string name="mileage_limit">Límit de quilometratge: %1$s</string>
-    <string name="minimum_rental_days">Dies mínims de lloguer: %1$s</string>
-    <string name="maximum_rental_days">Dies màxims de lloguer: %1$s</string>
-    <string name="standard_deposit">Fiança estàndard: %1$s</string>
-    <string name="book_vehicle">Reservar vehicle</string>
-    <string name="no_vehicles_available">No hi ha vehicles disponibles</string>
-    <string name="reservation_created_title">Reserva creada</string>
-    <string name="reservation_amount">Import: %1$s €</string>
-    <string name="view_detail">Veure detall</string>
+    <!-- Missatges de recuperació -->
+    <string name="recover_sent">Si el correu existeix, rebràs instruccions de recuperació en breu.</string>
+    <string name="password_reset_ok">La contrasenya s'ha actualitzat correctament.</string>
+    <string name="recover_failed">No s'ha pogut iniciar el procés de recuperació.</string>
+    <string name="reset_failed">No s'ha pogut restablir la contrasenya.</string>
 
-    <string name="nav_vehicles">Vehicles</string>
-    <string name="nav_register">Registre</string>
-
-
-
+    <!-- Validacions -->
+    <string name="email_required">El correu electrònic és obligatori</string>
+    <string name="email_invalid">El format del correu electrònic no és vàlid</string>
+    <string name="token_required">El token de recuperació és obligatori</string>
+    <string name="password_required">La contrasenya és obligatòria</string>
+    <string name="password_too_short">La contrasenya ha de tenir almenys 6 caràcters</string>
+    <string name="password_mismatch">Les contrasenyes no coincideixen</string>
 </resources>
