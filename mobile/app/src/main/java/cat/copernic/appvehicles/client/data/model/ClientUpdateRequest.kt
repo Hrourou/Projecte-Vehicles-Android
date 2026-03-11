@@ -8,5 +8,8 @@ data class ClientUpdateRequest(
     val numeroTargetaCredit: String?,
     val dataCaducitatDni: String?,
     val tipusCarnetConduir: String?,
-    val dataCaducitatCarnet: String?
+    val dataCaducitatCarnet: String?,
+
+    val imatgeDni: String? = null,
+    val imatgeCarnet: String? = null
 )

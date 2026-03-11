@@ -23,6 +23,7 @@ import coil.compose.AsyncImage
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import cat.copernic.appvehicles.core.composables.ImageUploadOrPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,10 +138,17 @@ fun EditProfileScreen(
             }
 
             // Extra: componente imagen (foto cliente)
-            Text(stringResource(R.string.profile_photo), style = MaterialTheme.typography.titleMedium)
-            AsyncImage(model = state.photoUri, contentDescription = null, modifier = Modifier.fillMaxWidth().height(180.dp))
-            OutlinedButton(onClick = { pickPhoto.launch("image/*") }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pick_profile_photo)) }
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
+            Text(stringResource(R.string.profile_photo), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+            Spacer(Modifier.height(8.dp))
+
+            ImageUploadOrPreview(
+                label = stringResource(R.string.profile_photo),
+                imageUri = state.photoUri,
+                onUploadClick = { pickPhoto.launch("image/*") },
+                onDeleteClick = { vm.onPhotoPicked(null) }
+            )
+            Spacer(Modifier.height(24.dp)) // Gran espacio antes de los campos de texto
 
             // --- CAMPOS DE TEXTO ---
             OutlinedTextField(value = state.nomComplet, onValueChange = { vm.onFieldChange(nomComplet = it) }, label = { Text(stringResource(R.string.full_name_label)) }, modifier = Modifier.fillMaxWidth())
@@ -179,11 +187,17 @@ fun EditProfileScreen(
                 trailingIcon = { IconButton(onClick = { showDatePickerDni = true }) { Icon(Icons.Default.DateRange, stringResource(R.string.seleccionar_data)) } }
             )
 
+            Spacer(Modifier.height(20.dp)) // Espacio extra para separar del campo de arriba
+            Text(stringResource(R.string.id_image), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(8.dp))
-            Text(stringResource(R.string.id_image), style = MaterialTheme.typography.bodyMedium)
-            AsyncImage(model = state.dniImageUri, contentDescription = null, modifier = Modifier.fillMaxWidth().height(160.dp))
-            OutlinedButton(onClick = { pickDniImage.launch("image/*") }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pick_id_image)) }
-            Spacer(Modifier.height(12.dp))
+
+            ImageUploadOrPreview(
+                label = stringResource(R.string.id_image),
+                imageUri = state.dniImageUri,
+                onUploadClick = { pickDniImage.launch("image/*") },
+                onDeleteClick = { vm.onDniImagePicked(null) }
+            )
+            Spacer(Modifier.height(24.dp)) // Gran espacio antes del siguiente desplegable
 
             // --- DESPLEGABLE TIPO LICENCIA ---
             ExposedDropdownMenuBox(expanded = expaditLlicencia, onExpandedChange = { expaditLlicencia = !expaditLlicencia }) {
@@ -210,11 +224,17 @@ fun EditProfileScreen(
                 trailingIcon = { IconButton(onClick = { showDatePickerLicense = true }) { Icon(Icons.Default.DateRange, stringResource(R.string.seleccionar_data)) } }
             )
 
+            Spacer(Modifier.height(20.dp)) // Espacio extra para separar del campo de arriba
+            Text(stringResource(R.string.license_image), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(8.dp))
-            Text(stringResource(R.string.license_image), style = MaterialTheme.typography.bodyMedium)
-            AsyncImage(model = state.licenseImageUri, contentDescription = null, modifier = Modifier.fillMaxWidth().height(160.dp))
-            OutlinedButton(onClick = { pickLicenseImage.launch("image/*") }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pick_license_image)) }
-            Spacer(Modifier.height(16.dp))
+
+            ImageUploadOrPreview(
+                label = stringResource(R.string.license_image),
+                imageUri = state.licenseImageUri,
+                onUploadClick = { pickLicenseImage.launch("image/*") },
+                onDeleteClick = { vm.onLicenseImagePicked(null) }
+            )
+            Spacer(Modifier.height(32.dp)) // Mucho espacio antes de la sección de pago
 
             Text(stringResource(R.string.payment), style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
