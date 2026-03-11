@@ -1,16 +1,33 @@
 package cat.copernic.appvehicles.client.ui.view
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.appvehicles.R
@@ -23,7 +40,6 @@ fun RecoverPasswordScreen(
 ) {
     val vm: RecoverPasswordViewModel = viewModel()
     val state by vm.uiState.collectAsState()
-
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -50,8 +66,6 @@ fun RecoverPasswordScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -82,6 +96,53 @@ fun RecoverPasswordScreen(
                         singleLine = true
                     )
 
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = vm::sendRecoveryEmail,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !state.isLoading
+                    ) {
+                        Text(stringResource(R.string.recover_action))
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Text(
+                        text = stringResource(R.string.reset_password_title),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedTextField(
+                        value = state.token,
+                        onValueChange = vm::onTokenChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(stringResource(R.string.recovery_token_label)) },
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedTextField(
+                        value = state.newPassword,
+                        onValueChange = vm::onNewPasswordChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(stringResource(R.string.new_password_label)) },
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedTextField(
+                        value = state.confirmPassword,
+                        onValueChange = vm::onConfirmPasswordChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(stringResource(R.string.confirm_password_label)) },
+                        singleLine = true
+                    )
+
                     Spacer(modifier = Modifier.height(16.dp))
 
                     state.errorKey?.let {
@@ -101,16 +162,19 @@ fun RecoverPasswordScreen(
                     }
 
                     Button(
-                        onClick = vm::onSendClick,
+                        onClick = vm::resetPassword,
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = state.email.isNotBlank()
+                        enabled = !state.isLoading
                     ) {
-                        Text(stringResource(R.string.recover_action))
+                        Text(stringResource(R.string.reset_password_action))
+                    }
+
+                    if (state.isLoading) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -118,18 +182,17 @@ fun RecoverPasswordScreen(
 private fun errorKeyToRes(key: String): Int = when (key) {
     "email_required" -> R.string.error_email_required
     "email_invalid" -> R.string.error_email_invalid
+    "recover_failed" -> R.string.error_recover_failed
+    "token_required" -> R.string.error_token_required
+    "password_required" -> R.string.error_password_required
+    "password_too_short" -> R.string.error_password_too_short
+    "password_mismatch" -> R.string.error_password_mismatch
+    "reset_failed" -> R.string.error_reset_failed
     else -> R.string.error_generic
 }
 
 private fun successKeyToRes(key: String): Int = when (key) {
     "recover_sent" -> R.string.recover_success
+    "password_reset_ok" -> R.string.password_reset_success
     else -> R.string.recover_success
-}
-
-@Preview(showBackground = true, widthDp = 360)
-@Composable
-private fun RecoverPasswordScreenPreview() {
-    MaterialTheme {
-        RecoverPasswordScreen()
-    }
 }
