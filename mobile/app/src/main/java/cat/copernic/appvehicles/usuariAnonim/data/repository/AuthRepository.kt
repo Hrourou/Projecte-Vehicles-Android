@@ -3,6 +3,9 @@ package cat.copernic.appvehicles.usuariAnonim.data.repository
 import cat.copernic.appvehicles.core.auth.SessionManager
 import cat.copernic.appvehicles.model.LoginRequest
 import cat.copernic.appvehicles.usuariAnonim.data.api.remote.AuthApiService
+import cat.copernic.appvehicles.usuariAnonim.data.model.PasswordRecoveryRequest
+import cat.copernic.appvehicles.usuariAnonim.data.model.PasswordRecoveryResponse
+import cat.copernic.appvehicles.usuariAnonim.data.model.ResetPasswordRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
@@ -14,10 +17,6 @@ class AuthRepository(
     private val sessionManager: SessionManager // <-- Añadimos el SessionManager aquí
 ) {
 
-    /**
-     * Realiza la llamada de registro al backend enviando textos e imágenes.
-     * Retorna un Result<Boolean> que encapsula éxito o fracaso.
-     */
     suspend fun register(
         clientData: RequestBody,
         fotoIdentificacio: MultipartBody.Part,
@@ -25,7 +24,6 @@ class AuthRepository(
     ): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
-                // Pasamos las tres partes a la API
                 val response = api.register(clientData, fotoIdentificacio, fotoLlicencia)
 
                 if (response.isSuccessful) {
@@ -35,7 +33,7 @@ class AuthRepository(
                     val errorMessage = if (!errorBody.isNullOrEmpty()) {
                         errorBody
                     } else {
-                        "Error en el registre: Codi ${response.code()}" // Aquí saltará el famoso "Codi 409" si el email está duplicado
+                        "Register failed: HTTP ${response.code()}"
                     }
                     Result.failure(Exception(errorMessage))
                 }
@@ -45,10 +43,47 @@ class AuthRepository(
         }
     }
 
-    /**
-     * Realiza la llamada de login al backend.
-     * Si es exitoso, guarda la sesión localmente (sin la contraseña).
-     */
+    suspend fun recoverPassword(email: String): Result<PasswordRecoveryResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = api.recoverPassword(PasswordRecoveryRequest(email))
+
+                if (response.isSuccessful) {
+                    Result.success(
+                        response.body() ?: PasswordRecoveryResponse(
+                            code = "recover_sent",
+                            message = "If the email exists, you will receive recovery instructions shortly."
+                        )
+                    )
+                } else {
+                    Result.failure(Exception(response.errorBody()?.string() ?: "Recovery failed"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun resetPassword(token: String, newPassword: String): Result<PasswordRecoveryResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = api.resetPassword(ResetPasswordRequest(token, newPassword))
+
+                if (response.isSuccessful) {
+                    Result.success(
+                        response.body() ?: PasswordRecoveryResponse(
+                            code = "password_reset_ok",
+                            message = "Your password has been updated successfully."
+                        )
+                    )
+                } else {
+                    Result.failure(Exception(response.errorBody()?.string() ?: "Reset password failed"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
     suspend fun login(email: String, contrasenya: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
@@ -92,5 +127,4 @@ class AuthRepository(
             }
         }
     }
-
 }
