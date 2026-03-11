@@ -11,7 +11,7 @@
     <string name="contrasenya">Contrasenya</string>
     <string name="contrasenya_m_n_6_car_cters">La contrasenya ha de tenir almenys 6 caràcters</string>
     <string name="iniciar_sessio">Iniciar sessió</string>
-    <string name="login_error">Error d'inici de sessió</string>
+    <string name="login_error">Error d\'inici de sessió</string>
     <string name="login_success">Inici de sessió correcte</string>
 
     <!-- Registre -->
@@ -33,9 +33,9 @@
 
     <!-- Missatges de recuperació -->
     <string name="recover_sent">Si el correu existeix, rebràs instruccions de recuperació en breu.</string>
-    <string name="password_reset_ok">La contrasenya s'ha actualitzat correctament.</string>
-    <string name="recover_failed">No s'ha pogut iniciar el procés de recuperació.</string>
-    <string name="reset_failed">No s'ha pogut restablir la contrasenya.</string>
+    <string name="password_reset_ok">La contrasenya s\'ha actualitzat correctament.</string>
+    <string name="recover_failed">No s\'ha pogut iniciar el procés de recuperació.</string>
+    <string name="reset_failed">No s\'ha pogut restablir la contrasenya.</string>
 
     <!-- Validacions -->
     <string name="email_required">El correu electrònic és obligatori</string>
