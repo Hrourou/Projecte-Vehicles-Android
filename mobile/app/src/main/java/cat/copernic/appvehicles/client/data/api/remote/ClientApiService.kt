@@ -10,12 +10,13 @@ import retrofit2.http.Path
 
 interface ClientApiService {
 
-    @GET("clients/{dni}")
-    suspend fun getClient(@Path("dni") dni: String): Response<ClientProfileDto>
+    // Cambiamos {dni} por {email}
+    @GET("clients/{email}")
+    suspend fun getClient(@Path("email") email: String): Response<ClientProfileDto>
 
-    @PUT("clients/{dni}")
+    @PUT("clients/{email}")
     suspend fun updateClient(
-        @Path("dni") dni: String,
+        @Path("email") email: String,
         @Body request: ClientUpdateRequest
     ): Response<ClientProfileDto>
 }

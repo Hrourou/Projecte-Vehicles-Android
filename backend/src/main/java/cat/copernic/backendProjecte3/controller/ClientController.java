@@ -1,7 +1,7 @@
-package cat.copernic.appvehicles.controller;
+package cat.copernic.backendProjecte3.controller;
 
-import cat.copernic.appvehicles.dto.ClientProfileDTO;
-import cat.copernic.appvehicles.dto.ClientUpdateDTO;
+import cat.copernic.backendProjecte3.dto.ClientProfileDTO;
+import cat.copernic.backendProjecte3.dto.ClientUpdateDTO;
 import cat.copernic.backendProjecte3.business.ClientService;
 import cat.copernic.backendProjecte3.entities.Client;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +17,22 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @GetMapping("/{dni}")
-    public ResponseEntity<ClientProfileDTO> getClient(@PathVariable String dni) {
-        Client client = clientService.obtenirPerDni(dni);
+    // Cambiamos a buscar por email
+    @GetMapping("/{email}")
+    public ResponseEntity<ClientProfileDTO> getClient(@PathVariable String email) {
+        Client client = clientService.obtenirPerId(email); // obtenirPerId ya busca por email
         return ResponseEntity.ok(ClientProfileDTO.from(client));
     }
 
-    @PutMapping("/{dni}")
+    // Cambiamos a actualizar por email
+    @PutMapping("/{email}")
     public ResponseEntity<ClientProfileDTO> updateClient(
-            @PathVariable String dni,
+            @PathVariable String email,
             @RequestBody ClientUpdateDTO dto) {
 
-        Client updated = clientService.actualitzarPerfilPerDni(dni, dto);
+        // Ahora sí, llamamos al método correcto pasándole el email de la URL
+        Client updated = clientService.actualitzarPerfilPerEmail(email, dto);
+        
         return ResponseEntity.ok(ClientProfileDTO.from(updated));
     }
 }

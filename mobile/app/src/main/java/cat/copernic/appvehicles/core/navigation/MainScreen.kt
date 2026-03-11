@@ -131,8 +131,19 @@ fun MainScreen(
             // -----------------------------
             // PERFIL -> RF04 GATE
             // -----------------------------
+            // -----------------------------
+            // PERFIL -> RF04 GATE
+            // -----------------------------
             composable(AppRoutes.Perfil.route) {
-                ProfileEntryScreen(authRepository = repository)
+                ProfileEntryScreen(
+                    authRepository = repository,
+                    onLoginSuccessNavigate = {
+                        // Navegamos al inicio y limpiamos la pila para no poder volver al login dándole atrás
+                        navController.navigate(AppRoutes.Inici.route) {
+                            popUpTo(AppRoutes.Inici.route) { inclusive = true }
+                        }
+                    }
+                )
             }
 
             // -----------------------------

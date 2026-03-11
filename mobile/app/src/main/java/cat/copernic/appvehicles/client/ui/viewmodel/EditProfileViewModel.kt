@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import cat.copernic.appvehicles.client.data.api.remote.ClientApiService
 import cat.copernic.appvehicles.client.data.model.ClientUpdateRequest
 import cat.copernic.appvehicles.client.data.repository.ClientRepository
-import cat.copernic.appvehicles.core.auth.SessionStore
+import cat.copernic.appvehicles.core.auth.SessionManager
 import cat.copernic.appvehicles.core.network.RetrofitProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,23 +25,17 @@ data class EditProfileUiState(
     val dataCaducitatDni: String = "",
     val tipusCarnetConduir: String = "",
     val dataCaducitatCarnet: String = "",
-
-    // RF04: foto + documentación (UI)
     val photoUri: String? = null,
     val dniImageUri: String? = null,
     val licenseImageUri: String? = null,
-
     val messageKey: String? = null,
-    val errorKey: String? = null
+    val errorKeys: List<String> = emptyList() // AHORA ES UNA LISTA
 )
 
 class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val sessionStore = SessionStore(app.applicationContext)
-
-    private val api: ClientApiService =
-        RetrofitProvider.retrofit.create(ClientApiService::class.java)
-
+    private val sessionStore = SessionManager(app.applicationContext)
+    private val api: ClientApiService = RetrofitProvider.retrofit.create(ClientApiService::class.java)
     private val repo = ClientRepository(api)
 
     private val _uiState = MutableStateFlow(EditProfileUiState())
@@ -49,20 +43,32 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
 
     fun loadProfile() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorKey = null, messageKey = null)
+            _uiState.value = _uiState.value.copy(isLoading = true, errorKeys = emptyList(), messageKey = null)
 
-            val dni = sessionStore.dniFlow().first()
-            if (dni.isNullOrBlank()) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorKey = "session_missing_dni"
-                )
+            val sessionEmail = sessionStore.userEmailFlow.first()
+            if (sessionEmail.isNullOrBlank()) {
+                _uiState.value = _uiState.value.copy(isLoading = false, errorKeys = listOf("session_missing_email"))
                 return@launch
             }
 
-            val response = repo.getClient(dni)
+            val response = repo.getClient(sessionEmail)
             if (response.isSuccessful && response.body() != null) {
                 val p = response.body()!!
+
+                // 1. La URL base correcta
+                val baseUrl = "http://192.168.1.210:8080/uploads/"
+
+                // 2. Función auxiliar para limpiar la basura de la ruta (quita carpetas y barras)
+                fun cleanFileName(path: String?): String? {
+                    if (path.isNullOrBlank()) return null
+                    // Corta todo lo que haya antes de la última barra (ya sea de Windows o de Mac/Linux)
+                    return path.substringAfterLast("\\").substringAfterLast("/")
+                }
+
+                // 3. Montamos las URLs limpias
+                val urlDni = cleanFileName(p.imatgeDni)?.let { baseUrl + it }
+                val urlCarnet = cleanFileName(p.imatgeCarnet)?.let { baseUrl + it }
+
                 _uiState.value = EditProfileUiState(
                     isLoading = false,
                     dni = p.dni,
@@ -76,28 +82,21 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
                     tipusCarnetConduir = p.tipusCarnetConduir.orEmpty(),
                     dataCaducitatCarnet = p.dataCaducitatCarnet.orEmpty(),
 
-                    // El backend no devuelve uris/imagenes: se mantienen null
                     photoUri = null,
-                    dniImageUri = null,
-                    licenseImageUri = null
+                    // 4. Asignamos las URLs ya perfectas
+                    dniImageUri = urlDni,
+                    licenseImageUri = urlCarnet
                 )
             } else {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorKey = "profile_load_error"
-                )
+                _uiState.value = _uiState.value.copy(isLoading = false, errorKeys = listOf("profile_load_error"))
             }
         }
     }
 
     fun onFieldChange(
-        nomComplet: String? = null,
-        telefon: String? = null,
-        adreca: String? = null,
-        nacionalitat: String? = null,
-        numeroTargetaCredit: String? = null,
-        dataCaducitatDni: String? = null,
-        tipusCarnetConduir: String? = null,
+        nomComplet: String? = null, telefon: String? = null, adreca: String? = null,
+        nacionalitat: String? = null, numeroTargetaCredit: String? = null,
+        dataCaducitatDni: String? = null, tipusCarnetConduir: String? = null,
         dataCaducitatCarnet: String? = null
     ) {
         val s = _uiState.value
@@ -111,36 +110,66 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
             tipusCarnetConduir = tipusCarnetConduir ?: s.tipusCarnetConduir,
             dataCaducitatCarnet = dataCaducitatCarnet ?: s.dataCaducitatCarnet,
             messageKey = null,
-            errorKey = null
+            errorKeys = emptyList() // Limpiamos errores al escribir
         )
     }
 
-    fun onPhotoPicked(uri: String?) {
-        _uiState.value = _uiState.value.copy(photoUri = uri, messageKey = null, errorKey = null)
-    }
-
-    fun onDniImagePicked(uri: String?) {
-        _uiState.value = _uiState.value.copy(dniImageUri = uri, messageKey = null, errorKey = null)
-    }
-
-    fun onLicenseImagePicked(uri: String?) {
-        _uiState.value = _uiState.value.copy(licenseImageUri = uri, messageKey = null, errorKey = null)
-    }
+    fun onPhotoPicked(uri: String?) { _uiState.value = _uiState.value.copy(photoUri = uri, messageKey = null, errorKeys = emptyList()) }
+    fun onDniImagePicked(uri: String?) { _uiState.value = _uiState.value.copy(dniImageUri = uri, messageKey = null, errorKeys = emptyList()) }
+    fun onLicenseImagePicked(uri: String?) { _uiState.value = _uiState.value.copy(licenseImageUri = uri, messageKey = null, errorKeys = emptyList()) }
 
     fun saveChanges() {
         viewModelScope.launch {
             val s = _uiState.value
-            val dni = s.dni
-            if (dni.isNullOrBlank()) {
-                _uiState.value = s.copy(errorKey = "session_missing_dni")
-                return@launch
-            }
-            if (s.nomComplet.isBlank()) {
-                _uiState.value = s.copy(errorKey = "full_name_required")
+            val email = s.email
+            val errors = mutableListOf<String>() // ACUMULADOR DE ERRORES
+
+            if (email.isBlank()) {
+                _uiState.value = s.copy(errorKeys = listOf("session_missing_email"))
                 return@launch
             }
 
-            _uiState.value = s.copy(isLoading = true, errorKey = null, messageKey = null)
+            // --- VALIDACIONES ACUMULATIVAS ---
+            val regexNom = "^[a-zA-ZÀ-ÿ\\s]+$".toRegex()
+            if (s.nomComplet.isBlank()) errors.add("full_name_required")
+            else if (!s.nomComplet.matches(regexNom)) errors.add("invalid_name_format")
+
+            val regexData = "^\\d{4}-\\d{2}-\\d{2}$".toRegex()
+
+            if (s.dataCaducitatCarnet.isNotBlank()) {
+                if (!s.dataCaducitatCarnet.matches(regexData)) {
+                    errors.add("invalid_date_format")
+                } else {
+                    try {
+                        val dataParsed = java.time.LocalDate.parse(s.dataCaducitatCarnet)
+                        if (dataParsed.isBefore(java.time.LocalDate.now())) errors.add("license_expired")
+                    } catch (e: Exception) { errors.add("invalid_date") }
+                }
+            }
+
+            if (s.dataCaducitatDni.isNotBlank()) {
+                if (!s.dataCaducitatDni.matches(regexData)) {
+                    errors.add("invalid_date_format_dni")
+                } else {
+                    try {
+                        val dataParsed = java.time.LocalDate.parse(s.dataCaducitatDni)
+                        if (dataParsed.isBefore(java.time.LocalDate.now())) errors.add("dni_expired")
+                    } catch (e: Exception) { errors.add("invalid_date_dni") }
+                }
+            }
+
+            val regexTargeta = "^[0-9]{13,19}$".toRegex()
+            if (s.numeroTargetaCredit.isNotBlank() && !s.numeroTargetaCredit.matches(regexTargeta)) {
+                errors.add("invalid_card_format")
+            }
+
+            // SI HAY ERRORES, LOS MOSTRAMOS TODOS Y PARAMOS
+            if (errors.isNotEmpty()) {
+                _uiState.value = s.copy(errorKeys = errors)
+                return@launch
+            }
+
+            _uiState.value = s.copy(isLoading = true, errorKeys = emptyList(), messageKey = null)
 
             val req = ClientUpdateRequest(
                 nomComplet = s.nomComplet,
@@ -151,23 +180,22 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
                 dataCaducitatDni = s.dataCaducitatDni.ifBlank { null },
                 tipusCarnetConduir = s.tipusCarnetConduir.ifBlank { null },
                 dataCaducitatCarnet = s.dataCaducitatCarnet.ifBlank { null }
-
-                // TODO RF04 real:
-                // Falta API/DTO para subir photoUri/dniImageUri/licenseImageUri.
             )
 
-            val response = repo.updateClient(dni, req)
+            val response = repo.updateClient(email, req)
             if (response.isSuccessful) {
                 _uiState.value = _uiState.value.copy(isLoading = false, messageKey = "profile_saved")
             } else {
-                _uiState.value = _uiState.value.copy(isLoading = false, errorKey = "profile_save_error")
+                android.util.Log.e("API_ERROR_PERFIL", "Error: ${response.code()} - ${response.errorBody()?.string()}")
+                _uiState.value = _uiState.value.copy(isLoading = false, errorKeys = listOf("profile_save_error"))
             }
         }
     }
 
-    fun logout() {
-        //viewModelScope.launch {
-        //    sessionStore.clear()
-        //}
+    fun logout(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            sessionStore.clearSession()
+            onSuccess()
+        }
     }
 }

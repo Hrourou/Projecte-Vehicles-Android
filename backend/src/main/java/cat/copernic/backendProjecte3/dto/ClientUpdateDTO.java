@@ -1,4 +1,4 @@
-package cat.copernic.appvehicles.dto;
+package cat.copernic.backendProjecte3.dto;
 
 import java.time.LocalDate;
 
@@ -46,4 +46,6 @@ public class ClientUpdateDTO {
 
     public String getImatgeCarnet() { return imatgeCarnet; }
     public void setImatgeCarnet(String imatgeCarnet) { this.imatgeCarnet = imatgeCarnet; }
+
+   
 }

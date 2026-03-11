@@ -1,15 +1,17 @@
-package cat.copernic.appvehicles.client.ui.viewmodel
+package cat.copernic.appvehicles.client.ui.viewmodel // Ajusta el paquete si lo mueves
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import cat.copernic.appvehicles.usuariAnonim.data.repository.AuthRepository // Ajusta el import
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val authRepository: AuthRepository // Inyectamos el repositorio aquí
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState
@@ -46,21 +48,34 @@ class LoginViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
+            // Ponemos la pantalla en modo carga y limpiamos errores anteriores
             _uiState.update { it.copy(isLoading = true, generalError = null) }
 
-            // Simulación temporal
-            delay(900)
+            // Llamada REAL a la API a través del Repositorio
+            val result = authRepository.login(state.email, state.password)
 
-            // Mock (cuando conectes API, elimina esto)
-            val ok = (state.email == "client@test.com" && state.password == "1234")
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    isLoggedIn = ok,
-                    generalError = if (!ok) "invalid_credentials" else null
-                )
-            }
+            result.fold(
+                onSuccess = {
+                    // Si va bien, el repositorio ya guardó la sesión. Solo actualizamos la UI.
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isLoggedIn = true,
+                            generalError = null
+                        )
+                    }
+                },
+                onFailure = { exception ->
+                    // Si falla (credenciales incorrectas, error de red), mostramos el error
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isLoggedIn = false,
+                            generalError = exception.message
+                        )
+                    }
+                }
+            )
         }
     }
 

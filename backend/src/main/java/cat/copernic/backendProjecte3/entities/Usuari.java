@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import jakarta.persistence.Column;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -18,30 +20,36 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "usuari")
 public class Usuari {
-    
+
     @Id
     @Column(length = 100)
     private String email; // Será el username [cite: 120]
-    
+
     @Column(nullable = false, length = 255)
     private String password;
-    
+
     @Column(name = "nom_complet", nullable = false)
     private String nomComplet; // Requerido por 
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole rol = UserRole.NONE;
+
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
+    @Column(name = "reset_password_expiry")
+    private LocalDateTime resetPasswordExpiry;
 
     // Constructor con campos
     public Usuari(String email) {
         this.email = email;
     }
-    
-    public Usuari() {}
+
+    public Usuari() {
+    }
 
     // --- Getters y Setters ---
-
     public String getEmail() {
         return email;
     }
@@ -73,14 +81,30 @@ public class Usuari {
     public void setRol(UserRole rol) {
         this.rol = rol;
     }
-    
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
+
+    public LocalDateTime getResetPasswordExpiry() {
+        return resetPasswordExpiry;
+    }
+
+    public void setResetPasswordExpiry(LocalDateTime resetPasswordExpiry) {
+        this.resetPasswordExpiry = resetPasswordExpiry;
+    }
+
     // Métodos de seguridad/autoridad
     public List<UserRole> getAuthorities() {
         List<UserRole> roles = new ArrayList<>();
         roles.add(this.getRol());
         return roles;
     }
-    
+
     public String getUsername() {
         return this.email;
     }
@@ -89,11 +113,15 @@ public class Usuari {
     public int hashCode() {
         return Objects.hash(email);
     }
-    
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Usuari usuari = (Usuari) o;
         return Objects.equals(email, usuari.email);
     }

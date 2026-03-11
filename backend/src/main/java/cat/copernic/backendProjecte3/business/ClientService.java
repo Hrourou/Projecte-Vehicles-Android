@@ -1,6 +1,6 @@
 package cat.copernic.backendProjecte3.business;
 
-import cat.copernic.appvehicles.dto.ClientUpdateDTO;
+import cat.copernic.backendProjecte3.dto.ClientUpdateDTO;
 import cat.copernic.backendProjecte3.config.PasswordHasher;
 import cat.copernic.backendProjecte3.dto.ClientRegistreDTO;
 import cat.copernic.backendProjecte3.entities.Client;
@@ -97,10 +97,12 @@ public class ClientService {
      * RF04: Actualizar perfil de cliente por DNI
      */
     @Transactional
-    public Client actualitzarPerfilPerDni(String dni, ClientUpdateDTO dto) {
+  // Añade esto en tu ClientService.java
+    public Client actualitzarPerfilPerEmail(String email, ClientUpdateDTO dto) {
+        // 1. Buscamos al cliente por su email
+        Client client = obtenirPerId(email); 
 
-        Client client = obtenirPerDni(dni);
-
+        // 2. Actualizamos solo los campos que vienen del formulario del móvil
         client.setNomComplet(dto.getNomComplet());
         client.setTelefon(dto.getTelefon());
         client.setAdreca(dto.getAdreca());
@@ -110,15 +112,8 @@ public class ClientService {
         client.setTipusCarnetConduir(dto.getTipusCarnetConduir());
         client.setDataCaducitatCarnet(dto.getDataCaducitatCarnet());
 
-        if (dto.getImatgeDni() != null) {
-            client.setImatgeDni(dto.getImatgeDni());
-        }
-
-        if (dto.getImatgeCarnet() != null) {
-            client.setImatgeCarnet(dto.getImatgeCarnet());
-        }
-
-        return clientRepo.save(client);
+        // 3. Guardamos en la base de datos y devolvemos el cliente actualizado
+        return clientRepo.save(client); // Cambia clientRepository por el nombre de tu repositorio JPA
     }
 
     /**

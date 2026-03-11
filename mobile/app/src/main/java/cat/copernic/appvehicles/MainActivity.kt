@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import cat.copernic.appvehicles.core.auth.SessionManager
 import cat.copernic.appvehicles.core.navigation.MainScreen
 import cat.copernic.appvehicles.ui.theme.AppVehiclesTheme
 import cat.copernic.appvehicles.usuariAnonim.data.api.remote.AuthApiService
@@ -20,12 +21,14 @@ class MainActivity : ComponentActivity() {
 
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.1.91:8080/api/")
+            .baseUrl("http://192.168.1.210:8080/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val authService = retrofit.create(AuthApiService::class.java)
-        val authRepository = AuthRepository(authService)
+
+        val sessionManager = SessionManager(applicationContext)
+        val authRepository = AuthRepository(authService, sessionManager)
 
         setContent {
             AppVehiclesTheme {
