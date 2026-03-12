@@ -5,6 +5,11 @@
 package cat.copernic.backendProjecte3.enums;
 
 /**
+ * Enumeració que representa els possibles estats en què pot trobar-se un
+ * vehicle dins del sistema.
+ *
+ * ALTA -> Vehicle disponible i operatiu BAIXA -> Vehicle fora de servei o no
+ * disponible
  *
  * @author manel
  */

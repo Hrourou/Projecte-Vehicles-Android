@@ -17,21 +17,44 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Controlador REST encarregat de gestionar les peticions HTTP relacionades amb
+ * els vehicles.
+ *
+ * Proporciona endpoints per obtenir la llista de vehicles i per cercar vehicles
+ * disponibles segons un rang de dates.
+ *
+ * Aquest controlador utilitza el servei {@link VehicleService} per accedir a la
+ * lògica de negoci.
+ *
+ * @author manel
+ */
 @RestController
 @RequestMapping("/api/vehicles")
 @CrossOrigin
 public class VehicleController {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(VehicleController.class);
 
     private final VehicleService vehicleService;
 
+    /**
+     * Constructor del controlador de vehicles.
+     *
+     * @param vehicleService servei que gestiona la lògica de negoci dels
+     * vehicles
+     */
     public VehicleController(VehicleService vehicleService) {
         this.vehicleService = vehicleService;
     }
 
     /**
-     * RF90 - Llistar vehicles
+     * Endpoint que retorna tots els vehicles disponibles al sistema.
+     *
+     * RF90 - Llistar vehicles.
+     *
+     * @return resposta HTTP amb la llista de vehicles en format DTO
+     * @throws DadesNoTrobadesException si no existeixen vehicles al sistema
      */
     @GetMapping
     public ResponseEntity<List<VehicleResponseDTO>> llistarVehicles()
@@ -51,7 +74,18 @@ public class VehicleController {
     }
 
     /**
-     * RF - Cercar vehicles disponibles per dates
+     * Endpoint que permet cercar vehicles disponibles dins d'un interval de
+     * dates.
+     *
+     * Aquest mètode rep les dates com a String, les converteix a LocalDate i
+     * crida al servei per obtenir els vehicles disponibles.
+     *
+     * @param inici data d'inici del lloguer
+     * @param fi data de finalització del lloguer
+     * @param tipus tipus de vehicle (opcional)
+     * @param codiPostal paràmetre reservat per possibles filtres futurs
+     *
+     * @return llista de vehicles disponibles en format DTO
      */
     @GetMapping("/disponibles")
     public ResponseEntity<List<VehicleResponseDTO>> cercarVehiclesDisponibles(

@@ -14,6 +14,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
+ * Repositori encarregat de gestionar l'accés a la base de dades per a l'entitat
+ * {@link Reserva}.
+ *
+ * Utilitza Spring Data JPA per proporcionar operacions CRUD automàtiques sobre
+ * la taula de reserves.
+ *
+ * També inclou consultes personalitzades per verificar solapaments de reserves
+ * i obtenir reserves per client o per vehicle.
  *
  * @author manel
  */
@@ -26,15 +34,17 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     // Buscar reservas de un vehículo
     List<Reserva> findByVehicle_Matricula(String matricula);
 
-    /***
+    /**
+     * *
      * Verifica si un vehicle ja està reservat per unes determinades dates
+     *
      * @param matricula
      * @param iniciSolicitado
      * @param fiSolicitado
-     * @return 
+     * @return
      */
     @Query("SELECT r FROM Reserva r WHERE r.vehicle.matricula = :matricula AND r.dataInici <= :fiSolicitado AND r.dataFi >= :iniciSolicitado")
     List<Reserva> findReservasSolapadas(@Param("matricula") String matricula, @Param("iniciSolicitado") LocalDate iniciSolicitado, @Param("fiSolicitado") LocalDate fiSolicitado);
-    
+
     boolean existsByVehicleAndDataFiAfter(Vehicle vehicle, LocalDate data);
 }

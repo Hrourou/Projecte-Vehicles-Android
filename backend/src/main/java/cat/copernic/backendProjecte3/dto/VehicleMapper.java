@@ -5,8 +5,24 @@ import cat.copernic.backendProjecte3.enums.TipusVehicle;
 import cat.copernic.backendProjecte3.enums.EstatVehicle;
 import java.util.Base64;
 
+/**
+ * Classe encarregada de convertir objectes de tipus {@link Vehicle} en objectes
+ * DTO ({@link VehicleResponseDTO}) que poden ser enviats al frontend.
+ *
+ * Aquest mapper evita exposar directament les entitats de la base de dades a la
+ * capa de presentació.
+ *
+ * També realitza la conversió de la imatge del vehicle des de format binari
+ * (byte[]) a Base64 per poder ser enviada correctament en format JSON.
+ */
 public class VehicleMapper {
 
+    /**
+     * Converteix una entitat Vehicle en un DTO VehicleResponseDTO.
+     *
+     * @param vehicle entitat Vehicle procedent de la base de dades
+     * @return objecte DTO amb la informació del vehicle
+     */
     // Convierte de Entity a ResponseDTO (para enviar al frontend)
     public static VehicleResponseDTO toDTO(Vehicle vehicle) {
         VehicleResponseDTO dto = new VehicleResponseDTO();

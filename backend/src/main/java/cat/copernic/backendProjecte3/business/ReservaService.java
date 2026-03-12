@@ -22,9 +22,24 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Servei de negoci encarregat de gestionar tota la lògica relacionada amb les
+ * reserves dins del sistema.
+ *
+ * Aquesta classe actua com a capa intermèdia entre el controlador
+ * (ReservaController) i els repositoris de base de dades.
+ *
+ * Permet crear reserves, consultar reserves d'un client, obtenir reserves per
+ * identificador i anul·lar reserves existents.
+ *
+ * També s'encarrega de validar: - permisos d'usuari - disponibilitat del
+ * vehicle - rang de dates - límits de dies per vehicle
+ *
+ * @author manel
+ */
 @Service
 public class ReservaService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ReservaService.class);
 
     private final ReservaRepository reservaRepository;
@@ -50,17 +65,54 @@ public class ReservaService {
         this.clientRepository = clientRepository;
     }
 
+    /**
+     * Obté totes les reserves associades a un client concret.
+     *
+     * @param email correu electrònic del client
+     * @return llista de reserves del client
+     */
     public List<Reserva> obtenirPerClient(String email) {
         return reservaRepository.findByClient_Email(email);
     }
 
+    /**
+     * Obté una reserva concreta a partir del seu identificador.
+     *
+     * @param id identificador de la reserva
+     * @return reserva trobada
+     * @throws ReservaNoTrobadaException si la reserva no existeix
+     */
     public Reserva obtenirPerId(Long id) throws ReservaNoTrobadaException {
         return reservaRepository.findById(id)
                 .orElseThrow(() -> new ReservaNoTrobadaException("Reserva no trobada"));
     }
 
+    /**
+     * Crea una nova reserva per a un vehicle determinat.
+     *
+     * Aquest mètode valida: - el rol de l'usuari - que les dates siguin
+     * correctes - que el vehicle estigui disponible - que els dies de reserva
+     * compleixin els límits del vehicle
+     *
+     * També calcula el preu total de la reserva i guarda la informació a la
+     * base de dades.
+     *
+     * @param emailClient email del client que fa la reserva
+     * @param matricula matrícula del vehicle reservat
+     * @param inici data d'inici de la reserva
+     * @param fi data de finalització de la reserva
+     * @param userName usuari que realitza l'acció
+     *
+     * @return reserva creada i guardada a la base de dades
+     *
+     * @throws ReservaDatesNoValidsException si les dates no són vàlides
+     * @throws VehicleNoDisponibleException si el vehicle no està disponible
+     * @throws AccesDenegatException si l'usuari no té permisos
+     * @throws DadesNoTrobadesException si no es troben dades necessàries
+     */
+
     @Transactional
-    public Reserva crearReserva(String emailClient, String matricula, LocalDate inici, LocalDate fi, String userName) 
+    public Reserva crearReserva(String emailClient, String matricula, LocalDate inici, LocalDate fi, String userName)
             throws ReservaDatesNoValidsException, VehicleNoDisponibleException, AccesDenegatException, DadesNoTrobadesException {
 
         // Control de ROL
@@ -90,8 +142,9 @@ public class ReservaService {
         Vehicle vehicle = vehicleRepository.findById(matricula)
                 .orElseThrow(() -> new DadesNoTrobadesException("Vehicle no trobat"));
 
-        if (vehicle.getEstatVehicle().equals(EstatVehicle.BAIXA))
+        if (vehicle.getEstatVehicle().equals(EstatVehicle.BAIXA)) {
             throw new VehicleNoDisponibleException("El vehicle està fora de servei");
+        }
 
         // --- NOU: VALIDAR LÍMITS REALS DEL VEHICLE ---
         long dies = ChronoUnit.DAYS.between(inici, fi);
@@ -99,8 +152,8 @@ public class ReservaService {
 
         if (dies < vehicle.getMinDiesLloguer() || dies > vehicle.getMaxDiesLloguer()) {
             throw new ReservaDatesNoValidsException(
-                "Els dies seleccionats (" + dies + ") no estan permesos per a aquest vehicle. Límits: "
-                + vehicle.getMinDiesLloguer() + " - " + vehicle.getMaxDiesLloguer() + " dies."
+                    "Els dies seleccionats (" + dies + ") no estan permesos per a aquest vehicle. Límits: "
+                    + vehicle.getMinDiesLloguer() + " - " + vehicle.getMaxDiesLloguer() + " dies."
             );
         }
 
@@ -130,12 +183,12 @@ public class ReservaService {
         // ENVIAMENT DEL CORREU REAL D'ALTA
         try {
             emailService.sendReservationCreatedEmail(
-                client.getEmail(),
-                client.getNomComplet(),
-                vehicle.getMatricula(),
-                inici.toString(),
-                fi.toString(),
-                "RES-" + reservaGuardada.getIdReserva()
+                    client.getEmail(),
+                    client.getNomComplet(),
+                    vehicle.getMatricula(),
+                    inici.toString(),
+                    fi.toString(),
+                    "RES-" + reservaGuardada.getIdReserva()
             );
         } catch (Exception e) {
             System.err.println("Error enviant el correu d'alta de reserva: " + e.getMessage());
@@ -144,6 +197,24 @@ public class ReservaService {
         return reservaGuardada;
     }
 
+    /**
+     * Anul·la una reserva existent.
+     *
+     * El sistema comprova: - permisos de l'usuari - que la reserva encara no
+     * hagi començat
+     *
+     * Si la cancel·lació es fa amb prou antelació, es calcula el reemborsament
+     * corresponent.
+     *
+     * @param idReserva identificador de la reserva
+     * @param userName usuari que realitza la cancel·lació
+     *
+     * @return informació sobre el resultat de la cancel·lació
+     *
+     * @throws ReservaNoTrobadaException si la reserva no existeix
+     * @throws AccesDenegatException si l'usuari no té permisos
+     * @throws ReservaNoCancelableException si la reserva no es pot cancel·lar
+     */
     @Transactional
     public CancelReservaResponse anularReserva(Long idReserva, String userName)
             throws ReservaNoTrobadaException, AccesDenegatException, ReservaNoCancelableException {
@@ -177,11 +248,11 @@ public class ReservaService {
 
         try {
             emailService.sendReservationCancelledEmail(
-                reserva.getClient().getEmail(),
-                reserva.getClient().getNomComplet(),
-                reserva.getVehicle().getMatricula(),
-                "RES-" + idReserva,
-                refund.doubleValue()
+                    reserva.getClient().getEmail(),
+                    reserva.getClient().getNomComplet(),
+                    reserva.getVehicle().getMatricula(),
+                    "RES-" + idReserva,
+                    refund.doubleValue()
             );
         } catch (Exception e) {
             System.err.println("Error enviant el correu d'anul·lació: " + e.getMessage());

@@ -14,6 +14,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
+ * Repositori encarregat de gestionar l'accés a la base de dades per a l'entitat
+ * {@link Vehicle}.
+ *
+ * Aquesta interfície utilitza Spring Data JPA i permet realitzar operacions
+ * CRUD automàtiques sobre la taula de vehicles.
+ *
+ * També inclou una consulta personalitzada per obtenir vehicles disponibles
+ * dins d'un rang de dates determinat.
  *
  * @author manel
  */

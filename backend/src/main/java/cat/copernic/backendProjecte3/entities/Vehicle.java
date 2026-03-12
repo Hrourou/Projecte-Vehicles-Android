@@ -8,6 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Entitat que representa un vehicle dins del sistema.
+ *
+ * Aquesta classe està mapejada a la taula "vehicle" de la base de dades
+ * mitjançant JPA/Hibernate.
+ *
+ * Conté tota la informació relacionada amb un vehicle disponible per al
+ * lloguer, incloent dades tècniques, econòmiques i informació sobre la seva
+ * disponibilitat.
+ *
+ * També manté la relació amb les reserves associades.
+ */
 @Entity
 @Table(name = "vehicle")
 public class Vehicle {
@@ -29,7 +41,7 @@ public class Vehicle {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] fotoBinario;  // NUEVO: Almacena la imagen como BLOB
-    
+
     private String fotoUrl;  // Lo mantenemos por compatibilidad
 
     private String potencia;
@@ -59,63 +71,154 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle")
     private List<Reserva> reservas = new ArrayList<>();
 
-    public Vehicle() {}
+    public Vehicle() {
+    }
 
     // GETTERS Y SETTERS
-    public String getMatricula() { return matricula; }
-    public void setMatricula(String matricula) { this.matricula = matricula; }
+    public String getMatricula() {
+        return matricula;
+    }
 
-    public String getMarca() { return marca; }
-    public void setMarca(String marca) { this.marca = marca; }
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
 
-    public String getModel() { return model; }
-    public void setModel(String model) { this.model = model; }
+    public String getMarca() {
+        return marca;
+    }
 
-    public String getVariant() { return variant; }
-    public void setVariant(String variant) { this.variant = variant; }
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getVariant() {
+        return variant;
+    }
+
+    public void setVariant(String variant) {
+        this.variant = variant;
+    }
 
     // NUEVOS GETTERS Y SETTERS PARA fotoBinario
-    public byte[] getFotoBinario() { return fotoBinario; }
-    public void setFotoBinario(byte[] fotoBinario) { this.fotoBinario = fotoBinario; }
+    public byte[] getFotoBinario() {
+        return fotoBinario;
+    }
 
-    public String getFotoUrl() { return fotoUrl; }
-    public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
+    public void setFotoBinario(byte[] fotoBinario) {
+        this.fotoBinario = fotoBinario;
+    }
 
-    public String getPotencia() { return potencia; }
-    public void setPotencia(String potencia) { this.potencia = potencia; }
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
 
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
 
-    public Integer getLimitQuilometratge() { return limitQuilometratge; }
-    public void setLimitQuilometratge(Integer limitQuilometratge) { this.limitQuilometratge = limitQuilometratge; }
+    public String getPotencia() {
+        return potencia;
+    }
 
-    public BigDecimal getPreuHora() { return preuHora; }
-    public void setPreuHora(BigDecimal preuHora) { this.preuHora = preuHora; }
+    public void setPotencia(String potencia) {
+        this.potencia = potencia;
+    }
 
-    public BigDecimal getFiancaEstandard() { return fiancaEstandard; }
-    public void setFiancaEstandard(BigDecimal fiancaEstandard) { this.fiancaEstandard = fiancaEstandard; }
+    public String getColor() {
+        return color;
+    }
 
-    public Integer getMinDiesLloguer() { return minDiesLloguer; }
-    public void setMinDiesLloguer(Integer minDiesLloguer) { this.minDiesLloguer = minDiesLloguer; }
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-    public Integer getMaxDiesLloguer() { return maxDiesLloguer; }
-    public void setMaxDiesLloguer(Integer maxDiesLloguer) { this.maxDiesLloguer = maxDiesLloguer; }
+    public Integer getLimitQuilometratge() {
+        return limitQuilometratge;
+    }
 
-    public TipusVehicle getTipusVehicle() { return tipusVehicle; }
-    public void setTipusVehicle(TipusVehicle tipusVehicle) { this.tipusVehicle = tipusVehicle; }
+    public void setLimitQuilometratge(Integer limitQuilometratge) {
+        this.limitQuilometratge = limitQuilometratge;
+    }
 
-    public EstatVehicle getEstatVehicle() { return estatVehicle; }
-    public void setEstatVehicle(EstatVehicle estatVehicle) { this.estatVehicle = estatVehicle; }
+    public BigDecimal getPreuHora() {
+        return preuHora;
+    }
 
-    public String getComentarisPrivats() { return comentarisPrivats; }
-    public void setComentarisPrivats(String comentarisPrivats) { this.comentarisPrivats = comentarisPrivats; }
+    public void setPreuHora(BigDecimal preuHora) {
+        this.preuHora = preuHora;
+    }
 
-    public String getRutaDocumentacioPrivada() { return rutaDocumentacioPrivada; }
-    public void setRutaDocumentacioPrivada(String rutaDocumentacioPrivada) { this.rutaDocumentacioPrivada = rutaDocumentacioPrivada; }
+    public BigDecimal getFiancaEstandard() {
+        return fiancaEstandard;
+    }
 
-    public List<Reserva> getReservas() { return reservas; }
-    public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
+    public void setFiancaEstandard(BigDecimal fiancaEstandard) {
+        this.fiancaEstandard = fiancaEstandard;
+    }
+
+    public Integer getMinDiesLloguer() {
+        return minDiesLloguer;
+    }
+
+    public void setMinDiesLloguer(Integer minDiesLloguer) {
+        this.minDiesLloguer = minDiesLloguer;
+    }
+
+    public Integer getMaxDiesLloguer() {
+        return maxDiesLloguer;
+    }
+
+    public void setMaxDiesLloguer(Integer maxDiesLloguer) {
+        this.maxDiesLloguer = maxDiesLloguer;
+    }
+
+    public TipusVehicle getTipusVehicle() {
+        return tipusVehicle;
+    }
+
+    public void setTipusVehicle(TipusVehicle tipusVehicle) {
+        this.tipusVehicle = tipusVehicle;
+    }
+
+    public EstatVehicle getEstatVehicle() {
+        return estatVehicle;
+    }
+
+    public void setEstatVehicle(EstatVehicle estatVehicle) {
+        this.estatVehicle = estatVehicle;
+    }
+
+    public String getComentarisPrivats() {
+        return comentarisPrivats;
+    }
+
+    public void setComentarisPrivats(String comentarisPrivats) {
+        this.comentarisPrivats = comentarisPrivats;
+    }
+
+    public String getRutaDocumentacioPrivada() {
+        return rutaDocumentacioPrivada;
+    }
+
+    public void setRutaDocumentacioPrivada(String rutaDocumentacioPrivada) {
+        this.rutaDocumentacioPrivada = rutaDocumentacioPrivada;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
 
     @Override
     public int hashCode() {
@@ -124,21 +227,25 @@ public class Vehicle {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Vehicle)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Vehicle)) {
+            return false;
+        }
         Vehicle other = (Vehicle) obj;
         return Objects.equals(this.matricula, other.matricula);
     }
 
     @Override
     public String toString() {
-        return "Vehicle{" +
-                "matricula=" + matricula +
-                ", marca=" + marca +
-                ", model=" + model +
-                ", variant=" + variant +
-                ", preuHora=" + preuHora +
-                '}';
+        return "Vehicle{"
+                + "matricula=" + matricula
+                + ", marca=" + marca
+                + ", model=" + model
+                + ", variant=" + variant
+                + ", preuHora=" + preuHora
+                + '}';
     }
-    
+
 }
