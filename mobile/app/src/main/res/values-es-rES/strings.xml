@@ -217,5 +217,9 @@
     <string name="error_icon">Error</string>
     <string name="no_image">Sin imagen</string>
     <string name="notification">Notificación</string>
-
+    <string name="error_user_not_exist">El usuario no existe</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="lowest_price">Precio más bajo</string>
+    <string name="highest_price">Precio más alto</string>
 </resources>
