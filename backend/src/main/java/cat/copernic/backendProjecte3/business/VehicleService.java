@@ -33,6 +33,13 @@ public class VehicleService {
     }
 
     public List<Vehicle> cercarVehiclesDisponibles(LocalDate inici, LocalDate fi, TipusVehicle tipus) {
-        return vehicleRepository.findDisponibles(inici, fi, tipus);
+
+    long dies = java.time.temporal.ChronoUnit.DAYS.between(inici, fi);
+
+    if (dies < 2 || dies > 15) {
+        throw new IllegalArgumentException("El rang de dies ha de ser entre 2 i 15 dies");
     }
+
+    return vehicleRepository.findDisponibles(inici, fi, tipus);
+}
 }

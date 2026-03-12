@@ -21,15 +21,17 @@ import org.springframework.stereotype.Repository;
 public interface VehicleRepository extends JpaRepository<Vehicle, String> {
 
     @Query("""
-        SELECT v FROM Vehicle v
-        WHERE v.tipusVehicle = :tipus
-        AND NOT EXISTS (
-            SELECT r FROM Reserva r
-            WHERE r.vehicle = v
-            AND r.dataInici <= :fi
-            AND r.dataFi >= :inici
-        )
-    """)
+    SELECT v FROM Vehicle v
+    WHERE (:tipus IS NULL OR v.tipusVehicle = :tipus)
+    AND NOT EXISTS (
+        SELECT r FROM Reserva r
+        WHERE r.vehicle = v
+        AND r.estat = 'ACTIVA'
+        AND r.dataInici <= :fi
+        AND r.dataFi >= :inici
+    )
+""")
+
     List<Vehicle> findDisponibles(
             @Param("inici") LocalDate inici,
             @Param("fi") LocalDate fi,
