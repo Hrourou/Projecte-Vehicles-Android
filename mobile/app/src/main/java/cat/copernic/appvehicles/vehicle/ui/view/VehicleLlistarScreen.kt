@@ -91,17 +91,30 @@ fun VehicleLlistarScreen(
                             context,
                             { _: DatePicker, year: Int, month: Int, day: Int ->
 
-                                fechaInicio = "$year-${month + 1}-$day"
+                                fechaInicio = "%04d-%02d-%02d".format(year, month + 1, day)
 
                                 DatePickerDialog(
                                     context,
                                     { _: DatePicker, year2: Int, month2: Int, day2: Int ->
 
-                                        fechaFin = "$year2-${month2 + 1}-$day2"
+                                        fechaFin = "%04d-%02d-%02d".format(year2, month2 + 1, day2)
 
                                         if (fechaInicio.isNotBlank() && fechaFin.isNotBlank()) {
-                                            viewModel.loadVehiclesDisponibles(fechaInicio, fechaFin)
+
+                                            val start = java.time.LocalDate.parse(fechaInicio)
+                                            val end = java.time.LocalDate.parse(fechaFin)
+
+                                            val days = java.time.temporal.ChronoUnit.DAYS.between(start, end)
+
+                                            if (days < 2 || days > 15) {
+                                                android.widget.Toast
+                                                    .makeText(context, "Reservation must be between 2 and 15 days", android.widget.Toast.LENGTH_LONG)
+                                                    .show()
+                                            } else {
+                                                viewModel.loadVehiclesDisponibles(fechaInicio, fechaFin)
+                                            }
                                         }
+
 
                                     },
                                     calendar.get(Calendar.YEAR),
