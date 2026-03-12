@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,8 +19,7 @@ fun AppBottomNavigation(navController: NavHostController) {
     val items = listOf(
         Triple(AppRoutes.Vehicles.route, R.string.nav_home, Icons.Default.Home),
         Triple(AppRoutes.Reserves.route, R.string.nav_reservations, Icons.Default.ShoppingCart),
-        Triple(AppRoutes.Perfil.route, R.string.nav_profile, Icons.Default.Person),
-        Triple(AppRoutes.Register.route, R.string.nav_register, Icons.Default.PersonAdd)
+        Triple(AppRoutes.Perfil.route, R.string.nav_profile, Icons.Default.Person)
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -38,15 +36,21 @@ fun AppBottomNavigation(navController: NavHostController) {
                 label = { Text(label) },
                 selected = currentRoute == route,
                 onClick = {
+                    // Evitamos que haga cosas si ya estás pulsando la pestaña en la que estás
+                    if (currentRoute != route) {
+                        navController.navigate(route) {
 
-                    navController.navigate(route) {
+                            // LIMPIEZA BRUSCA: Saca cualquier pantalla (Login/Register) que esté por encima de Inicio
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                // Quitamos el saveState = true para que no se atasque
+                                inclusive = false
+                            }
 
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                            // Evitamos abrir la misma pantalla varias veces
+                            launchSingleTop = true
+
+                            // Quitamos el restoreState = true para evitar bloqueos
                         }
-
-                        launchSingleTop = true
-                        restoreState = true
                     }
                 }
             )

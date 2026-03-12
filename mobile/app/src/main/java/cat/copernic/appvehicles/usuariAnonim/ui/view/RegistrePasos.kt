@@ -105,12 +105,19 @@ fun Pas2DadesConduccio(state: RegisterUiState, onStateChange: (RegisterUiState) 
         ) { DatePicker(state = datePickerState) }
     }
 
+    // --- LAUNCHER PARA LA FOTO DE LA LICENCIA (El que ya tenías) ---
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> if (uri != null) onStateChange(state.copy(fotoLlicenciaUri = uri.toString())) }
     )
 
+
+
+    // TÍTULO DEL PASO 2
     Text(stringResource(R.string.dades_de_conducci_i_pagament), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+
+
+    // CAMPOS ORIGINALES DE CONDUCCIÓN
     ExposedDropdownMenuBox(
         expanded = expaditLlicencia,
         onExpandedChange = { expaditLlicencia = !expaditLlicencia }
@@ -147,13 +154,12 @@ fun Pas2DadesConduccio(state: RegisterUiState, onStateChange: (RegisterUiState) 
     )
 
     ImageUploadOrPreview(
-        label = "Pujar foto llicència", // <-- TEXTO CORREGIDO
-        imageUri = state.fotoLlicenciaUri, // <-- VARIABLE CORREGIDA
+        label = "Pujar foto llicència",
+        imageUri = state.fotoLlicenciaUri,
         onUploadClick = {
             photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         },
         onDeleteClick = {
-            // <-- VARIABLE CORREGIDA AL BORRAR
             onStateChange(state.copy(fotoLlicenciaUri = null))
         }
     )
@@ -181,9 +187,31 @@ fun Pas3DadesContacte(state: RegisterUiState, onStateChange: (RegisterUiState) -
     var expadit by remember { mutableStateOf(false) }
 
     Text(stringResource(R.string.dades_de_contacte_i_acc_s), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+
+    // --- LAUNCHER FOTO PERFIL ---
+    val profilePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> if (uri != null) onStateChange(state.copy(fotoPerfilUri = uri.toString())) }
+    )
+
+// --- FOTO PERFIL (ARRIBA DEL TODO) ---
+    ImageUploadOrPreview(
+        label = "Pujar foto de perfil (Opcional)",
+        imageUri = state.fotoPerfilUri,
+        onUploadClick = {
+            profilePhotoPickerLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+        },
+        onDeleteClick = {
+            onStateChange(state.copy(fotoPerfilUri = null))
+        }
+    )
+
     ReusableTextField(value = state.adreca, onValueChange = { onStateChange(state.copy(adreca = it)) }, label = stringResource(
         R.string.adre_a
     ))
+
 
     ExposedDropdownMenuBox(
         expanded = expadit,

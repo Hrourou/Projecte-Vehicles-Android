@@ -14,6 +14,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.client.ui.viewmodel.LoginViewModel
+import cat.copernic.appvehicles.core.composables.ReusableTextField
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,21 +67,18 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
+                    ReusableTextField(
                         value = state.email,
                         onValueChange = vm::onEmailChanged,
-                        modifier = Modifier.fillMaxWidth(),
-                        label = { Text(stringResource(R.string.email_label)) },
-                        singleLine = true,
-                        isError = state.emailError != null
+                        label = stringResource(R.string.email_usuari),
+                        placeholder = stringResource(R.string.email_example_com)
                     )
 
-                    state.emailError?.let {
+                    state.emailError?.let { errorKey ->
                         Text(
-                            text = stringResource(errorKeyToRes(it)),
+                            text = stringResource(errorKeyToRes(errorKey)),
                             color = MaterialTheme.colorScheme.error
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -163,10 +164,27 @@ fun LoginScreen(
     }
 }
 
-private fun errorKeyToRes(key: String): Int = when (key) {
-    "email_required" -> R.string.error_email_required
-    "email_invalid" -> R.string.error_email_invalid
-    "password_required" -> R.string.error_password_required
-    "invalid_credentials" -> R.string.error_invalid_credentials
-    else -> R.string.error_generic
+private fun errorKeyToRes(key: String): Int {
+    val lowercaseKey = key.lowercase()
+
+    return when {
+        lowercaseKey == "email_required" -> R.string.error_email_required
+        lowercaseKey == "email_invalid" -> R.string.error_email_invalid
+        lowercaseKey == "password_required" -> R.string.error_password_required
+        lowercaseKey == "invalid_credentials" -> R.string.error_invalid_credentials
+        lowercaseKey == "user_not_exist" -> R.string.error_user_not_exist
+
+        // Atrapamos "Usuario no existe"
+        lowercaseKey.contains("usuari no existeix") || lowercaseKey.contains("usuari no trobat") -> R.string.error_user_not_exist
+
+        // ATRAPAMOS CUALQUIER FALLO DE CONTRASEÑA O CREDENCIALES
+        lowercaseKey.contains("credencials incorrectes") ||
+                lowercaseKey.contains("bad credentials") ||
+                lowercaseKey.contains("bad password") ||
+                lowercaseKey.contains("wrong password") ||
+                lowercaseKey.contains("contrasenya incorrecta") ||
+                lowercaseKey.contains("contraseña incorrecta") -> R.string.error_invalid_credentials
+
+        else -> R.string.error_generic
+    }
 }

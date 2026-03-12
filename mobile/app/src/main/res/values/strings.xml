@@ -207,5 +207,12 @@
 
     <string name="close">Close</string>
     <string name="sort_list">Sort list</string>
+    <string name="lowest_price">Lowest Price</string>
+    <string name="highest_price">Highest Price</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+
+    <string name="error_user_not_exist">User does not exist</string>
+
 
 </resources>

@@ -17,13 +17,7 @@ class LoginViewModel(
     val uiState: StateFlow<LoginUiState> = _uiState
 
     fun onEmailChanged(newValue: String) {
-        _uiState.update { current ->
-            current.copy(
-                email = newValue,
-                emailError = validateEmail(newValue),
-                generalError = null
-            )
-        }
+        _uiState.update { it.copy(email = newValue) }
     }
 
     fun onPasswordChanged(newValue: String) {
@@ -37,42 +31,50 @@ class LoginViewModel(
     }
 
     fun onLoginClick() {
+        // 1️⃣ Limpiar errores anteriores
+        _uiState.update { it.copy(emailError = null, passwordError = null, generalError = null) }
+
         val state = _uiState.value
+        val llistaErrors = mutableListOf<String>()
 
-        val emailError = validateEmail(state.email)
-        val passError = validatePassword(state.password)
+        // Validación de email
+        if (state.email.isBlank()) {
+            llistaErrors.add("email_required")
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(state.email).matches()) {
+            llistaErrors.add("email_invalid")
+        }
 
-        if (emailError != null || passError != null) {
-            _uiState.update { it.copy(emailError = emailError, passwordError = passError) }
+        // Validación de password
+        if (state.password.isBlank()) {
+            llistaErrors.add("password_required")
+        }
+
+        // Asignar errores si hay
+        if (llistaErrors.isNotEmpty()) {
+            _uiState.update {
+                it.copy(
+                    emailError = if (llistaErrors.contains("email_required") || llistaErrors.contains("email_invalid")) llistaErrors.first { it.startsWith("email") } else null,
+                    passwordError = if (llistaErrors.contains("password_required")) "password_required" else null
+                )
+            }
             return
         }
 
+        // Si todo está bien, lanzar login
         viewModelScope.launch {
-            // Ponemos la pantalla en modo carga y limpiamos errores anteriores
-            _uiState.update { it.copy(isLoading = true, generalError = null) }
+            _uiState.update { it.copy(isLoading = true) }
 
-            // Llamada REAL a la API a través del Repositorio
             val result = authRepository.login(state.email, state.password)
 
             result.fold(
                 onSuccess = {
-                    // Si va bien, el repositorio ya guardó la sesión. Solo actualizamos la UI.
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            isLoggedIn = true,
-                            generalError = null
-                        )
+                        it.copy(isLoading = false, isLoggedIn = true, generalError = null)
                     }
                 },
                 onFailure = { exception ->
-                    // Si falla (credenciales incorrectas, error de red), mostramos el error
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            isLoggedIn = false,
-                            generalError = exception.message
-                        )
+                        it.copy(isLoading = false, isLoggedIn = false, generalError = exception.message)
                     }
                 }
             )

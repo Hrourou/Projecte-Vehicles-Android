@@ -30,7 +30,8 @@ data class RegisterUiState(
     val errorMessage: String? = null,
     val isSuccess: Boolean = false,
     val fotoIdentificacioUri: String? = null,
-    val fotoLlicenciaUri: String? = null
+    val fotoLlicenciaUri: String? = null,
+    val fotoPerfilUri: String? = null
 )
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)

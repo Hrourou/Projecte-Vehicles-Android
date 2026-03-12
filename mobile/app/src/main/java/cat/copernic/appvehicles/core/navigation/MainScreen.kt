@@ -73,19 +73,10 @@ fun MainScreen(
 
         NavHost(
             navController = navController,
-            startDestination = AppRoutes.Inici.route,
+            startDestination = AppRoutes.Vehicles.route,
             modifier = Modifier.padding(paddingValues)
         ) {
 
-            // HOME
-            composable(AppRoutes.Inici.route) {
-                HomeScreen(
-                    viewModel = vehicleViewModel,
-                    onVehicleClick = { matricula ->
-                        navController.navigate("${AppRoutes.VehicleDetail.route}/$matricula")
-                    }
-                )
-            }
 
             // RESERVES LIST
             composable(AppRoutes.Reserves.route) {
@@ -138,12 +129,14 @@ fun MainScreen(
             }
 
             // PERFIL
+            // PERFIL
             composable(AppRoutes.Perfil.route) {
                 ProfileEntryScreen(
                     authRepository = repository,
                     onLoginSuccessNavigate = {
-                        navController.navigate(AppRoutes.Inici.route) {
-                            popUpTo(AppRoutes.Inici.route) { inclusive = true }
+                        // CORRECCIÓN: Ahora limpiamos hasta 'Vehicles' (nuestra nueva pantalla principal)
+                        navController.navigate(AppRoutes.Vehicles.route) {
+                            popUpTo(AppRoutes.Vehicles.route) { inclusive = true }
                         }
                     }
                 )
@@ -155,7 +148,15 @@ fun MainScreen(
                     viewModel = vehicleViewModel,
                     onVehicleClick = { matricula: String ->
                         navController.navigate("${AppRoutes.VehicleDetail.route}/$matricula")
+                    },
+                    // --- AÑADIMOS ESTAS DOS LÍNEAS ---
+                    onLoginClick = {
+                        navController.navigate(AppRoutes.Perfil.route) // Asumiendo que 'Inici' es tu pantalla de Login
+                    },
+                    onRegisterClick = {
+                        navController.navigate(AppRoutes.Register.route)
                     }
+                    // ---------------------------------
                 )
             }
 
@@ -187,7 +188,7 @@ fun MainScreen(
                     viewModel = registerViewModel,
                     onNavigateBack = { navController.popBackStack() },
                     onRegisterSuccess = {
-                        navController.navigate(AppRoutes.Inici.route) {
+                        navController.navigate(AppRoutes.Vehicles.route) {
                             popUpTo(AppRoutes.Register.route) { inclusive = true }
                         }
                     }

@@ -14,6 +14,7 @@ data class ClientRegisterRequest(
     val imatgeDni: String,
     val nacionalitat: String,
     val adreca: String,
+    val fotoPerfil: String? = null,
 
     // Datos de Conducción
     val tipusCarnetConduir: String,

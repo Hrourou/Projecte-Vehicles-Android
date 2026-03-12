@@ -55,14 +55,14 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
             if (response.isSuccessful && response.body() != null) {
                 val p = response.body()!!
 
-                android.util.Log.d("DEBUG_FOTOS", "DNI Base64 (primeros 50 chars): ${p.imatgeDni?.take(50)}")
-
+                android.util.Log.d("DEBUG_PERFIL", "⬇️ DESCARGANDO: Foto de perfil recibida: ${p.fotoPerfil?.take(40)}")
                 // AHORA EL BACKEND NOS ENVÍA BASE64 DIRECTAMENTE
                 // Para que la UI (Coil) lo pinte como si fuera una URI, le añadimos este prefijo estándar:
                 val prefix = "data:image/jpeg;base64,"
 
                 val base64Dni = p.imatgeDni?.let { if (it.isNotBlank()) prefix + it else null }
                 val base64Carnet = p.imatgeCarnet?.let { if (it.isNotBlank()) prefix + it else null }
+                val base64Perfil = p.fotoPerfil?.let { if (it.isNotBlank()) prefix + it else null }
 
                 _uiState.value = EditProfileUiState(
                     isLoading = false,
@@ -77,7 +77,7 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
                     tipusCarnetConduir = p.tipusCarnetConduir.orEmpty(),
                     dataCaducitatCarnet = p.dataCaducitatCarnet.orEmpty(),
 
-                    photoUri = null,
+                    photoUri = base64Perfil,
                     // Asignamos el Base64 listo para pintar
                     dniImageUri = base64Dni,
                     licenseImageUri = base64Carnet
@@ -196,8 +196,10 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
 
                         // ¡Ahora sí, 100% Kotlin!
                 imatgeDni = uriToBase64(getApplication<Application>(), s.dniImageUri),
-                imatgeCarnet = uriToBase64(getApplication<Application>(), s.licenseImageUri)
+                imatgeCarnet = uriToBase64(getApplication<Application>(), s.licenseImageUri),
+                fotoPerfil = uriToBase64(getApplication<Application>(), s.photoUri)
             )
+            android.util.Log.d("DEBUG_PERFIL", "⬆️ SUBIENDO: Foto de perfil a enviar: ${req.fotoPerfil?.take(40)}")
 
             val response = repo.updateClient(email, req)
             if (response.isSuccessful) {

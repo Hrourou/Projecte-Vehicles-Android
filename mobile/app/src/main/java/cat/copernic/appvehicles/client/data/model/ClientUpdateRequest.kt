@@ -11,5 +11,6 @@ data class ClientUpdateRequest(
     val dataCaducitatCarnet: String?,
 
     val imatgeDni: String? = null,
-    val imatgeCarnet: String? = null
+    val imatgeCarnet: String? = null,
+    val fotoPerfil: String? = null
 )

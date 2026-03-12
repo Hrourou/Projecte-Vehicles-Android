@@ -207,4 +207,10 @@
     <string name="err_targeta_format">La tarjeta debe tener entre 13 y 19 dígitos.</string>
     <string name="err_foto_llicencia">Debes subir la foto de la licencia.</string>
     <string name="err_foto_identificacio">Debes subir la foto de identificación.</string>
+    <string name="lowest_price">Preu més baix</string>
+    <string name="highest_price">Preu més alt</string>
+    <string name="login">Inicia Sessió</string>
+    <string name="register">Regista\'t</string>
+
+    <string name="error_user_not_exist">L\'usuari no existeix</string>
 </resources>

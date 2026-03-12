@@ -74,6 +74,7 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
                 // 1. Convertir las imágenes (URIs) a Strings en Base64
                 val imatgeDniBase64 = uriToBase64(context, currentState.fotoIdentificacioUri)
                 val imatgeCarnetBase64 = uriToBase64(context, currentState.fotoLlicenciaUri)
+                val imatgePerfilBase64 = uriToBase64(context, currentState.fotoPerfilUri)
 
                 if (imatgeDniBase64.isBlank() || imatgeCarnetBase64.isBlank()) {
                     _uiState.update {
@@ -91,6 +92,7 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
                     dataCaducitatDni = currentState.dataCaducitatId.ifBlank { "2025-01-01" },
                     imatgeDni = imatgeDniBase64, // ¡Aquí pasamos el Base64 directamente!
                     nacionalitat = currentState.nacionalitat,
+                    fotoPerfil = imatgePerfilBase64,
                     adreca = currentState.adreca,
                     tipusCarnetConduir = currentState.tipusLlicencia,
                     dataCaducitatCarnet = currentState.dataCaducitatLlicencia.ifBlank { "2030-01-01" },
