@@ -2,6 +2,7 @@ package cat.copernic.appvehicles.vehicle.ui.view
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,15 +37,16 @@ fun VehicleLlistarScreen(
     onRegisterClick: () -> Unit = {},
     viewModel: VehicleViewModel = viewModel()
 ) {
+
     var fechaInicio by remember { mutableStateOf("") }
     var fechaFin by remember { mutableStateOf("") }
+
     var ordenAscendente by remember { mutableStateOf(true) }
     var expandedPrice by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
 
-    // GESTIÓN DE SESIÓN
     val sessionManager = remember { cat.copernic.appvehicles.core.auth.SessionManager(context) }
     val userEmail by sessionManager.userEmailFlow.collectAsState(initial = null)
     val isUserLoggedIn = !userEmail.isNullOrBlank()
@@ -59,12 +62,12 @@ fun VehicleLlistarScreen(
         if (ordenAscendente) vehicles.sortedBy { it.preuHora }
         else vehicles.sortedByDescending { it.preuHora }
 
-    // Texto dinámico para el botón de fechas
-    val dateButtonText = if (fechaInicio.isNotBlank() && fechaFin.isNotBlank()) {
-        "${fechaInicio.substring(5)} to ${fechaFin.substring(5)}" // Muestra ej: "03-12 to 03-15"
-    } else {
-        stringResource(R.string.select_dates)
-    }
+    val dateButtonText =
+        if (fechaInicio.isNotBlank() && fechaFin.isNotBlank()) {
+            "${fechaInicio.substring(5)} to ${fechaFin.substring(5)}"
+        } else {
+            stringResource(R.string.select_dates)
+        }
 
     Scaffold(
         topBar = {
@@ -77,26 +80,25 @@ fun VehicleLlistarScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
                 actions = {
+
                     if (!isUserLoggedIn) {
-                        TextButton(
-                            onClick = onLoginClick,
-                            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
-                        ) {
-                            Text(stringResource(R.string.login), fontWeight = FontWeight.SemiBold)
+
+                        TextButton(onClick = onLoginClick) {
+                            Text(stringResource(R.string.login))
                         }
+
                         Button(
                             onClick = onRegisterClick,
-                            modifier = Modifier.padding(end = 8.dp),
-                            shape = RoundedCornerShape(20.dp) // Botón un poco más redondo
+                            modifier = Modifier.padding(end = 8.dp)
                         ) {
                             Text(stringResource(R.string.register))
                         }
+
                     } else {
-                        // "Pastilla" elegante para mostrar el usuario
+
                         Surface(
                             color = MaterialTheme.colorScheme.secondaryContainer,
                             shape = RoundedCornerShape(16.dp),
@@ -106,17 +108,18 @@ fun VehicleLlistarScreen(
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
+
                                 Icon(
                                     imageVector = Icons.Default.Person,
                                     contentDescription = "User",
-                                    modifier = Modifier.size(16.dp),
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    modifier = Modifier.size(16.dp)
                                 )
+
                                 Spacer(modifier = Modifier.width(6.dp))
+
                                 Text(
                                     text = userEmail ?: "",
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -131,7 +134,7 @@ fun VehicleLlistarScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp, vertical = 8.dp) // Ajuste de padding
+                .padding(horizontal = 16.dp)
         ) {
 
             if (isLoading) {
@@ -144,7 +147,6 @@ fun VehicleLlistarScreen(
                 return@Column
             }
 
-            // --- ZONA DE FILTROS MEJORADA ---
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -153,36 +155,48 @@ fun VehicleLlistarScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                // FILTRO FECHAS
                 OutlinedButton(
                     modifier = Modifier
                         .weight(1.2f)
-                        .height(56.dp), // Misma altura que el OutlinedTextField
-                    shape = MaterialTheme.shapes.small,
+                        .height(56.dp),
                     onClick = {
+
                         DatePickerDialog(
                             context,
                             { _: DatePicker, year: Int, month: Int, day: Int ->
+
                                 fechaInicio = "%04d-%02d-%02d".format(year, month + 1, day)
 
                                 DatePickerDialog(
                                     context,
                                     { _: DatePicker, year2: Int, month2: Int, day2: Int ->
+
                                         fechaFin = "%04d-%02d-%02d".format(year2, month2 + 1, day2)
 
                                         if (fechaInicio.isNotBlank() && fechaFin.isNotBlank()) {
+
                                             val start = java.time.LocalDate.parse(fechaInicio)
                                             val end = java.time.LocalDate.parse(fechaFin)
+
                                             val days = java.time.temporal.ChronoUnit.DAYS.between(start, end)
 
                                             if (days < 2 || days > 15) {
-                                                android.widget.Toast
-                                                    .makeText(context, "Reservation must be between 2 and 15 days", android.widget.Toast.LENGTH_LONG)
-                                                    .show()
+
+                                                Toast.makeText(
+                                                    context,
+                                                    "Reservation must be between 2 and 15 days",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+
                                             } else {
-                                                viewModel.loadVehiclesDisponibles(fechaInicio, fechaFin)
+
+                                                viewModel.loadVehiclesDisponibles(
+                                                    fechaInicio,
+                                                    fechaFin
+                                                )
                                             }
                                         }
+
                                     },
                                     calendar.get(Calendar.YEAR),
                                     calendar.get(Calendar.MONTH),
@@ -195,48 +209,55 @@ fun VehicleLlistarScreen(
                         ).show()
                     }
                 ) {
+
                     Icon(
                         imageVector = Icons.Default.DateRange,
-                        contentDescription = "Dates",
-                        modifier = Modifier.size(18.dp)
+                        contentDescription = "Dates"
                     )
+
                     Spacer(modifier = Modifier.width(8.dp))
+
                     Text(dateButtonText, maxLines = 1)
                 }
 
-                // ORDENAR POR PRECIO
                 ExposedDropdownMenuBox(
                     expanded = expandedPrice,
                     onExpandedChange = { expandedPrice = !expandedPrice },
                     modifier = Modifier.weight(1f)
                 ) {
+
                     OutlinedTextField(
-                        value = if (ordenAscendente) stringResource(R.string.lowest_price) else stringResource(
-                            R.string.highest_price
-                        ),
+                        value = if (ordenAscendente)
+                            stringResource(R.string.lowest_price)
+                        else
+                            stringResource(R.string.highest_price),
+
                         onValueChange = {},
                         readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedPrice) },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expandedPrice)
+                        },
                         modifier = Modifier
                             .menuAnchor()
                             .fillMaxWidth()
-                            .height(56.dp), // Misma altura que el botón de fechas
-                        textStyle = MaterialTheme.typography.bodyMedium
+                            .height(56.dp)
                     )
 
                     ExposedDropdownMenu(
                         expanded = expandedPrice,
                         onDismissRequest = { expandedPrice = false }
                     ) {
+
                         DropdownMenuItem(
-                            text = { Text("Lowest Price") },
+                            text = { Text(stringResource(R.string.lowest_price)) },
                             onClick = {
                                 ordenAscendente = true
                                 expandedPrice = false
                             }
                         )
+
                         DropdownMenuItem(
-                            text = { Text("Highest Price") },
+                            text = { Text(stringResource(R.string.highest_price)) },
                             onClick = {
                                 ordenAscendente = false
                                 expandedPrice = false
@@ -244,37 +265,58 @@ fun VehicleLlistarScreen(
                         )
                     }
                 }
-            }
-            // --- FIN ZONA DE FILTROS ---
 
-            Spacer(modifier = Modifier.height(8.dp))
+                IconButton(
+                    onClick = {
+
+                        fechaInicio = ""
+                        fechaFin = ""
+                        ordenAscendente = true
+
+                        viewModel.loadVehicles()
+
+                        Toast.makeText(
+                            context,
+                            "Filters cleared",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                ) {
+
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear filters"
+                    )
+                }
+            }
 
             if (vehiculosOrdenados.isEmpty()) {
+
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
+
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
                         Icon(
                             imageVector = Icons.Default.DirectionsCar,
                             contentDescription = "No vehicles",
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            modifier = Modifier.size(64.dp)
                         )
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "No vehicles available for these dates",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+
+                        Text("No vehicles available for these dates")
                     }
                 }
 
             } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(bottom = 16.dp)
-                ) {
+
+                LazyColumn {
+
                     items(vehiculosOrdenados) { vehicle ->
+
                         VehicleCard(
                             vehicle = vehicle,
                             onClick = { onVehicleClick(vehicle.id) }
@@ -291,14 +333,16 @@ fun VehicleCard(
     vehicle: Vehicle,
     onClick: () -> Unit
 ) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
         onClick = onClick
     ) {
+
         Column {
 
             val base64String = vehicle.fotoBase64
@@ -306,30 +350,34 @@ fun VehicleCard(
             val fotoCocheBitmap = rememberBase64Bitmap(uriSimulada)
 
             if (fotoCocheBitmap != null) {
+
                 Image(
                     bitmap = fotoCocheBitmap,
                     contentDescription = "Foto de ${vehicle.marca} ${vehicle.model}",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp), // Un poquito más alto para que luzca mejor el coche
+                        .height(200.dp),
                     contentScale = ContentScale.Crop
                 )
+
             } else {
+
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant
                 ) {
+
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
+
                         Icon(
                             imageVector = Icons.Default.DirectionsCar,
-                            contentDescription = "Sense imatge",
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            contentDescription = "No image",
+                            modifier = Modifier.size(64.dp)
                         )
                     }
                 }
@@ -338,26 +386,26 @@ fun VehicleCard(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Text(
                         text = "${vehicle.marca} ${vehicle.model}",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
 
-                    // Precio más destacado a la derecha
                     Surface(
                         color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(8.dp)
                     ) {
+
                         Text(
                             text = "${vehicle.preuHora} €/h",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.ExtraBold,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                         )
@@ -368,8 +416,7 @@ fun VehicleCard(
 
                 Text(
                     text = vehicle.variant,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
