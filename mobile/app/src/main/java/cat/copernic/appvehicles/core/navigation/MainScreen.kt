@@ -15,24 +15,26 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 
-// Imports dels teus companys
+// Import del proveïdor de xarxa centralitzat
+import cat.copernic.appvehicles.core.network.RetrofitProvider
+
+// Imports dels teus companys (Auth i Usuaris)
 import cat.copernic.appvehicles.client.ui.view.ProfileEntryScreen
 import cat.copernic.appvehicles.usuariAnonim.data.repository.AuthRepository
 import cat.copernic.appvehicles.usuariAnonim.ui.view.HomeScreen
+import cat.copernic.appvehicles.usuariAnonim.ui.view.RegisterScreen
+import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
+import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModelFactory
 
-// Imports de les teves funcionalitats de Reserva i Vehicles
-import cat.copernic.appvehicles.reserva.data.api.remote.RetrofitProvider
+// Imports de les teves funcionalitats de Reserva
 import cat.copernic.appvehicles.reserva.data.repository.ReservaRepository
 import cat.copernic.appvehicles.reserva.ui.view.ReserveListScreen
 import cat.copernic.appvehicles.reserva.ui.view.ReservationDetailScreen
 import cat.copernic.appvehicles.reserva.ui.view.CreateReservationScreen
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModelFactory
-import cat.copernic.appvehicles.usuariAnonim.ui.view.RegisterScreen
-import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
-import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModelFactory
 
-import cat.copernic.appvehicles.vehicle.data.api.remote.VehicleRetrofitProvider
+// Imports de les teves funcionalitats de Vehicles
 import cat.copernic.appvehicles.vehicle.data.repository.VehicleRepository
 import cat.copernic.appvehicles.vehicle.ui.view.VehicleDetailScreen
 import cat.copernic.appvehicles.vehicle.ui.view.VehicleLlistarScreen
@@ -53,17 +55,17 @@ fun MainScreen(
     val sessionManager = remember { SessionManager(context) }
     val userEmail by sessionManager.userEmailFlow.collectAsState(initial = "")
 
-    // 1. Instanciar el ViewModel de Reserves
+    // 1. Instanciar el ViewModel de Reserves utilitzant el Retrofit centralitzat
     val reservaViewModel: ReservaViewModel = viewModel(
         factory = ReservaViewModelFactory(
             ReservaRepository(RetrofitProvider.reservaApi)
         )
     )
 
-    // 2. Instanciar el ViewModel de Vehicles
+    // 2. Instanciar el ViewModel de Vehicles utilitzant el Retrofit centralitzat (CORREGIT)
     val vehicleViewModel: VehicleViewModel = viewModel(
         factory = VehicleViewModelFactory(
-            VehicleRepository(VehicleRetrofitProvider.vehicleApi)
+            VehicleRepository(RetrofitProvider.vehicleApi)
         )
     )
 
@@ -77,11 +79,10 @@ fun MainScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
 
-
             // RESERVES LIST
             composable(AppRoutes.Reserves.route) {
                 ReserveListScreen(
-                    userEmail = userEmail ?: "", // <-- Li passem l'email REAL loguejat!
+                    userEmail = userEmail ?: "",
                     viewModel = reservaViewModel,
                     onBackClick = { navController.popBackStack() },
                     onReservaSelected = { idReserva ->
@@ -101,14 +102,14 @@ fun MainScreen(
                 ReservationDetailScreen(
                     reservaId = idReserva,
                     viewModel = reservaViewModel,
-                    userEmail = userEmail ?: "", // <-- Li passem l'email REAL loguejat!
+                    userEmail = userEmail ?: "",
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
 
-            // RESERVA CREATE (CORREGIT AMB MATRÍCULA)
+            // RESERVA CREATE
             composable(
-                route = "reserva_create/{matricula}", // <-- Això arregla el bug del cotxe buit!
+                route = "reserva_create/{matricula}",
                 arguments = listOf(navArgument("matricula") { type = NavType.StringType })
             ) { backStackEntry ->
 
@@ -119,7 +120,7 @@ fun MainScreen(
                     onNavigateBack = { navController.popBackStack() },
                     viewModel = reservaViewModel,
                     vehicleViewModel = vehicleViewModel,
-                    userEmail = userEmail ?: "", // <-- L'email real!
+                    userEmail = userEmail ?: "",
                     onReservaCreada = { idReserva ->
                         navController.navigate("reserva_detail/$idReserva") {
                             popUpTo(AppRoutes.Vehicles.route)
@@ -128,13 +129,12 @@ fun MainScreen(
                 )
             }
 
-            // PERFIL
-            // PERFIL
+            // PERFIL / LOGIN
             composable(AppRoutes.Perfil.route) {
                 ProfileEntryScreen(
                     authRepository = repository,
                     onLoginSuccessNavigate = {
-                        // CORRECCIÓN: Ahora limpiamos hasta 'Vehicles' (nuestra nueva pantalla principal)
+                        // Netegem la pila de navegació fins a 'Vehicles'
                         navController.navigate(AppRoutes.Vehicles.route) {
                             popUpTo(AppRoutes.Vehicles.route) { inclusive = true }
                         }
@@ -149,14 +149,12 @@ fun MainScreen(
                     onVehicleClick = { matricula: String ->
                         navController.navigate("${AppRoutes.VehicleDetail.route}/$matricula")
                     },
-                    // --- AÑADIMOS ESTAS DOS LÍNEAS ---
                     onLoginClick = {
-                        navController.navigate(AppRoutes.Perfil.route) // Asumiendo que 'Inici' es tu pantalla de Login
+                        navController.navigate(AppRoutes.Perfil.route)
                     },
                     onRegisterClick = {
                         navController.navigate(AppRoutes.Register.route)
                     }
-                    // ---------------------------------
                 )
             }
 
@@ -173,7 +171,6 @@ fun MainScreen(
                     matricula = matricula,
                     viewModel = vehicleViewModel,
                     onBackClick = { navController.popBackStack() },
-                    // CORREGIT: Passem la matricula a la següent pantalla!
                     onReservarClick = { navController.navigate("reserva_create/$matricula") }
                 )
             }
