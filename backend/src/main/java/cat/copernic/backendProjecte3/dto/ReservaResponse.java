@@ -2,6 +2,7 @@ package cat.copernic.backendProjecte3.dto;
 
 import cat.copernic.backendProjecte3.entities.Reserva;
 import java.time.LocalDate;
+import java.util.Base64;
 
 public class ReservaResponse {
     private Long idReserva;
@@ -12,6 +13,7 @@ public class ReservaResponse {
     private String importTotal;
     private String fiancaPagada;
     private String estat; // <-- AFEGIT PER ENVIAR L'ESTAT A ANDROID
+    private String vehicleFotoBase64;
 
     // GETTERS
     public Long getIdReserva() { return idReserva; }
@@ -22,6 +24,7 @@ public class ReservaResponse {
     public String getImportTotal() { return importTotal; }
     public String getFiancaPagada() { return fiancaPagada; }
     public String getEstat() { return estat; }
+    public String getVehicleFotoBase64() { return vehicleFotoBase64; }
 
     public static ReservaResponse fromEntity(Reserva r) {
         ReservaResponse dto = new ReservaResponse();
@@ -34,6 +37,11 @@ public class ReservaResponse {
         dto.fiancaPagada = r.getFiancaPagada() != null ? r.getFiancaPagada().toPlainString() : null;
         // Llegim l'estat de l'entitat Reserva
         dto.estat = r.getEstat() != null ? r.getEstat().name() : "ACTIVA"; 
+        
+        if (r.getVehicle() != null && r.getVehicle().getFotoBinario() != null) {
+            dto.vehicleFotoBase64 = Base64.getEncoder().encodeToString(r.getVehicle().getFotoBinario());
+        }
+        
         return dto;
     }
 }

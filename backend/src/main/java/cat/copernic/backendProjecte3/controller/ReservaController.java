@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import cat.copernic.backendProjecte3.dto.ReservaResponse;
 
 @RestController
 @RequestMapping("/api/reserves")
@@ -92,36 +93,5 @@ public class ReservaController {
     }
 
     // DTO response que devolverá la API para cada reserva
-    public static class ReservaResponse {
-        private Long idReserva;
-        private LocalDate dataInici;
-        private LocalDate dataFi;
-        private String clientEmail;
-        private String vehicleMatricula;
-        private String importTotal;
-        private String fiancaPagada;
-        private String estat;
-
-        public static ReservaResponse fromEntity(Reserva r) {
-            ReservaResponse dto = new ReservaResponse();
-            dto.idReserva = r.getIdReserva();
-            dto.dataInici = r.getDataInici();
-            dto.dataFi = r.getDataFi();
-            dto.clientEmail = r.getClient() != null ? r.getClient().getUsername() : null;
-            dto.vehicleMatricula = r.getVehicle() != null ? r.getVehicle().getMatricula() : null;
-            dto.importTotal = r.getImportTotal() != null ? r.getImportTotal().toPlainString() : null;
-            dto.fiancaPagada = r.getFiancaPagada() != null ? r.getFiancaPagada().toPlainString() : null;
-            dto.estat = r.getEstat() != null ? r.getEstat().name() : "ACTIVA";
-            return dto;
-        }
-
-        public Long getIdReserva() { return idReserva; }
-        public LocalDate getDataInici() { return dataInici; }
-        public LocalDate getDataFi() { return dataFi; }
-        public String getClientEmail() { return clientEmail; }
-        public String getVehicleMatricula() { return vehicleMatricula; }
-        public String getImportTotal() { return importTotal; }
-        public String getFiancaPagada() { return fiancaPagada; }
-        public String getEstat() { return estat; }
-    }
+  
 }
