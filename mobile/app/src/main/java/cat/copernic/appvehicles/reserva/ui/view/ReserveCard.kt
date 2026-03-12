@@ -15,12 +15,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.core.composables.rememberBase64Bitmap
-// IMPORTANTE: Importamos el modelo real del backend
-import cat.copernic.appvehicles.reserva.data.model.ReservaResponse
+import cat.copernic.appvehicles.model.ReservaResponse
 
+/**
+ * Component visual reutilitzable (Composable) que representa una targeta de resum d'una reserva.
+ * Mostra de manera compacta la informació essencial: miniatura del vehicle, codi de reserva,
+ * dates d'inici i finalització, estat actual i import total de l'operació.
+ *
+ * @param reserve Objecte de transferència de dades (ReservaResponse) procedent del backend.
+ * @param onClick Funció callback executada quan l'usuari interacciona (fa clic) sobre la targeta,
+ * utilitzada generalment per navegar a la vista de detall de la reserva.
+ */
 @Composable
 fun ReserveCard(
-    reserve: ReservaResponse, // <-- ¡ADIÓS ReserveMock!
+    reserve: ReservaResponse,
     onClick: () -> Unit
 ) {
     Card(
@@ -34,10 +42,10 @@ fun ReserveCard(
             modifier = Modifier
                 .padding(12.dp)
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically // Alineamos imagen y texto
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // --- INICIO MINIATURA IMAGEN ---
+            // 1. Processament i renderització de la miniatura de la imatge
             val base64String = reserve.vehicleFotoBase64
             val uriSimulada = base64String?.let { "data:image/jpeg;base64,$it" }
             val fotoCocheBitmap = rememberBase64Bitmap(imageUri = uriSimulada)
@@ -45,13 +53,14 @@ fun ReserveCard(
             if (fotoCocheBitmap != null) {
                 Image(
                     bitmap = fotoCocheBitmap,
-                    contentDescription = "Foto vehicle",
+                    contentDescription = stringResource(R.string.vehicle_photo_description),
                     modifier = Modifier
                         .size(64.dp)
                         .clip(MaterialTheme.shapes.small),
                     contentScale = ContentScale.Crop
                 )
             } else {
+                // Placeholder visual en cas que el registre no disposi de fotografia (Base64 corrupte o nul)
                 Surface(
                     modifier = Modifier
                         .size(64.dp)
@@ -61,20 +70,21 @@ fun ReserveCard(
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                         Icon(
                             imageVector = Icons.Default.DirectionsCar,
-                            contentDescription = "Sense imatge",
+                            contentDescription = null, // L'icona és purament decorativa
                             modifier = Modifier.size(32.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                         )
                     }
                 }
             }
-            // --- FIN MINIATURA IMAGEN ---
 
             Spacer(modifier = Modifier.width(16.dp))
 
+            // 2. Bloc central d'informació textual de la reserva
             Column(
                 modifier = Modifier.weight(1f)
             ) {
+                // Identificador únic de la reserva
                 Text(
                     text = stringResource(R.string.reservation_code, "RES-${reserve.idReserva}"),
                     style = MaterialTheme.typography.titleMedium,
@@ -83,6 +93,7 @@ fun ReserveCard(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
+                // Rang de dates sol·licitades
                 Text(
                     text = stringResource(
                         R.string.reservation_date_range,
@@ -95,6 +106,7 @@ fun ReserveCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // 3. Fila inferior: Estat operatiu i balanç econòmic
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -107,7 +119,7 @@ fun ReserveCard(
                     )
 
                     Text(
-                        text = "${reserve.importTotal}€",
+                        text = "${reserve.importTotal} €",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold

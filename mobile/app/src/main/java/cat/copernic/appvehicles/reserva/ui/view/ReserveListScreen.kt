@@ -18,17 +18,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cat.copernic.appvehicles.R
-import cat.copernic.appvehicles.reserva.data.model.ReservaResponse
+import cat.copernic.appvehicles.model.ReservaResponse
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
 
 /**
- * Pantalla per listar l'historial de reserves del client.
- * Implementa control d'accés i gestió d'errors de xarxa per assegurar l'estabilitat visual.
+ * Pantalla principal per llistar l'historial de reserves del client autenticat.
+ * Implementa gestió del cicle de vida per refrescar dades automàticament, control
+ * d'accés per a usuaris anònims i tractament d'errors de xarxa per assegurar l'estabilitat visual.
  *
- * @param userEmail Adreça de correu de l'usuari actual. Serveix per autenticar la petició a l'API.
- * @param viewModel ViewModel de la vista que proveeix l'estat i les llistes de dades.
- * @param onBackClick Acció de navegació (tornar enrere).
- * @param onReservaSelected Callback executat en fer clic sobre un element de la llista.
+ * @param userEmail Adreça de correu de l'usuari actiu (injectada per a les consultes a l'API).
+ * @param viewModel Instància del ViewModel per obtenir les llistes de dades i gestionar l'estat remot.
+ * @param onBackClick Callback executat en prémer el botó de retorn a la barra de navegació superior.
+ * @param onReservaSelected Callback executat en seleccionar una targeta de reserva per veure'n el detall.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,15 +41,14 @@ fun ReserveListScreen(
 ) {
     val isPreview = LocalInspectionMode.current
 
+    // 1. Observació reactiva dels estats estructurals del ViewModel
     val loading by viewModel.loading.collectAsState()
     val reserves by viewModel.reserves.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
-    // Obtenemos la lista REAL del servidor a través del ViewModel
-    val reservesReal by viewModel.reserves.collectAsState()
 
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
-    // Cicle de vida: Refresc automàtic de dades en retornar a la pantalla
+    // 2. Gestió del cicle de vida: Refresc automàtic en retornar a la pantalla (ON_RESUME)
     DisposableEffect(lifecycleOwner, userEmail) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
             if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME && !isPreview) {
@@ -63,6 +63,7 @@ fun ReserveListScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
+    // 3. Internacionalització de la lògica de negoci (Estats de reserva)
     val statusActive = stringResource(R.string.status_active)
     val statusCancelled = stringResource(R.string.status_cancelled)
     val statusFinished = stringResource(R.string.status_finished)
@@ -76,18 +77,25 @@ fun ReserveListScreen(
         }
     }
 
-    val listToShow: List<ReserveMock> = if (isPreview || userEmail.isBlank()) {
+    // 4. Preparació de la col·lecció de dades (Traducció dinàmica d'estats per a la UI)
+    val listToShow: List<ReservaResponse> = if (isPreview || userEmail.isBlank()) {
         emptyList()
     } else {
-        reserves.map { it.toReserveMock(localizeStatus(it.estat ?: "ACTIVA")) }
+        // Mapegem l'entitat real i en modifiquem només el camp "estat" per ser traduït
+        reserves.map { reserva ->
+            reserva.copy(estat = localizeStatus(reserva.estat ?: "ACTIVA"))
+        }
     }
 
+    // 5. Construcció de la interfície gràfica (Scaffold principal)
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.reservations_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) { Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back)) }
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                    }
                 },
                 actions = {
                     IconButton(
@@ -103,10 +111,13 @@ fun ReserveListScreen(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
 
+            // Lògica de renderització condicional centralitzada
             if (!isPreview && loading) {
+                // Estat 1: Transició de càrrega
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
             } else if (userEmail.isBlank()) {
-                // Control d'accés: l'usuari no ha iniciat sessió
+                // Estat 2: Manca de sessió activa (Control d'accés)
                 Column(
                     modifier = Modifier.align(Alignment.Center).padding(32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -125,8 +136,9 @@ fun ReserveListScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+
             } else if (errorMsg != null) {
-                // Control d'errors: fallada de xarxa o de servidor
+                // Estat 3: Fallada operativa de xarxa o base de dades
                 Column(
                     modifier = Modifier.align(Alignment.Center).padding(32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -142,25 +154,26 @@ fun ReserveListScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+
             } else if (listToShow.isEmpty()) {
-                // Cas d'ús: el client no disposa de reserves
+                // Estat 4: Safata de reserves buida per a l'usuari validat
                 Text(
                     text = stringResource(R.string.no_reservations_found),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.align(Alignment.Center)
                 )
+
             } else {
-                // Llistat de reserves existents
+                // Estat 5: Llistat iteratiu de components gràfics (Targetes)
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(items = reservesReal, key = { it.idReserva }) { reserva ->
+                    items(items = listToShow, key = { it.idReserva }) { reserva ->
                         ReserveCard(
                             reserve = reserva,
-                            // Usamos idReserva porque así se llama en el ReservaResponse real
                             onClick = { onReservaSelected(reserva.idReserva) }
                         )
                     }
@@ -168,18 +181,4 @@ fun ReserveListScreen(
             }
         }
     }
-}
-
-/**
- * Adaptador del model de dades per transformar la resposta del backend a la classe de vista.
- */
-private fun ReservaResponse.toReserveMock(localizedStatus: String): ReserveMock {
-    return ReserveMock(
-        id = idReserva.toInt(),
-        codi = idReserva.toString(),
-        dataInici = dataInici,
-        dataFi = dataFi,
-        preuTotal = importTotal.toDoubleOrNull() ?: 0.0,
-        estat = localizedStatus
-    )
 }

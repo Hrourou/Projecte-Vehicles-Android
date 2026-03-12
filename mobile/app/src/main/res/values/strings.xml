@@ -34,7 +34,7 @@
     <string name="descending">Descending</string>
     <string name="vehicle_details">Vehicle details</string>
     <string name="vehicle_photo_description">Vehicle photo</string>
-    <string name="book_vehicle">Book vehicle</string>
+    <string name="book_vehicle">Reserve vehicle</string>
     <string name="view_detail">View detail</string>
     <string name="select_car">Select a car</string>
     <string name="color">Color: %1$s</string>

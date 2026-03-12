@@ -2,6 +2,7 @@ package cat.copernic.appvehicles.vehicle.ui.view
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +25,7 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VehicleLlistarScreen(
-    onVehicleClick: (String) -> Unit,
+    onVehicleClick: (String, String, String) -> Unit, // REBEM LES DATES PER NAVEGACIÓ
     viewModel: VehicleViewModel = viewModel()
 ) {
 
@@ -64,14 +65,12 @@ fun VehicleLlistarScreen(
         ) {
 
             if (isLoading) {
-
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
                 }
-
                 return@Column
             }
 
@@ -86,36 +85,30 @@ fun VehicleLlistarScreen(
                 Button(
                     modifier = Modifier.weight(1f),
                     onClick = {
-
                         DatePickerDialog(
                             context,
                             { _: DatePicker, year: Int, month: Int, day: Int ->
-
                                 fechaInicio = "%04d-%02d-%02d".format(year, month + 1, day)
 
                                 DatePickerDialog(
                                     context,
                                     { _: DatePicker, year2: Int, month2: Int, day2: Int ->
-
                                         fechaFin = "%04d-%02d-%02d".format(year2, month2 + 1, day2)
 
                                         if (fechaInicio.isNotBlank() && fechaFin.isNotBlank()) {
-
                                             val start = java.time.LocalDate.parse(fechaInicio)
                                             val end = java.time.LocalDate.parse(fechaFin)
 
+                                            // ELIMINAT EL LÍMIT FALS DE 2-15 DIES.
+                                            // Ara només comprovem que la data de fi no sigui abans de l'inici.
                                             val days = java.time.temporal.ChronoUnit.DAYS.between(start, end)
 
-                                            if (days < 2 || days > 15) {
-                                                android.widget.Toast
-                                                    .makeText(context, "Reservation must be between 2 and 15 days", android.widget.Toast.LENGTH_LONG)
-                                                    .show()
+                                            if (days < 0) {
+                                                Toast.makeText(context, "La data final ha de ser posterior a la d'inici", Toast.LENGTH_LONG).show()
                                             } else {
                                                 viewModel.loadVehiclesDisponibles(fechaInicio, fechaFin)
                                             }
                                         }
-
-
                                     },
                                     calendar.get(Calendar.YEAR),
                                     calendar.get(Calendar.MONTH),
@@ -183,13 +176,12 @@ fun VehicleLlistarScreen(
             } else {
 
                 LazyColumn {
-
                     items(vehiculosOrdenados) { vehicle ->
-
                         VehicleCard(
                             vehicle = vehicle,
                             onClick = {
-                                onVehicleClick(vehicle.id)
+                                // ARA ENVIEM LES DATES CAP A LA PANTALLA DE DETALL/RESERVA!
+                                onVehicleClick(vehicle.id, fechaInicio, fechaFin)
                             }
                         )
                     }
@@ -218,7 +210,6 @@ fun VehicleCard(
             val fotoCocheBitmap = rememberBase64Bitmap(uriSimulada)
 
             if (fotoCocheBitmap != null) {
-
                 Image(
                     bitmap = fotoCocheBitmap,
                     contentDescription = "Foto de ${vehicle.marca} ${vehicle.model}",
@@ -227,21 +218,17 @@ fun VehicleCard(
                         .height(180.dp),
                     contentScale = ContentScale.Crop
                 )
-
             } else {
-
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant
                 ) {
-
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-
                         Icon(
                             imageVector = Icons.Default.DirectionsCar,
                             contentDescription = "Sense imatge",
@@ -255,23 +242,18 @@ fun VehicleCard(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-
                 Text(
                     text = "${vehicle.marca} ${vehicle.model}",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
-
                 Spacer(modifier = Modifier.height(4.dp))
-
                 Text(
                     text = vehicle.variant,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = "${vehicle.preuHora} €/h",
                     style = MaterialTheme.typography.titleMedium,

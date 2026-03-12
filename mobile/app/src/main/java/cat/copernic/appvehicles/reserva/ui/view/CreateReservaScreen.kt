@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cat.copernic.appvehicles.R
-import cat.copernic.appvehicles.reserva.data.model.CreateReservaRequest
+import cat.copernic.appvehicles.model.CreateReservaRequest
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
 import cat.copernic.appvehicles.vehicle.ui.viewmodel.VehicleViewModel
 import java.time.Instant
@@ -27,10 +27,10 @@ import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 /**
- * Modal dissenyat segons les guies de Material 3 per a la selecció interactiva de dates.
+ * Component modal que renderitza un calendari interactiu seguint els estàndards de Material 3.
  *
- * @param onDateSelected Callback executat en confirmar, proveint un String format YYYY-MM-DD.
- * @param onDismiss Callback en cancel·lar l'operació.
+ * @param onDateSelected Callback executat quan l'usuari confirma la selecció. Retorna la data en format "YYYY-MM-DD".
+ * @param onDismiss Callback executat si l'usuari cancel·la o tanca el diàleg.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,70 +48,82 @@ fun DatePickerModal(onDateSelected: (String) -> Unit, onDismiss: () -> Unit) {
                 onDismiss()
             }) { Text(stringResource(R.string.ok)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
-    ) { DatePicker(state = datePickerState) }
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+        }
+    ) {
+        DatePicker(state = datePickerState)
+    }
 }
 
 /**
- * Pantalla que permet a l'usuari processar el lloguer d'un vehicle pre-seleccionat.
- * L'algorisme intern avalua dinàmicament el preu total basant-se en els dies i el cost per hora del vehicle.
+ * Pantalla principal per a la creació d'una reserva de vehicle.
+ * Gestiona l'entrada de dates, calcula els costos associats de forma dinàmica i
+ * processa la sol·licitud de reserva mitjançant comunicació amb el backend.
  *
- * @param matriculaFixa Referència a la identitat del vehicle escollit.
- * @param onNavigateBack Funció de retorn de navegació.
- * @param viewModel Encarregat de gestionar la petició POST cap a l'API.
- * @param vehicleViewModel Repositori de les dades base dels vehicles per extreure les tarifes.
- * @param userEmail Adreça de l'usuari autenticat; avalua els permisos d'accés a l'esdeveniment de creació.
- * @param onReservaCreada Event executat post-creació (envia la clau primària resultant per a navegació encadenada).
+ * @param matriculaFixa Identificador (matrícula) del vehicle prèviament seleccionat.
+ * @param iniciFix Data d'inici heretada de la pantalla de filtres per mantenir l'estat.
+ * @param fiFix Data de finalització heretada de la pantalla de filtres per mantenir l'estat.
+ * @param onNavigateBack Callback per tornar a la pantalla anterior.
+ * @param viewModel ViewModel responsable de la lògica de negoci de les reserves.
+ * @param vehicleViewModel ViewModel responsable de proveir les dades del catàleg de vehicles.
+ * @param userEmail Correu electrònic de l'usuari autenticat; requerit per a l'autorització.
+ * @param onReservaCreada Callback d'èxit que rep l'ID de la nova reserva per redirigir al detall.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReservationScreen(
     matriculaFixa: String = "",
+    iniciFix: String = "",
+    fiFix: String = "",
     onNavigateBack: () -> Unit = {},
     viewModel: ReservaViewModel? = null,
     vehicleViewModel: VehicleViewModel? = null,
     userEmail: String = "",
     onReservaCreada: (Long) -> Unit = {}
 ) {
-    // 1. Obtenció de dades locals
+    // 1. Obtenció de dades del vehicle seleccionat
     val vehiclesReals = vehicleViewModel?.vehicles?.collectAsState()?.value ?: emptyList()
     val vehicleSeleccionat = vehiclesReals.find { it.id == matriculaFixa }
 
     val preuHora = vehicleSeleccionat?.preuHora ?: 0.0
     val nomVehicle = if (vehicleSeleccionat != null) "${vehicleSeleccionat.marca} ${vehicleSeleccionat.model}" else matriculaFixa
 
-    // 2. Definició d'estat de UI
-    var startDate by remember { mutableStateOf("") }
-    var endDate by remember { mutableStateOf("") }
+    // 2. Definició de l'estat de la interfície d'usuari
+    var startDate by remember { mutableStateOf(iniciFix) }
+    var endDate by remember { mutableStateOf(fiFix) }
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
 
     var costCalculat by remember { mutableStateOf(0.0) }
-    val fiancaFixa = 300.0 // Valor prefixat temporal. Pot ser extret d'una constant del sistema.
+    val fiancaFixa = 300.0 // Constants de negoci predeterminades
 
     val isLoggedIn = userEmail.isNotBlank()
 
-    // Llegeix els recursos abans d'entrar a la corrutina
+    // Constants de text precarregades per ser utilitzades de forma segura en l'àmbit de la corrutina
     val selectDatesError = stringResource(R.string.error_dates_required)
     val invalidDatesError = stringResource(R.string.error_invalid_date_range)
 
-    // 3. Reactor de càlcul de pressupost
+    // 3. Reactor de càlcul dinàmic del pressupost
     LaunchedEffect(startDate, endDate) {
         try {
             if (startDate.isNotBlank() && endDate.isNotBlank()) {
                 val inici = LocalDate.parse(startDate)
                 val fi = LocalDate.parse(endDate)
                 var dies = ChronoUnit.DAYS.between(inici, fi)
+                // Es comptabilitza un mínim d'1 dia per defecte segons la lògica de negoci
                 if (dies <= 0) dies = 1L
                 costCalculat = dies * 24 * preuHora
             } else {
                 costCalculat = 0.0
             }
-        } catch (e: Exception) { costCalculat = 0.0 }
+        } catch (e: Exception) {
+            costCalculat = 0.0
+        }
     }
 
-    // 4. Reactor de l'estat remot
+    // 4. Observadors de l'estat de la petició asíncrona (Backend)
     val loading = viewModel?.loading?.collectAsState()?.value ?: false
     val creationResult = viewModel?.creationResult?.collectAsState()?.value
     var errorMsg by remember { mutableStateOf<String?>(null) }
@@ -128,17 +140,16 @@ fun CreateReservationScreen(
                 showSuccessDialog = true
             },
             onFailure = { e ->
-                // Sense traducció: mostra directament l'error tècnic
+                // Es mostra l'error tècnic emès pel backend (ex: "Vehicle no disponible en aquestes dates")
                 errorMsg = e.message
             }
         )
     }
 
-    // Modal de calendaris
+    // 5. Gestió de Modals i Diàlegs de confirmació
     if (showStartDatePicker) DatePickerModal(onDateSelected = { startDate = it }, onDismiss = { showStartDatePicker = false })
     if (showEndDatePicker) DatePickerModal(onDateSelected = { endDate = it }, onDismiss = { showEndDatePicker = false })
 
-    // Diàleg final d'èxit
     if (showSuccessDialog && reservaId != null) {
         AlertDialog(
             onDismissRequest = { },
@@ -167,18 +178,28 @@ fun CreateReservationScreen(
         )
     }
 
-    // Renderització principal
+    // 6. Construcció principal de la interfície gràfica (UI)
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.create_reservation_title)) },
-                navigationIcon = { IconButton(onClick = onNavigateBack) { Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back)) } }
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+                    }
+                }
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize().padding(paddingValues).verticalScroll(rememberScrollState()).padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
+        ) {
 
-            // Prevenció d'accés anònim
+            // Bloc de prevenció per a usuaris no autenticats
             if (!isLoggedIn) {
                 OutlinedCard(
                     colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)),
@@ -197,6 +218,7 @@ fun CreateReservationScreen(
                 }
             }
 
+            // Secció: Selecció de dates
             Text(stringResource(R.string.select_dates), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -225,6 +247,7 @@ fun CreateReservationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Secció: Dades del vehicle
             Text(stringResource(R.string.reservation_vehicle), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -241,6 +264,7 @@ fun CreateReservationScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // Secció: Resum econòmic
             ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(stringResource(R.string.cost_summary), fontWeight = FontWeight.Bold)
@@ -252,6 +276,7 @@ fun CreateReservationScreen(
                 }
             }
 
+            // Gestió d'errors visuals
             if (errorMsg != null) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(errorMsg!!, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold)
@@ -259,34 +284,46 @@ fun CreateReservationScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // Acció: Confirmació i enviament al backend
             Button(
                 onClick = {
                     errorMsg = null
+
+                    // Validacions prèvies en el client
                     if (startDate.isBlank() || endDate.isBlank()) {
                         errorMsg = selectDatesError
                         return@Button
                     }
+
                     val i = LocalDate.parse(startDate)
                     val f = LocalDate.parse(endDate)
+
                     if (i.isAfter(f)) {
                         errorMsg = invalidDatesError
                         return@Button
                     }
 
+                    // Petició de creació de reserva
                     viewModel?.crearReserva(CreateReservaRequest(userEmail, matriculaFixa, startDate, endDate, userEmail))
                 },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 enabled = !loading && isLoggedIn
             ) {
-                if (loading) CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
-                else Text(stringResource(R.string.confirm_reservation))
+                if (loading) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                } else {
+                    Text(stringResource(R.string.confirm_reservation))
+                }
             }
         }
     }
 }
 
 /**
- * Component estructural per facilitar la presentació semàntica de parells "Etiqueta-Valor" econòmics.
+ * Component estructural per facilitar la presentació semàntica de parells "Etiqueta-Valor"
+ * orientats a imports econòmics.
+ * * @param label Text descriptiu a l'esquerra (ex: "Cost de lloguer").
+ * @param value Valor numèric o text a la dreta (ex: "150.00 €").
  */
 @Composable
 fun CostRow(label: String, value: String) {
