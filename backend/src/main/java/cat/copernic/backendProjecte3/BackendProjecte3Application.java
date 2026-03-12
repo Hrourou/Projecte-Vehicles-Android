@@ -161,6 +161,7 @@ public class BackendProjecte3Application implements CommandLineRunner {
         // Imatges
         c.setImatgeDni(llegirImatge(imgDni));
         c.setImatgeCarnet(llegirImatge(imgCarnet));
+        c.setFotoPerfil(llegirImatge(imgPerfil));
         // NOTA: Falta c.setImatgePerfil(llegirImatge(imgPerfil)) si decideixes afegir-ho a l'entitat.
 
         return clientRepo.save(c);

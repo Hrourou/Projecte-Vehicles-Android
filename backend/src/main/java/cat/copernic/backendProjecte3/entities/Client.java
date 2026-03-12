@@ -43,6 +43,10 @@ public class Client extends Usuari {
     @Lob
     @Column(name = "imatge_carnet", columnDefinition = "LONGBLOB")
     private byte[] imatgeCarnet;
+    
+    @Lob
+    @Column(name = "foto_perfil", columnDefinition = "LONGBLOB")
+    private byte[] fotoPerfil;
 
     // --- Datos Económicos ---
     @Column(name = "numero_targeta_credit")
@@ -96,6 +100,10 @@ public class Client extends Usuari {
 
     public List<Reserva> getReservas() { return reservas; }
     public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
+    
+    public byte[] getFotoPerfil() { return fotoPerfil; }
+    public void setFotoPerfil(byte[] fotoPerfil) { this.fotoPerfil = fotoPerfil; }
+
 
     @Override
     public int hashCode() {

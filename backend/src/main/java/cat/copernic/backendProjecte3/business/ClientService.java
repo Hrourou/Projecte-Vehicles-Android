@@ -93,6 +93,10 @@ public class ClientService {
         if (dto.getImatgeCarnet() != null && !dto.getImatgeCarnet().isEmpty()) {
             nouClient.setImatgeCarnet(Base64.getDecoder().decode(dto.getImatgeCarnet()));
         }
+        
+        if (dto.getFotoPerfil() != null && !dto.getFotoPerfil().isEmpty()) {
+            nouClient.setFotoPerfil(Base64.getDecoder().decode(dto.getFotoPerfil()));
+        }
 
         return clientRepo.save(nouClient);
     }
@@ -126,6 +130,11 @@ public class ClientService {
         
         if (dto.getImatgeCarnet() != null && !dto.getImatgeCarnet().isEmpty()) {
             client.setImatgeCarnet(Base64.getDecoder().decode(dto.getImatgeCarnet()));
+        }
+        
+        // AÑADIR ESTE BLOQUE PARA LA FOTO DE PERFIL:
+        if (dto.getFotoPerfil() != null && !dto.getFotoPerfil().isEmpty()) {
+            client.setFotoPerfil(Base64.getDecoder().decode(dto.getFotoPerfil()));
         }
 
         // 4. Guardamos en la base de datos
