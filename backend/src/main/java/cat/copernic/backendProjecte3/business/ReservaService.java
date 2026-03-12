@@ -30,6 +30,9 @@ public class ReservaService {
     @Autowired
     private UserLogic userLogic;
 
+    @Autowired
+    private EmailService emailService;
+
     @Value("${reserva.cancel.fullRefundDays:3}")
     private int fullRefundDays;
 
@@ -56,7 +59,7 @@ public class ReservaService {
     public Reserva crearReserva(String emailClient, String matricula, LocalDate inici, LocalDate fi, String userName) 
             throws ReservaDatesNoValidsException, VehicleNoDisponibleException, AccesDenegatException, DadesNoTrobadesException {
 
-        // control de ROL
+        // Control de ROL
         UserRole rol = userLogic.getRole(userName).orElseThrow(() -> new AccesDenegatException("Usuari no trobat o sense rol"));
         if (rol != UserRole.CLIENT && rol != UserRole.AGENT && rol != UserRole.ADMIN) {
             throw new AccesDenegatException("Rol no vàlid");
@@ -76,40 +79,72 @@ public class ReservaService {
             throw new ReservaDatesNoValidsException("Vehicle no disponible en aquestes dates");
         }
 
-        // client i vehicle
-        Client client = clientRepository.findById(emailClient).orElseThrow(() -> new DadesNoTrobadesException("Client no trobat"));
-        Vehicle vehicle = vehicleRepository.findById(matricula).orElseThrow(() -> new DadesNoTrobadesException("Vehicle no trobat"));
+        // Client i vehicle
+        Client client = clientRepository.findById(emailClient)
+                .orElseThrow(() -> new DadesNoTrobadesException("Client no trobat"));
+
+        Vehicle vehicle = vehicleRepository.findById(matricula)
+                .orElseThrow(() -> new DadesNoTrobadesException("Vehicle no trobat"));
 
         if (vehicle.getEstatVehicle().equals(EstatVehicle.BAIXA))
             throw new VehicleNoDisponibleException("El vehicle està fora de servei");
 
-        // creem reserva
+        // --- NOU: VALIDAR LÍMITS REALS DEL VEHICLE ---
+        long dies = ChronoUnit.DAYS.between(inici, fi);
+        dies = (dies <= 0 ? 1 : dies);
+
+        if (dies < vehicle.getMinDiesLloguer() || dies > vehicle.getMaxDiesLloguer()) {
+            throw new ReservaDatesNoValidsException(
+                "Els dies seleccionats (" + dies + ") no estan permesos per a aquest vehicle. Límits: "
+                + vehicle.getMinDiesLloguer() + " - " + vehicle.getMaxDiesLloguer() + " dies."
+            );
+        }
+
+        // Creem reserva
         Reserva reserva = new Reserva();
         reserva.setClient(client);
         reserva.setVehicle(vehicle);
         reserva.setDataInici(inici);
         reserva.setDataFi(fi);
 
-        // calculem dies entre dates
-        long dies = ChronoUnit.DAYS.between(inici, fi);
-        // menys d'un dia és un dia sencer
+        // Calculem dies entre dates
+        dies = ChronoUnit.DAYS.between(inici, fi);
         dies = (dies == 0 ? 1 : dies);
 
-        // el preu hora per 24 hores i pels dies de lloguer
-        BigDecimal importTotal = vehicle.getPreuHora().multiply(new BigDecimal(24)).multiply(new BigDecimal(dies));
+        // El preu hora per 24 hores i pels dies de lloguer
+        BigDecimal importTotal = vehicle.getPreuHora()
+                .multiply(new BigDecimal(24))
+                .multiply(new BigDecimal(dies));
 
         reserva.setImportTotal(importTotal);
         reserva.setFiancaPagada(vehicle.getFiancaEstandard());
         reserva.setEstat(EstatReserva.ACTIVA);
 
-        return reservaRepository.save(reserva);
+        // Guardem a la base de dades
+        Reserva reservaGuardada = reservaRepository.save(reserva);
+
+        // ENVIAMENT DEL CORREU REAL D'ALTA
+        try {
+            emailService.sendReservationCreatedEmail(
+                client.getEmail(),
+                client.getNomComplet(),
+                vehicle.getMatricula(),
+                inici.toString(),
+                fi.toString(),
+                "RES-" + reservaGuardada.getIdReserva()
+            );
+        } catch (Exception e) {
+            System.err.println("Error enviant el correu d'alta de reserva: " + e.getMessage());
+        }
+
+        return reservaGuardada;
     }
 
     @Transactional
     public CancelReservaResponse anularReserva(Long idReserva, String userName)
             throws ReservaNoTrobadaException, AccesDenegatException, ReservaNoCancelableException {
 
-        // control de ROL
+        // Control de ROL
         UserRole rol = userLogic.getRole(userName).orElseThrow(() -> new AccesDenegatException("Usuari no trobat o sense rol"));
         if (rol != UserRole.CLIENT && rol != UserRole.AGENT && rol != UserRole.ADMIN) {
             throw new AccesDenegatException("Rol no vàlid");
@@ -120,7 +155,6 @@ public class ReservaService {
         LocalDate today = LocalDate.now();
         LocalDate inici = reserva.getDataInici();
 
-        // Si hoy es el mismo día o después del inicio => ya iniciada (o finalizada)
         if (!today.isBefore(inici)) {
             throw new ReservaNoCancelableException("No es pot anul·lar una reserva iniciada o finalitzada.");
         }
@@ -134,18 +168,20 @@ public class ReservaService {
             refund = importTotal.add(fianca);
         }
 
-        // RF55: CANVIEM L'ESTAT, NO L'ESBORREM
         reserva.setEstat(EstatReserva.CANCELADA);
         reservaRepository.save(reserva);
 
-        // SIMULACIÓ D'ENVIAMENT D'EMAIL
-        System.out.println("====== ENVIANT EMAIL AL CLIENT ======");
-        System.out.println("Per a: " + reserva.getClient().getEmail());
-        System.out.println("Assumpte: Confirmació d'anul·lació de reserva");
-        System.out.println("Cos del missatge: Hola " + reserva.getClient().getNomComplet() + ",");
-        System.out.println("La teva reserva del vehicle " + reserva.getVehicle().getMatricula() + " ha estat anul·lada amb èxit.");
-        System.out.println("Se t'ha aplicat un reemborsament de: " + refund + " €");
-        System.out.println("=====================================");
+        try {
+            emailService.sendReservationCancelledEmail(
+                reserva.getClient().getEmail(),
+                reserva.getClient().getNomComplet(),
+                reserva.getVehicle().getMatricula(),
+                "RES-" + idReserva,
+                refund.doubleValue()
+            );
+        } catch (Exception e) {
+            System.err.println("Error enviant el correu d'anul·lació: " + e.getMessage());
+        }
 
         String msg = (refund.compareTo(BigDecimal.ZERO) > 0)
                 ? "Reserva anul·lada. Reemborsament: " + refund + " €"
