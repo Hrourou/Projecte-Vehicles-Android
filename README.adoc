@@ -1,95 +1,466 @@
-# Projecte3_Grup4
+= [NOMBRE DE LA APP]
+:toc:
+:toc-title: Índex
+:sectnums:
+:icons: font
 
+[.text-center]
+Projecte ABP - Projecte 3 - Aplicació mobile amb API REST
 
+== Descripció del projecte
 
-## Getting started
+[Nom de l'app] és una aplicació mòbil Android desenvolupada amb Kotlin i Jetpack Compose que permet consultar vehicles, veure’n el detall, consultar la disponibilitat per rang de dates i gestionar reserves mitjançant una arquitectura client-servidor basada en una API REST implementada amb Spring Boot.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+L’aplicació diferencia entre funcionalitats per a usuari anònim i funcionalitats per a client autenticat. Els usuaris registrats poden iniciar sessió, editar el seu perfil, crear reserves, consultar-les, ordenar-les i anul·lar-les abans de la seva data d’inici.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+== Objectiu
 
-## Add your files
+L’objectiu del projecte és implementar una solució completa formada per:
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+* Un backend REST amb Spring Boot i Maven.
+* Una aplicació Android nativa amb Kotlin i Jetpack Compose.
+* Persistència de dades amb MySQL.
+* Comunicació desacoblada entre client i servidor seguint principis REST.
+* Documentació tècnica i de seguiment del projecte dins del repositori.
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/belharrak/projecte3_grup4.git
-git branch -M main
-git push -uf origin main
-```
+== Vídeo del projecte
 
-## Integrate with your tools
+Vídeo promocional / demo:
 
-* [Set up project integrations](https://gitlab.com/belharrak/projecte3_grup4/-/settings/integrations)
+* link:[AQUÍ_ENLLAÇ_VIDEO,window=_blank][Veure vídeo del projecte]
 
-## Collaborate with your team
+video::AQUÍ_ENLLAÇ_VIDEO[]
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+== Membres del grup
 
-## Test and Deploy
+* Bachir El Harrak
+* Javier Sánchez Osuna
+* Hamza Rourou Rourou
+* Joel Reyes Niebla
 
-Use the built-in continuous integration in GitLab.
+== Portafolis personals
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
+* link:[AQUÍ_ENLLAÇ_PORTAFOLI_1,window=_blank][Portafoli Bachir El Harrak]
+* link:[AQUÍ_ENLLAÇ_PORTAFOLI_2,window=_blank][Portafoli Javier Sánchez Osuna]
+* link:[AQUÍ_ENLLAÇ_PORTAFOLI_3,window=_blank][Portafoli Hamza Rourou Rourou]
+* link:[AQUÍ_ENLLAÇ_PORTAFOLI_4,window=_blank][Portafoli Joel Reyes Niebla]
 
-***
+== Estructura del repositori
 
-# Editing this README
+El repositori està organitzat en les tres carpetes principals requerides pel projecte:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+[source,text]
+----
+/
+├── backend/
+├── mobile/
+├── documentacio/
+└── README.adoc
+----
 
-## Suggestions for a good README
+=== backend
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Conté el projecte del servidor desenvolupat amb Spring Boot i Maven.
 
-## Name
-Choose a self-explaining name for your project.
+=== mobile
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+Conté el projecte del client Android desenvolupat amb Kotlin, Jetpack Compose i arquitectura MVVM.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+=== documentacio
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Conté la documentació del projecte en format AsciiDoc, incloent planificació, seguiment de sprints, decisions tècniques, incidències, millores i conclusions.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+== Tecnologies utilitzades
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+=== Backend
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+* Java [VERSIÓ]
+* Spring Boot
+* Maven
+* Spring Web
+* Spring Data JPA
+* MySQL
+* [Swagger / Spring Security / Validation / Mail, si aplica]
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+=== Mobile
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+* Kotlin
+* Android Studio
+* Jetpack Compose
+* Material Design 3
+* Navigation Compose
+* ViewModel
+* StateFlow / MutableStateFlow
+* Coroutines
+* Retrofit
+* Coil / Glide / Gson / Moshi [segons correspongui]
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+=== Eines de desenvolupament
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+* Git
+* GitLab
+* Postman [si s’ha utilitzat]
+* Figma [si s’ha utilitzat]
+* MySQL Workbench [si s’ha utilitzat]
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+== Arquitectura del sistema
 
-## License
-For open source projects, say how it is licensed.
+El projecte segueix una arquitectura client-servidor desacoblada:
 
+* El backend exposa una API REST.
+* El client Android consumeix aquesta API mitjançant HTTP.
+* La persistència es gestiona al backend.
+* L’estat de sessió del client es desa al dispositiu mòbil sense guardar la contrasenya.
 
+=== Backend
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+El backend està estructurat per capes:
+
+* Capa API REST: controladors i endpoints.
+* Capa de lògica de negoci: serveis.
+* Capa de persistència: repositoris i entitats.
+
+=== Mobile
+
+L’aplicació mòbil està estructurada en capes i funcionalitats, seguint el model MVVM a la capa d’interfície:
+
+* UI layer
+* Domain layer
+* Data layer
+
+La gestió d’estat es realitza amb `MutableStateFlow` i `StateFlow`, i les operacions asíncrones es resolen amb coroutines.
+
+== Funcionalitats implementades
+
+=== Usuari anònim
+
+* Registre de client
+* Llistat de vehicles
+* Detall de vehicle
+* Ordenació de vehicles per preu
+* Consulta de disponibilitat per rang de dates
+* Accés a login
+
+=== Usuari autenticat
+
+* Login
+* Recuperació de contrasenya
+* Logout
+* Edició del perfil
+* Alta de reserva
+* Llistat de reserves pròpies
+* Ordenació de reserves per data d’inici
+* Detall de reserva
+* Anul·lació de reserva abans de l’inici
+
+== Requeriments funcionals coberts
+
+[cols="1,4", options="header"]
+|===
+| Codi | Requeriment
+
+| RF01
+| Login
+
+| RF02
+| Registre
+
+| RF03
+| Recuperar contrasenya
+
+| RF04
+| Editar perfil usuari
+
+| RF05
+| Logout
+
+| RF50
+| Alta de reserva
+
+| RF51
+| Llistat de reserves
+
+| RF52
+| Ordenar reserves per data d’inici
+
+| RF53
+| Veure detall d’una reserva
+
+| RF55
+| Anul·lar reserva
+
+| RF56
+| Consultar disponibilitat de vehicles per rang de dates
+
+| RF90
+| Llistar vehicles
+
+| RF91
+| Veure detall d’un vehicle
+
+| RF92
+| Ordenar vehicles per preu
+|===
+
+== Característiques destacades
+
+* Arquitectura REST desacoblada entre client i servidor.
+* Aplicació Android nativa amb Jetpack Compose.
+* Navegació principal amb Bottom Navigation.
+* Internacionalització en català, castellà i anglès.
+* Interfície basada en Material Design 3.
+* Persistència i gestió centralitzada de dades al backend.
+* Validació de fluxos principals de reserva i autenticació.
+
+== Requisits previs
+
+=== Backend
+
+* JDK [VERSIÓ]
+* Maven [VERSIÓ] o wrapper del projecte
+* MySQL [VERSIÓ]
+
+=== Mobile
+
+* Android Studio [VERSIÓ]
+* SDK Android [API mínima]
+* Emulador Android o dispositiu físic Android
+
+== Configuració del backend
+
+=== 1. Crear la base de dades
+
+Crear una base de dades MySQL amb el nom:
+
+[source,sql]
+----
+CREATE DATABASE [nom_base_dades];
+----
+
+=== 2. Configurar credencials
+
+Editar el fitxer:
+
+[source,text]
+----
+backend/src/main/resources/application.properties
+----
+
+i ajustar com a mínim:
+
+[source,properties]
+----
+spring.datasource.url=jdbc:mysql://localhost:3306/[nom_base_dades]
+spring.datasource.username=[usuari]
+spring.datasource.password=[contrasenya]
+spring.jpa.hibernate.ddl-auto=update
+----
+
+=== 3. Executar el backend
+
+Des de la carpeta `backend`:
+
+[source,bash]
+----
+./mvnw spring-boot:run
+----
+
+o bé:
+
+[source,bash]
+----
+mvn spring-boot:run
+----
+
+El backend quedarà disponible a:
+
+[source,text]
+----
+http://localhost:8080
+----
+
+== Configuració de l’aplicació mòbil
+
+=== 1. Obrir el projecte
+
+Obrir la carpeta `mobile` amb Android Studio.
+
+=== 2. Configurar la URL base de l’API
+
+Comprovar la configuració de la URL base del backend a la capa de xarxa del projecte mobile.
+
+Per executar en:
+
+* Emulador Android: utilitzar la IP adequada segons configuració local.
+* Dispositiu físic: utilitzar la IP local de la màquina on corre el backend.
+* Entorn final: actualitzar la `baseUrl` abans de la demo o entrega si cal.
+
+=== 3. Executar l’app
+
+Executar l’aplicació des d’Android Studio en un:
+
+* emulador Android, o
+* dispositiu físic Android
+
+== Dades de demo
+
+Per a la demo del projecte es disposa de:
+
+* 3 clients
+* mínim 1 imatge de DNI i carnet de conduir per client
+* mínim 3 vehicles
+* mínim 2 reserves per vehicle
+
+A més, s’inclouen els fitxers requerits per la demo:
+
+* exportació de la base de dades MySQL
+* fitxer `password.txt` amb les credencials necessàries per a la prova
+
+== Fitxers lliurats
+
+Aquest lliurament inclou:
+
+* Codi font complet del backend
+* Codi font complet del client Android
+* Documentació del projecte en AsciiDoc
+* Exportació de la base de dades
+* Fitxer `password.txt`
+* Enllaç al vídeo del projecte
+* Enllaços als portafolis personals
+
+== Guia ràpida d’ús
+
+=== Flux d’usuari anònim
+
+. Obrir l’app
+. Consultar el llistat de vehicles
+. Veure el detall d’un vehicle
+. Filtrar o consultar disponibilitat per dates
+. Registrar-se o iniciar sessió
+
+=== Flux d’usuari autenticat
+
+. Iniciar sessió
+. Consultar vehicles disponibles
+. Crear una reserva
+. Consultar les reserves pròpies
+. Veure el detall d’una reserva
+. Anul·lar una reserva abans de l’inici
+. Editar el perfil
+. Tancar sessió
+
+== Gestió del projecte amb GitLab
+
+El desenvolupament del projecte s’ha realitzat utilitzant Git i GitLab, seguint una organització basada en branques, issues i merge requests.
+
+=== Branques principals
+
+* `main`: versió estable i lliurable del projecte
+* `develop`: branca principal d’integració del desenvolupament
+
+=== Branques de treball
+
+* `feature/nom_funcionalitat`
+* `bugfix/nom_error`
+* `hotfix/nom_emergencia`
+* `chore/nom_tasca`
+* `experiment/nom_experiment`
+
+=== Flux de treball
+
+* Cada funcionalitat o correcció s’ha desenvolupat en una branca específica.
+* Els canvis s’han integrat mitjançant Merge Requests cap a `develop`.
+* Les branques fusionades s’han eliminat després del merge.
+* La branca `main` conté la versió final per a la demo i el lliurament.
+
+== Qualitat del codi
+
+Per al desenvolupament del projecte s’han seguit criteris de qualitat orientats a:
+
+* separació per responsabilitats
+* reutilització de components
+* mantenibilitat
+* llegibilitat del codi
+* ús de bones pràctiques segons la tecnologia
+* documentació del codi amb JavaDoc i KDoc
+
+== Internacionalització
+
+La interfície de l’aplicació està disponible en:
+
+* català
+* castellà
+* anglès
+
+L’idioma es mostra segons la configuració del dispositiu i, en cas que no coincideixi amb cap dels idiomes previstos, s’utilitza l’anglès com a idioma per defecte.
+
+== Interfície i usabilitat
+
+L’aplicació ha estat dissenyada seguint criteris de Material Design 3 per garantir:
+
+* coherència visual
+* reutilització de components
+* navegació clara
+* experiència homogènia entre pantalles
+* facilitat d’ús per a usuari anònim i autenticat
+
+== Documentació addicional
+
+La documentació completa del projecte es troba a la carpeta `documentacio`, on s’inclouen:
+
+* planificació dels sprints
+* seguiment diari
+* retrospectives
+* decisions tècniques
+* incidències
+* desviacions respecte a la planificació
+* millores futures
+* conclusions finals
+
+== Millores futures
+
+Algunes línies de millora plantejades per al projecte són:
+
+* passarel·la de pagament real
+* notificacions push
+* panell d’administració
+* filtres avançats per vehicle
+* validacions més completes
+* desplegament del backend en entorn públic
+* millores d’accessibilitat i testatge
+
+== Estat del projecte
+
+Projecte acadèmic desenvolupat dins l’ABP - Projecte 3 del curs [2024-2025 / 2025-2026], centrat en el desenvolupament d’una app Android amb backend REST.
+
+== Captures de pantalla
+
+=== Pantalla inicial
+
+image::documentacio/img/home.png[Home, width=300]
+
+=== Llistat de vehicles
+
+image::documentacio/img/vehicles.png[Vehicles, width=300]
+
+=== Detall de vehicle
+
+image::documentacio/img/vehicle-detail.png[Detall vehicle, width=300]
+
+=== Llistat de reserves
+
+image::documentacio/img/reserves.png[Reserves, width=300]
+
+=== Detall de reserva
+
+image::documentacio/img/reserva-detail.png[Detall reserva, width=300]
+
+== Enllaços
+
+* Repositori GitLab: link:[AQUÍ_ENLLAÇ_GITLAB,window=_blank][Repositori del projecte]
+* Vídeo: link:[AQUÍ_ENLLAÇ_VIDEO,window=_blank][Vídeo promocional / demo]
+* Portafolis: veure apartat corresponent d’aquest document
+
+== Autoría
+
+Projecte desenvolupat per l’equip [NOM DEL GRUP] dins del mòdul corresponent del CFGS DAM.

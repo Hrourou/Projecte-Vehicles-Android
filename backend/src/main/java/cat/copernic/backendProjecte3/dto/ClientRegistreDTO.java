@@ -23,6 +23,7 @@ public class ClientRegistreDTO {
     private String imatgeDni; // URL o Base64 string
     private String nacionalitat;
     private String adreca;
+    private String fotoPerfil;
 
     // --- Datos de Conducción ---
     private String tipusCarnetConduir;
@@ -61,6 +62,9 @@ public class ClientRegistreDTO {
 
     public String getAdreca() { return adreca; }
     public void setAdreca(String adreca) { this.adreca = adreca; }
+    
+    public String getFotoPerfil() { return fotoPerfil; }
+    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
 
     public String getTipusCarnetConduir() { return tipusCarnetConduir; }
     public void setTipusCarnetConduir(String tipusCarnetConduir) { this.tipusCarnetConduir = tipusCarnetConduir; }

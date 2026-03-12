@@ -16,6 +16,7 @@ public class ClientUpdateDTO {
     // RF04: permitir actualizar documentación
     private String imatgeDni;
     private String imatgeCarnet;
+    private String fotoPerfil;
 
     public String getNomComplet() { return nomComplet; }
     public void setNomComplet(String nomComplet) { this.nomComplet = nomComplet; }
@@ -46,6 +47,9 @@ public class ClientUpdateDTO {
 
     public String getImatgeCarnet() { return imatgeCarnet; }
     public void setImatgeCarnet(String imatgeCarnet) { this.imatgeCarnet = imatgeCarnet; }
+    
+    public String getFotoPerfil() { return fotoPerfil; }
+    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
 
    
 }

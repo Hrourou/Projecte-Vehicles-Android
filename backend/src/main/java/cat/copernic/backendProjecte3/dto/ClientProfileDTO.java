@@ -59,6 +59,8 @@ public class ClientProfileDTO {
      * <p>Será {@code null} si el cliente no tiene imagen registrada.</p>
      */
     public String imatgeCarnet;
+    
+    public String fotoPerfil;
 
     /**
      * Convierte una entidad {@link Client} en un DTO de perfil.
@@ -93,6 +95,12 @@ public class ClientProfileDTO {
             dto.imatgeCarnet = Base64.getEncoder().encodeToString(c.getImatgeCarnet());
         } else {
             dto.imatgeCarnet = null;
+        }
+        
+        if (c.getFotoPerfil() != null) {
+            dto.fotoPerfil = Base64.getEncoder().encodeToString(c.getFotoPerfil());
+        } else {
+            dto.fotoPerfil = null;
         }
 
         return dto;

@@ -31,15 +31,13 @@ public class VehicleService {
     public List<Vehicle> obtenirTots() {
         return vehicleRepository.findAll();
     }
-
     public List<Vehicle> cercarVehiclesDisponibles(LocalDate inici, LocalDate fi, TipusVehicle tipus) {
+        long dies = java.time.temporal.ChronoUnit.DAYS.between(inici, fi);
+        
+        // Política de negocio: mínimo 1 día
+        if (dies <= 0) dies = 1;
 
-    long dies = java.time.temporal.ChronoUnit.DAYS.between(inici, fi);
-
-    if (dies < 2 || dies > 15) {
-        throw new IllegalArgumentException("El rang de dies ha de ser entre 2 i 15 dies");
+        // Llamamos al repo pasándole los días calculados para que filtre bien
+        return vehicleRepository.findDisponibles(inici, fi, tipus, dies);
     }
-
-    return vehicleRepository.findDisponibles(inici, fi, tipus);
-}
 }

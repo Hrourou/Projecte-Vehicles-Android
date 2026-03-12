@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.*
@@ -15,26 +16,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.appvehicles.R
-import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
 import cat.copernic.appvehicles.core.composables.rememberBase64Bitmap
-import androidx.compose.material.icons.filled.DirectionsCar
+import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
 
 /**
- * Pantalla que mostra els detalls d'una reserva específica.
- * Permet consultar la informació del vehicle, el desglossament de costos i
- * ofereix l'opció de cancel·lar la reserva si el seu estat ho permet.
+ * Component visual que mostra els detalls complets d'una reserva específica.
+ * Proporciona el desglossament de costos, les dates, l'estat actual i permet
+ * executar l'acció de cancel·lació si les regles de negoci ho permeten.
  *
- * @param reservaId Identificador de la reserva a consultar.
- * @param viewModel ViewModel que gestiona la lògica de negoci de les reserves.
- * @param onNavigateBack Funció de retorn a la pantalla anterior.
- * @param userEmail Correu electrònic de l'usuari actiu (utilitzat per autoritzar la cancel·lació).
+ * @param reservaId Identificador únic de la reserva a la base de dades.
+ * @param viewModel Instància del ViewModel per gestionar l'estat i les crides a l'API.
+ * @param onNavigateBack Funció de retorn per tornar a la pantalla anterior en la pila de navegació.
+ * @param userEmail Correu de l'usuari actualment autenticat, utilitzat per seguretat en l'anul·lació.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +43,7 @@ fun ReservationDetailScreen(
     onNavigateBack: () -> Unit,
     userEmail: String
 ) {
-    // Observació de l'estat del ViewModel
+    // 1. Observació reactiva dels estats
     val reserva by viewModel.reservaDetail.collectAsState()
     val loading by viewModel.loading.collectAsState()
     val cancelResult by viewModel.cancelResult.collectAsState()
@@ -52,20 +51,20 @@ fun ReservationDetailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var showConfirmDialog by remember { mutableStateOf(false) }
 
-    // Constants de text traduïbles precarregades per ser utilitzades fora i dins de les corrutines
+    // Constants de text precarregades per ser segures dins de corrutines
     val errorCancelPrefix = stringResource(R.string.error_cancel_prefix)
     val statusActive = stringResource(R.string.status_active)
     val statusCancelled = stringResource(R.string.status_cancelled)
     val statusFinished = stringResource(R.string.status_finished)
 
-    // Càrrega inicial de dades de la reserva
+    // 2. Càrrega inicial de dades
     LaunchedEffect(reservaId) {
         if (reservaId != 0L) {
             viewModel.loadReservaDetalle(reservaId)
         }
     }
 
-    // Gestor de la resposta del backend en cas de cancel·lació
+    // 3. Gestió asíncrona del resultat de la cancel·lació
     LaunchedEffect(cancelResult) {
         cancelResult?.onSuccess {
             snackbarHostState.showSnackbar(it.message)
@@ -95,21 +94,27 @@ fun ReservationDetailScreen(
         }
     ) { paddingValues ->
 
+        // 4. Renderització condicional segons l'estat de càrrega
         if (loading) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
             }
         } else if (reserva == null) {
-            // Gestió d'error de connexió o dades no trobades
+            // Pantalla d'error si la reserva no es pot obtenir
             Column(
-                modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(Icons.Rounded.Warning, contentDescription = "Error", modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
+                Icon(Icons.Rounded.Warning, contentDescription = stringResource(R.string.error_icon), modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(stringResource(R.string.error_generic_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -121,17 +126,21 @@ fun ReservationDetailScreen(
                 )
             }
         } else {
+            // Pantalla de detalls un cop tenim les dades correctes
             reserva?.let { dadesReserva ->
 
+                // Format i càlcul de dades econòmiques
                 val estatReserva = dadesReserva.estat ?: "ACTIVA"
                 val fiancaDouble = dadesReserva.fiancaPagada.toDoubleOrNull() ?: 0.0
                 val importDouble = dadesReserva.importTotal.toDoubleOrNull() ?: 0.0
                 val totalSumat = fiancaDouble + importDouble
+
+                // Processament de la imatge
                 val base64String = dadesReserva.vehicleFotoBase64
                 val uriSimulada = base64String?.let { "data:image/jpeg;base64,$it" }
                 val fotoCocheBitmap = rememberBase64Bitmap(imageUri = uriSimulada)
 
-                // Traducció dinàmica de l'estat provinent de la base de dades
+                // Traducció de l'estat per a la UI
                 val displayStatus = when (estatReserva.uppercase()) {
                     "ACTIVA" -> statusActive
                     "CANCELADA", "CANCEL·LADA" -> statusCancelled
@@ -147,6 +156,8 @@ fun ReservationDetailScreen(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
+                    // Capçalera: Imatge del vehicle
                     if (fotoCocheBitmap != null) {
                         Image(
                             bitmap = fotoCocheBitmap,
@@ -158,7 +169,6 @@ fun ReservationDetailScreen(
                             contentScale = ContentScale.Crop
                         )
                     } else {
-                        // Placeholder gris si falla o no hay foto
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -169,7 +179,7 @@ fun ReservationDetailScreen(
                             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                 Icon(
                                     imageVector = Icons.Default.DirectionsCar,
-                                    contentDescription = "Sense imatge",
+                                    contentDescription = stringResource(R.string.no_image),
                                     modifier = Modifier.size(80.dp),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                                 )
@@ -179,6 +189,7 @@ fun ReservationDetailScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // Cos: Targeta d'informació principal
                     ElevatedCard(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -235,23 +246,26 @@ fun ReservationDetailScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Lògica de presentació condicionada per l'estat
+                    // 5. Bloc inferior: Accions de l'usuari segons l'estat de la reserva
                     if (estatReserva == "ACTIVA") {
                         Button(
                             onClick = { showConfirmDialog = true },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                            modifier = Modifier.fillMaxWidth().height(50.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
                         ) {
                             Text(text = stringResource(R.string.cancel_reservation), color = MaterialTheme.colorScheme.onError)
                         }
                     } else if (estatReserva == "CANCELADA") {
+                        // Resum informatiu simplificat post-cancel·lació
                         OutlinedCard(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f))
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Rounded.Email, contentDescription = "Email", tint = MaterialTheme.colorScheme.error)
+                                    Icon(Icons.Rounded.Email, contentDescription = stringResource(R.string.notification), tint = MaterialTheme.colorScheme.error)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = stringResource(R.string.cancellation_notification_title),
@@ -261,14 +275,11 @@ fun ReservationDetailScreen(
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
 
-                                val emailTo = stringResource(R.string.email_to, userEmail)
-                                val emailSubject = stringResource(R.string.email_subject_cancellation)
-                                val emailGreeting = stringResource(R.string.email_body_greeting)
                                 val emailVehicle = stringResource(R.string.email_body_cancelled_vehicle, dadesReserva.vehicleMatricula)
                                 val emailRefund = stringResource(R.string.email_body_refund, String.format("%.2f", totalSumat))
 
                                 Text(
-                                    text = "$emailTo\n$emailSubject\n\n$emailGreeting\n$emailVehicle\n$emailRefund",
+                                    text = "$emailVehicle\n$emailRefund",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
@@ -285,6 +296,7 @@ fun ReservationDetailScreen(
         }
     }
 
+    // 6. Diàleg de confirmació de seguretat abans de procedir a la cancel·lació
     if (showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
@@ -308,12 +320,17 @@ fun ReservationDetailScreen(
 }
 
 /**
- * Funció de suport per renderitzar files de detall.
+ * Component estructural per facilitar la presentació de parells "Etiqueta - Valor".
+ *
+ * @param label El text descriptiu a l'esquerra.
+ * @param value El valor associat alineat a la dreta i remarcat.
  */
 @Composable
 fun DetailRow(label: String, value: String) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(label)

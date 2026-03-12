@@ -17,8 +17,10 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    // ---------------------------------------------------------
+    // 1. CORREO RECUPERAR CONTRASEÑA (Código de tu compañero)
+    // ---------------------------------------------------------
     public void sendPasswordRecoveryEmail(String to, String userName, String token) {
-
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);
@@ -31,9 +33,57 @@ public class EmailService {
                 token + "\n\n" +
                 "This token expires in 30 minutes.\n\n" +
                 "If you did not request it, ignore this email.\n\n" +
-                "AppVehicles Team"
+                "MobileCat Team"
         );
 
+        mailSender.send(message);
+    }
+
+    // ---------------------------------------------------------
+    // 2. CORREO ALTA DE RESERVA (Nuevo)
+    // ---------------------------------------------------------
+    public void sendReservationCreatedEmail(String to, String userName, String matricula, String fechaInicio, String fechaFin, String codigoReserva) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+        message.setTo(to);
+        message.setSubject("MobileCat - Confirmació de Reserva [" + codigoReserva + "]");
+        
+        message.setText(
+                "Hola " + userName + ",\n\n" +
+                "La teva reserva s'ha realitzat correctament.\n\n" +
+                "Detalls de la reserva:\n" +
+                "- Codi de reserva: " + codigoReserva + "\n" +
+                "- Vehicle (Matrícula): " + matricula + "\n" +
+                "- Data d'inici: " + fechaInicio + "\n" +
+                "- Data de finalització: " + fechaFin + "\n\n" +
+                "Gràcies per confiar en MobileCat!"
+        );
+        
+        mailSender.send(message);
+    }
+
+    // ---------------------------------------------------------
+    // 3. CORREO ANULACIÓN DE RESERVA (Nuevo)
+    // ---------------------------------------------------------
+    public void sendReservationCancelledEmail(String to, String userName, String matricula, String codigoReserva, double importRetornat) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from);
+        message.setTo(to);
+        message.setSubject("MobileCat - Reserva Anul·lada [" + codigoReserva + "]");
+        
+        // Lógica de devolución de importe solicitada en el enunciado
+        String textRetorn = (importRetornat > 0) 
+                ? "D'acord amb la nostra política, se t'ha retornat un import de: " + importRetornat + " €." 
+                : "A causa de la proximitat de la data, no procedeix cap devolució d'import.";
+
+        message.setText(
+                "Hola " + userName + ",\n\n" +
+                "Et confirmem que la teva reserva " + codigoReserva + " pel vehicle " + matricula + " ha estat anul·lada correctament.\n\n" +
+                textRetorn + "\n\n" +
+                "Esperem veure't aviat,\n" +
+                "MobileCat Team"
+        );
+        
         mailSender.send(message);
     }
 }

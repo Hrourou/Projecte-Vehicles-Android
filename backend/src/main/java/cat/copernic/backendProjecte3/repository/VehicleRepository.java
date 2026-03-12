@@ -23,6 +23,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
     @Query("""
     SELECT v FROM Vehicle v
     WHERE (:tipus IS NULL OR v.tipusVehicle = :tipus)
+    AND (:dies BETWEEN v.minDiesLloguer AND v.maxDiesLloguer)
     AND NOT EXISTS (
         SELECT r FROM Reserva r
         WHERE r.vehicle = v
@@ -31,10 +32,10 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
         AND r.dataFi >= :inici
     )
 """)
-
     List<Vehicle> findDisponibles(
             @Param("inici") LocalDate inici,
             @Param("fi") LocalDate fi,
-            @Param("tipus") TipusVehicle tipus
+            @Param("tipus") TipusVehicle tipus,
+            @Param("dies") long dies
     );
 }

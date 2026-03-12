@@ -207,10 +207,15 @@
     <string name="err_targeta_format">La tarjeta debe tener entre 13 y 19 dígitos.</string>
     <string name="err_foto_llicencia">Debes subir la foto de la licencia.</string>
     <string name="err_foto_identificacio">Debes subir la foto de identificación.</string>
-    <string name="lowest_price">Lowest Price</string>
-    <string name="highest_price">Highest Price</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
+    <string name="app_vehicles">App Vehicles</string>
+    <string name="dates">Datos</string>
+    <string name="price">Precio</string>
+    <string name="go_back">Ir atrás</string>
+    <string name="vehicle_searching_plate">Matrícula del coche: \'%1$s\'</string>
+    <string name="vehicles_in_memory">Vehículos en memoria: %1$d</string>
+    <string name="vehicle_plate_variant">Matrícula del coche variante: %1$s | %2$s</string>
+    <string name="error_icon">Error</string>
+    <string name="no_image">Sin imagen</string>
+    <string name="notification">Notificación</string>
 
-    <string name="error_user_not_exist">El usuario no existe</string>
 </resources>

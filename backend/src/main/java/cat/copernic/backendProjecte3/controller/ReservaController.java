@@ -51,7 +51,7 @@ public class ReservaController {
     public ReservaResponse createReserva(@RequestBody CreateReservaRequest req)
             throws ReservaDatesNoValidsException, VehicleNoDisponibleException, AccesDenegatException, DadesNoTrobadesException {
 
-        // FIX: Pasamos los 5 parámetros en el orden correcto, incluyendo el userName
+        // Pasamos los 5 parámetros en el orden correcto, incluyendo el userName
         Reserva r = reservaService.crearReserva(
                 req.getEmailClient(),
                 req.getMatricula(),
@@ -91,7 +91,4 @@ public class ReservaController {
         public String getUserName() { return userName; }
         public void setUserName(String userName) { this.userName = userName; }
     }
-
-    // DTO response que devolverá la API para cada reserva
-  
 }

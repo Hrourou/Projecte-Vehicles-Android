@@ -1,16 +1,28 @@
 package cat.copernic.appvehicles.reserva.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cat.copernic.appvehicles.reserva.data.model.CreateReservaRequest
-import cat.copernic.appvehicles.reserva.data.model.ReservaResponse
+import cat.copernic.appvehicles.model.CancelReservaResponse
+import cat.copernic.appvehicles.model.CreateReservaRequest
+import cat.copernic.appvehicles.model.ReservaResponse
 import cat.copernic.appvehicles.reserva.data.repository.ReservaRepository
-import cat.copernic.appvehicles.reserva.data.model.CancelReservaResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel encarregat de gestionar la lògica de negoci i l'estat de les reserves.
+ * Actua com a intermediari entre la capa de dades (Repository) i la capa de presentació (UI).
+ * Utilitza StateFlows per exposar l'estat de manera reactiva i segura, garantint que la UI
+ * s'actualitzi automàticament davant qualsevol canvi en les dades.
+ *
+ * @param repo Repositori de reserves que gestiona les crides de xarxa cap al backend.
+ */
 class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
+
+    // 1. Definició d'estats reactius (StateFlows)
+    // S'utilitza el patró d'encapsulació: Mutable (privat) per modificar, StateFlow (públic) per llegir.
 
     private val _reserves = MutableStateFlow<List<ReservaResponse>>(emptyList())
     val reserves = _reserves.asStateFlow()
@@ -21,7 +33,6 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
     private val _asc = MutableStateFlow(false)
     val asc = _asc.asStateFlow()
 
-    // 🔥 NOU: Emmagatzema els errors del servidor per poder-los ensenyar
     private val _errorMsg = MutableStateFlow<String?>(null)
     val errorMsg = _errorMsg.asStateFlow()
 
@@ -34,23 +45,43 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
     private val _cancelResult = MutableStateFlow<Result<CancelReservaResponse>?>(null)
     val cancelResult = _cancelResult.asStateFlow()
 
+    // 2. Mètodes de neteja d'estats i memòria cau
+
     fun clearCreationResult() {
         _creationResult.value = null
     }
 
-    // 🔥 NOU: Neteja la llista quan fem logout
+    fun clearCancelResult() {
+        _cancelResult.value = null
+    }
+
+    /**
+     * Neteja la llista de reserves en memòria.
+     * Aquest mètode és cridat principalment quan l'usuari tanca la sessió (Logout)
+     * per garantir la privacitat i seguretat de les dades.
+     */
     fun clearReserves() {
         _reserves.value = emptyList()
         _errorMsg.value = null
     }
 
+    // 3. Mètodes d'interacció amb el repositori (Backend)
+
+    /**
+     * Processa la sol·licitud de cancel·lació d'una reserva.
+     * Actualitza l'estat local immediatament en cas d'èxit per oferir una resposta ràpida a la UI.
+     *
+     * @param id Identificador de la reserva a anul·lar.
+     * @param userName Correu de l'usuari sol·licitant (per a validació de permisos).
+     */
     fun cancelReserva(id: Long, userName: String) {
         viewModelScope.launch {
             _loading.value = true
             try {
                 val response = repo.cancelReserva(id, userName)
                 _cancelResult.value = Result.success(response)
-                // Canviem l'estat localment al instant
+
+                // Actualització optimista de l'estat local
                 _reservaDetail.value = _reservaDetail.value?.copy(estat = "CANCELADA")
             } catch (e: Exception) {
                 _cancelResult.value = Result.failure(e)
@@ -60,10 +91,9 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
         }
     }
 
-    fun clearCancelResult() {
-        _cancelResult.value = null
-    }
-
+    /**
+     * Obté els detalls complets d'una reserva específica.
+     */
     fun loadReservaDetalle(id: Long) {
         viewModelScope.launch {
             try {
@@ -74,11 +104,19 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
         }
     }
 
+    /**
+     * Inverteix l'ordre actual de la llista (Ascendent <-> Descendent) i recarrega les dades.
+     */
     fun toggleOrder(email: String) {
         _asc.value = !_asc.value
         load(email)
     }
 
+    /**
+     * Descarrega l'historial de reserves associades a un client.
+     *
+     * @param email Correu electrònic del client actiu.
+     */
     fun load(email: String) {
         viewModelScope.launch {
             _loading.value = true
@@ -86,24 +124,26 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
             try {
                 val llista = repo.getReservesClient(email, _asc.value)
 
-                // --- INICIO DEL CHIVATO ---
+                // Registre de depuració (Debug) per verificar la integritat de les dades rebudes des del backend.
                 llista.forEach { reserva ->
-                    android.util.Log.d(
+                    Log.d(
                         "DEBUG_RESERVA",
                         "Reserva ID: ${reserva.idReserva} | Coche: ${reserva.vehicleMatricula} | FotoBase64: ${reserva.vehicleFotoBase64?.take(40)}"
                     )
                 }
-                // --- FIN DEL CHIVATO ---
 
                 _reserves.value = llista
             } catch (e: Exception) {
                 _reserves.value = emptyList()
-                _errorMsg.value = "Error de connexió: " + e.message
+                _errorMsg.value = "S'ha produït un error de connexió: ${e.message}"
             }
             _loading.value = false
         }
     }
 
+    /**
+     * Envia una petició per crear una nova reserva a la base de dades.
+     */
     fun crearReserva(request: CreateReservaRequest) {
         viewModelScope.launch {
             _loading.value = true
