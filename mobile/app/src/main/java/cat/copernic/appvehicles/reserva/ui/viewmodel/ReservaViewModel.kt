@@ -82,12 +82,22 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
     fun load(email: String) {
         viewModelScope.launch {
             _loading.value = true
-            _errorMsg.value = null // Netejem errors antics
+            _errorMsg.value = null
             try {
-                _reserves.value = repo.getReservesClient(email, _asc.value)
+                val llista = repo.getReservesClient(email, _asc.value)
+
+                // --- INICIO DEL CHIVATO ---
+                llista.forEach { reserva ->
+                    android.util.Log.d(
+                        "DEBUG_RESERVA",
+                        "Reserva ID: ${reserva.idReserva} | Coche: ${reserva.vehicleMatricula} | FotoBase64: ${reserva.vehicleFotoBase64?.take(40)}"
+                    )
+                }
+                // --- FIN DEL CHIVATO ---
+
+                _reserves.value = llista
             } catch (e: Exception) {
                 _reserves.value = emptyList()
-                // 🔥 NOU: Si peta, guardem l'error en comptes d'amagar-lo!
                 _errorMsg.value = "Error de connexió: " + e.message
             }
             _loading.value = false

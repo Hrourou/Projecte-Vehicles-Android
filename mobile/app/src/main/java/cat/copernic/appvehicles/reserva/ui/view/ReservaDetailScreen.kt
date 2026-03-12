@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
+import cat.copernic.appvehicles.core.composables.rememberBase64Bitmap
+import androidx.compose.material.icons.filled.DirectionsCar
 
 /**
  * Pantalla que mostra els detalls d'una reserva específica.
@@ -125,6 +127,9 @@ fun ReservationDetailScreen(
                 val fiancaDouble = dadesReserva.fiancaPagada.toDoubleOrNull() ?: 0.0
                 val importDouble = dadesReserva.importTotal.toDoubleOrNull() ?: 0.0
                 val totalSumat = fiancaDouble + importDouble
+                val base64String = dadesReserva.vehicleFotoBase64
+                val uriSimulada = base64String?.let { "data:image/jpeg;base64,$it" }
+                val fotoCocheBitmap = rememberBase64Bitmap(imageUri = uriSimulada)
 
                 // Traducció dinàmica de l'estat provinent de la base de dades
                 val displayStatus = when (estatReserva.uppercase()) {
@@ -142,15 +147,35 @@ fun ReservationDetailScreen(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = stringResource(R.string.vehicle_photo_description),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
-                    )
+                    if (fotoCocheBitmap != null) {
+                        Image(
+                            bitmap = fotoCocheBitmap,
+                            contentDescription = stringResource(R.string.vehicle_photo_description),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        // Placeholder gris si falla o no hay foto
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            color = MaterialTheme.colorScheme.surfaceVariant
+                        ) {
+                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                                Icon(
+                                    imageVector = Icons.Default.DirectionsCar,
+                                    contentDescription = "Sense imatge",
+                                    modifier = Modifier.size(80.dp),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                )
+                            }
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(24.dp))
 

@@ -26,5 +26,8 @@ data class ReservaResponse(
 
     // OBLIGUEM A RETROFIT A LLEGIR EL CAMP "estat" DEL JSON DE SPRING BOOT
     @SerializedName("estat")
-    val estat: String? = "ACTIVA"
+    val estat: String? = "ACTIVA",
+
+    @SerializedName("vehicleFotoBase64")
+    val vehicleFotoBase64: String? = null // Añade esta línea al final de tu data class
 )

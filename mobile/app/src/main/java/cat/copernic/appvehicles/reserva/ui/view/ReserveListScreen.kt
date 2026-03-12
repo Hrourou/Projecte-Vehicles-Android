@@ -43,6 +43,8 @@ fun ReserveListScreen(
     val loading by viewModel.loading.collectAsState()
     val reserves by viewModel.reserves.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
+    // Obtenemos la lista REAL del servidor a través del ViewModel
+    val reservesReal by viewModel.reserves.collectAsState()
 
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
@@ -155,10 +157,11 @@ fun ReserveListScreen(
                     contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(items = listToShow, key = { it.id }) { reserva ->
+                    items(items = reservesReal, key = { it.idReserva }) { reserva ->
                         ReserveCard(
                             reserve = reserva,
-                            onClick = { onReservaSelected(reserva.id.toLong()) }
+                            // Usamos idReserva porque así se llama en el ReservaResponse real
+                            onClick = { onReservaSelected(reserva.idReserva) }
                         )
                     }
                 }
