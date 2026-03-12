@@ -11,19 +11,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 
-// Imports dels teus companys
 import cat.copernic.appvehicles.client.ui.view.ProfileEntryScreen
 import cat.copernic.appvehicles.usuariAnonim.data.repository.AuthRepository
-import cat.copernic.appvehicles.usuariAnonim.ui.view.HomeScreen
 
-// Imports de les teves funcionalitats de Reserva i Vehicles
 import cat.copernic.appvehicles.reserva.data.api.remote.RetrofitProvider
 import cat.copernic.appvehicles.reserva.data.repository.ReservaRepository
 import cat.copernic.appvehicles.reserva.ui.view.ReserveListScreen
 import cat.copernic.appvehicles.reserva.ui.view.ReservationDetailScreen
-import cat.copernic.appvehicles.reserva.ui.view.CreateReservationScreen // <-- PANTALLA NOVA
+import cat.copernic.appvehicles.reserva.ui.view.CreateReservationScreen
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModel
 import cat.copernic.appvehicles.reserva.viewmodel.ReservaViewModelFactory
+
 import cat.copernic.appvehicles.usuariAnonim.ui.view.RegisterScreen
 import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
 import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModelFactory
@@ -39,22 +37,20 @@ import cat.copernic.appvehicles.vehicle.ui.viewmodel.VehicleViewModelFactory
 fun MainScreen(
     repository: AuthRepository
 ) {
+
     val navController = rememberNavController()
 
-    // 1. Instanciar el ViewModel de Reserves
     val reservaViewModel: ReservaViewModel = viewModel(
         factory = ReservaViewModelFactory(
             ReservaRepository(RetrofitProvider.reservaApi)
         )
     )
 
-    // 2. Instanciar el ViewModel de Vehicles (Necessari pel desplegable de crear reserva)
     val vehicleViewModel: VehicleViewModel = viewModel(
         factory = VehicleViewModelFactory(
             VehicleRepository(VehicleRetrofitProvider.vehicleApi)
         )
     )
-
 
     Scaffold(
         bottomBar = { AppBottomNavigation(navController) }
@@ -62,17 +58,18 @@ fun MainScreen(
 
         NavHost(
             navController = navController,
-            startDestination = AppRoutes.Inici.route,
+            startDestination = AppRoutes.Vehicles.route,
             modifier = Modifier.padding(paddingValues)
         ) {
 
             // -----------------------------
-            // HOME
+            // VEHICLES LIST (HOME)
             // -----------------------------
-            composable(AppRoutes.Inici.route) {
-                HomeScreen(
-                    viewModel = vehicleViewModel, // <-- Li passem el ViewModel real!
-                    onVehicleClick = { matricula -> // <-- Canviem vehicleId per matricula
+            composable(AppRoutes.Vehicles.route) {
+
+                VehicleLlistarScreen(
+                    viewModel = vehicleViewModel,
+                    onVehicleClick = { matricula ->
                         navController.navigate("${AppRoutes.VehicleDetail.route}/$matricula")
                     }
                 )
@@ -82,6 +79,7 @@ fun MainScreen(
             // RESERVES LIST
             // -----------------------------
             composable(AppRoutes.Reserves.route) {
+
                 ReserveListScreen(
                     onBackClick = { navController.popBackStack() },
                     onReservaSelected = { idReserva ->
@@ -99,7 +97,9 @@ fun MainScreen(
                     navArgument("idReserva") { type = NavType.LongType }
                 )
             ) { backStackEntry ->
+
                 val idReserva = backStackEntry.arguments?.getLong("idReserva") ?: 0L
+
                 ReservationDetailScreen(
                     reservaId = idReserva,
                     viewModel = reservaViewModel,
@@ -108,19 +108,18 @@ fun MainScreen(
             }
 
             // -----------------------------
-            // RESERVA CREATE (La teva pantalla!)
+            // CREATE RESERVA
             // -----------------------------
             composable("reserva_create") {
-                // Usuari fixat (hardcodejat) tal com has demanat, ja que a la BD existeix
+
                 val userEmail = "maria@test.com"
 
                 CreateReservationScreen(
                     onNavigateBack = { navController.popBackStack() },
                     viewModel = reservaViewModel,
-                    vehicleViewModel = vehicleViewModel, // Passem els vehicles reals
+                    vehicleViewModel = vehicleViewModel,
                     userEmail = userEmail,
                     onReservaCreada = { idReserva ->
-                        // Quan es crea, anem al detall i netegem la navegació
                         navController.navigate("reserva_detail/$idReserva") {
                             popUpTo(AppRoutes.Vehicles.route)
                         }
@@ -129,31 +128,16 @@ fun MainScreen(
             }
 
             // -----------------------------
-            // PERFIL -> RF04 GATE
-            // -----------------------------
-            // -----------------------------
-            // PERFIL -> RF04 GATE
+            // PROFILE
             // -----------------------------
             composable(AppRoutes.Perfil.route) {
+
                 ProfileEntryScreen(
                     authRepository = repository,
                     onLoginSuccessNavigate = {
-                        // Navegamos al inicio y limpiamos la pila para no poder volver al login dándole atrás
-                        navController.navigate(AppRoutes.Inici.route) {
-                            popUpTo(AppRoutes.Inici.route) { inclusive = true }
+                        navController.navigate(AppRoutes.Vehicles.route) {
+                            popUpTo(AppRoutes.Vehicles.route) { inclusive = true }
                         }
-                    }
-                )
-            }
-
-            // -----------------------------
-            // VEHICLES LIST
-            // -----------------------------
-            composable(AppRoutes.Vehicles.route) {
-                VehicleLlistarScreen(
-                    viewModel = vehicleViewModel,
-                    onVehicleClick = { matricula: String -> // Passem la matricula real!
-                        navController.navigate("${AppRoutes.VehicleDetail.route}/$matricula")
                     }
                 )
             }
@@ -167,20 +151,20 @@ fun MainScreen(
                     navArgument("matricula") { type = NavType.StringType }
                 )
             ) { backStackEntry ->
+
                 val matricula = backStackEntry.arguments?.getString("matricula") ?: ""
 
                 VehicleDetailScreen(
                     matricula = matricula,
                     viewModel = vehicleViewModel,
                     onBackClick = { navController.popBackStack() },
-                    // Connectem el botó de reservar amb la ruta de reserva_create!
                     onReservarClick = { navController.navigate("reserva_create") }
                 )
             }
 
             // -----------------------------
-// REGISTER
-// -----------------------------
+            // REGISTER
+            // -----------------------------
             composable(AppRoutes.Register.route) {
 
                 val registerViewModel: RegisterViewModel = viewModel(
@@ -191,8 +175,7 @@ fun MainScreen(
                     viewModel = registerViewModel,
                     onNavigateBack = { navController.popBackStack() },
                     onRegisterSuccess = {
-                        // Cuando el registro se complete
-                        navController.navigate(AppRoutes.Inici.route) {
+                        navController.navigate(AppRoutes.Vehicles.route) {
                             popUpTo(AppRoutes.Register.route) { inclusive = true }
                         }
                     }

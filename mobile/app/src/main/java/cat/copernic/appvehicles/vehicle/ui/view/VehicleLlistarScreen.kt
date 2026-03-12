@@ -8,21 +8,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.model.Vehicle
-import cat.copernic.appvehicles.ui.theme.AppVehiclesTheme
 import cat.copernic.appvehicles.vehicle.ui.viewmodel.VehicleViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VehicleLlistarScreen(
     onVehicleClick: (String) -> Unit,
-    onBackClick: () -> Unit = {},
     viewModel: VehicleViewModel = viewModel()
 ) {
 
@@ -30,30 +23,24 @@ fun VehicleLlistarScreen(
     var fechaFin by remember { mutableStateOf("") }
     var ordenAscendente by remember { mutableStateOf(true) }
 
+    var expandedDates by remember { mutableStateOf(false) }
+    var expandedPrice by remember { mutableStateOf(false) }
+
     val vehicles by viewModel.vehicles.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    // Cargar vehículos al abrir pantalla
     LaunchedEffect(Unit) {
         viewModel.loadVehicles()
     }
 
-    // Ordenación por precio
-    val vehiculosOrdenados = if (ordenAscendente) {
-        vehicles.sortedBy { it.preuHora }
-    } else {
-        vehicles.sortedByDescending { it.preuHora }
-    }
+    val vehiculosOrdenados =
+        if (ordenAscendente) vehicles.sortedBy { it.preuHora }
+        else vehicles.sortedByDescending { it.preuHora }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.available_vehicles)) },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
+                title = { Text("App Vehicles") }
             )
         }
     ) { paddingValues ->
@@ -66,112 +53,102 @@ fun VehicleLlistarScreen(
         ) {
 
             if (isLoading) {
+
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
                 }
+
                 return@Column
             }
 
-            // -----------------------------
-            // FILTRO POR FECHAS
-            // -----------------------------
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(4.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
 
-                    Text(
-                        text = stringResource(R.string.filter_by_date_range),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
+                ExposedDropdownMenuBox(
+                    expanded = expandedDates,
+                    onExpandedChange = { expandedDates = !expandedDates },
+                    modifier = Modifier.weight(1f)
+                ) {
 
                     OutlinedTextField(
-                        value = fechaInicio,
-                        onValueChange = { fechaInicio = it },
-                        label = { Text(stringResource(R.string.start_date_dd_mm_yyyy)) },
-                        modifier = Modifier.fillMaxWidth()
+                        value = "Dates",
+                        onValueChange = {},
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedDates) },
+                        modifier = Modifier.menuAnchor()
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = fechaFin,
-                        onValueChange = { fechaFin = it },
-                        label = { Text(stringResource(R.string.end_date_dd_mm_yyyy)) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Button(
-                        onClick = {
-                            if (fechaInicio.isNotBlank() && fechaFin.isNotBlank()) {
-                                viewModel.loadVehiclesDisponibles(fechaInicio, fechaFin)
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
+                    ExposedDropdownMenu(
+                        expanded = expandedDates,
+                        onDismissRequest = { expandedDates = false }
                     ) {
-                        Text(stringResource(R.string.apply_filter))
+
+                        DropdownMenuItem(
+                            text = { Text("Apply availability filter") },
+                            onClick = {
+
+                                if (fechaInicio.isNotBlank() && fechaFin.isNotBlank()) {
+                                    viewModel.loadVehiclesDisponibles(fechaInicio, fechaFin)
+                                }
+
+                                expandedDates = false
+                            }
+                        )
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                ExposedDropdownMenuBox(
+                    expanded = expandedPrice,
+                    onExpandedChange = { expandedPrice = !expandedPrice },
+                    modifier = Modifier.weight(1f)
+                ) {
 
-            // -----------------------------
-            // ORDENACIÓN
-            // -----------------------------
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(4.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-
-                    Text(
-                        text = stringResource(R.string.sort_by_price),
-                        style = MaterialTheme.typography.titleMedium
+                    OutlinedTextField(
+                        value = "Price",
+                        onValueChange = {},
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedPrice) },
+                        modifier = Modifier.menuAnchor()
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    ExposedDropdownMenu(
+                        expanded = expandedPrice,
+                        onDismissRequest = { expandedPrice = false }
+                    ) {
 
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-
-                        FilterChip(
-                            selected = ordenAscendente,
-                            onClick = { ordenAscendente = true },
-                            label = { Text(stringResource(R.string.ascending)) }
+                        DropdownMenuItem(
+                            text = { Text("Ascending") },
+                            onClick = {
+                                ordenAscendente = true
+                                expandedPrice = false
+                            }
                         )
 
-                        FilterChip(
-                            selected = !ordenAscendente,
-                            onClick = { ordenAscendente = false },
-                            label = { Text(stringResource(R.string.descending)) }
+                        DropdownMenuItem(
+                            text = { Text("Descending") },
+                            onClick = {
+                                ordenAscendente = false
+                                expandedPrice = false
+                            }
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // -----------------------------
-            // LISTADO VEHÍCULOS
-            // -----------------------------
             if (vehiculosOrdenados.isEmpty()) {
 
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "No vehicles available",
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                    Text("No vehicles available")
                 }
 
             } else {
@@ -231,15 +208,5 @@ fun VehicleCard(
                 color = MaterialTheme.colorScheme.primary
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun VehicleListUnifiedScreenPreview() {
-    AppVehiclesTheme {
-        VehicleLlistarScreen(
-            onVehicleClick = {}
-        )
     }
 }

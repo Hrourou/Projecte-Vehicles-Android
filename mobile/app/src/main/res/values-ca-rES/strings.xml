@@ -9,7 +9,7 @@
     <string name="status_cancelled">Cancel·lada</string>
     <string name="status_finished">Acabat</string>
     <string name="status_active">"Activa "</string>
-    <string name="reservation_code">Reserva #%1$s</string>
+    <string name="reservation_code">Código de Reserva</string>
 
     <!-- Para ReservationDetailScreen -->
     <string name="reservation_detail_title">Detall de la reserva</string>
@@ -113,6 +113,8 @@
 
     <string name="nav_vehicles">Vehicles</string>
     <string name="nav_register">Registre</string>
+
+
 
 
 
