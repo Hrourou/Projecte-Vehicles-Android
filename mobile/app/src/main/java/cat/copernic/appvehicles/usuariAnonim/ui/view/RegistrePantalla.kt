@@ -15,6 +15,25 @@ import androidx.compose.ui.unit.dp
 import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.usuariAnonim.ui.viewmodel.RegisterViewModel
 
+/**
+ * Representa l'estat de la interfície d'usuari per a la pantalla de registre.
+ * * @property nomComplet Nom complet de l'usuari.
+ * @property numeroIdentificacio DNI, NIE o passaport.
+ * @property dataCaducitatId Data de caducitat del document d'identitat.
+ * @property tipusLlicencia Categoria del carnet de conduir.
+ * @property dataCaducitatLlicencia Data de caducitat del carnet de conduir.
+ * @property numeroTargetaCredit Número de la targeta de crèdit per als pagaments.
+ * @property adreca Adreça de residència.
+ * @property nacionalitat País de nacionalitat.
+ * @property email Correu electrònic de contacte.
+ * @property password Contrasenya de la cuenta.
+ * @property isLoading Indica si hi ha una operació de registre en curs.
+ * @property errorMessage Missatge d'error a mostrar, si n'hi ha.
+ * @property isSuccess Indica si el registre s'ha completat correctament.
+ * @property fotoIdentificacioUri URI de la imatge del document d'identitat.
+ * @property fotoLlicenciaUri URI de la imatge del carnet de conduir.
+ * @property fotoPerfilUri URI de la imatge de perfil de l'usuari.
+ */
 data class RegisterUiState(
     val nomComplet: String = "",
     val numeroIdentificacio: String = "",
@@ -34,6 +53,12 @@ data class RegisterUiState(
     val fotoPerfilUri: String? = null
 )
 
+/**
+ * Pantalla principal del flux de registre organitzada en diversos passos.
+ * * @param viewModel El ViewModel que gestiona la lògica i l'estat del registre.
+ * @param onNavigateBack Funció a executar per tornar a la pantalla anterior.
+ * @param onRegisterSuccess Funció a executar quan el registre s'ha realitzat correctament.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun RegisterScreen(
@@ -112,10 +137,7 @@ fun RegisterScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                     }
 
-
-
                     if (currentStep < totalSteps) {
-
 
                         Button(
                             onClick = {
@@ -253,4 +275,3 @@ fun RegisterScreen(
         }
     }
 }
-

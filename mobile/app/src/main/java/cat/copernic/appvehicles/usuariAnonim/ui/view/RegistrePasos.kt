@@ -20,6 +20,12 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+/**
+ * Composable que gestiona el primer pas del registre: dades personals i identificació.
+ *
+ * @param state L'estat actual del formulari de registre.
+ * @param onStateChange Callback per actualitzar l'estat quan l'usuari modifica algun camp.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pas1DadesPersonals(state: RegisterUiState, onStateChange: (RegisterUiState) -> Unit) {
@@ -67,18 +73,23 @@ fun Pas1DadesPersonals(state: RegisterUiState, onStateChange: (RegisterUiState) 
     )
 
     ImageUploadOrPreview(
-        label = "Pujar foto identificació", // O tu stringResource
+        label = "Pujar foto identificació",
         imageUri = state.fotoIdentificacioUri,
         onUploadClick = {
             photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         },
         onDeleteClick = {
-            // Si el usuario le da a la papelera, volvemos a poner la URI a null
             onStateChange(state.copy(fotoIdentificacioUri = null))
         }
     )
 }
 
+/**
+ * Composable que gestiona el segon pas del registre: dades de conducció i mètode de pagament.
+ *
+ * @param state L'estat actual del formulari de registre.
+ * @param onStateChange Callback per actualitzar l'estat quan l'usuari modifica algun camp.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pas2DadesConduccio(state: RegisterUiState, onStateChange: (RegisterUiState) -> Unit) {
@@ -105,19 +116,13 @@ fun Pas2DadesConduccio(state: RegisterUiState, onStateChange: (RegisterUiState) 
         ) { DatePicker(state = datePickerState) }
     }
 
-    // --- LAUNCHER PARA LA FOTO DE LA LICENCIA (El que ya tenías) ---
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> if (uri != null) onStateChange(state.copy(fotoLlicenciaUri = uri.toString())) }
     )
 
-
-
-    // TÍTULO DEL PASO 2
     Text(stringResource(R.string.dades_de_conducci_i_pagament), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
 
-
-    // CAMPOS ORIGINALES DE CONDUCCIÓN
     ExposedDropdownMenuBox(
         expanded = expaditLlicencia,
         onExpandedChange = { expaditLlicencia = !expaditLlicencia }
@@ -180,6 +185,12 @@ fun Pas2DadesConduccio(state: RegisterUiState, onStateChange: (RegisterUiState) 
     )
 }
 
+/**
+ * Composable que gestiona el tercer pas del registre: dades de contacte, ubicació i accés.
+ *
+ * @param state L'estat actual del formulari de registre.
+ * @param onStateChange Callback per actualitzar l'estat quan l'usuari modifica algun camp.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Pas3DadesContacte(state: RegisterUiState, onStateChange: (RegisterUiState) -> Unit) {
@@ -188,13 +199,11 @@ fun Pas3DadesContacte(state: RegisterUiState, onStateChange: (RegisterUiState) -
 
     Text(stringResource(R.string.dades_de_contacte_i_acc_s), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
 
-    // --- LAUNCHER FOTO PERFIL ---
     val profilePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> if (uri != null) onStateChange(state.copy(fotoPerfilUri = uri.toString())) }
     )
 
-// --- FOTO PERFIL (ARRIBA DEL TODO) ---
     ImageUploadOrPreview(
         label = "Pujar foto de perfil (Opcional)",
         imageUri = state.fotoPerfilUri,

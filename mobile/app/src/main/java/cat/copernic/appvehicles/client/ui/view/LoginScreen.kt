@@ -16,9 +16,14 @@ import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.client.ui.viewmodel.LoginViewModel
 import cat.copernic.appvehicles.core.composables.ReusableTextField
 
-
-
-
+/**
+ * Pantalla principal d'autenticació (Login) per als clients.
+ *
+ * @param vm El ViewModel que gestiona l'estat i la lògica del login.
+ * @param onLoginSuccess Callback que s'executa quan l'usuari s'ha autenticat correctament.
+ * @param onNavigateToRecover Callback per navegar a la pantalla de recuperació de contrasenya.
+ * @param onNavigateToRegister Callback per navegar a la pantalla de registre de nou usuari.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
@@ -27,7 +32,6 @@ fun LoginScreen(
     onNavigateToRecover: () -> Unit = {},
     onNavigateToRegister: () -> Unit = {}
 ) {
-    // CORRECCIÓ: Escrit correctament "uiState"
     val state by vm.uiState.collectAsState()
 
     var passwordVisible by remember { mutableStateOf(false) }
@@ -110,9 +114,7 @@ fun LoginScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
-                    // AFEGIT: Si el backend retorna un missatge lliure que no està als XML, el mostrem tal qual.
                     state.generalError?.let {
-                        // Intentem traduir si la clau existeix, sinó mostrem el missatge cru del backend
                         val resId = try { errorKeyToRes(it) } catch (e: Exception) { null }
                         Text(
                             text = if (resId != null && resId != R.string.error_generic) stringResource(resId) else it,
@@ -123,7 +125,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Extras: links recuperar + registrar
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -138,7 +139,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // CORRECCIÓ: La propietat és isLoginEnabled (si tens un métode per comprovar, sinó ho validem aquí)
                     val canLogin = state.email.isNotBlank() && state.password.isNotBlank() && !state.isLoading
 
                     Button(
@@ -164,6 +164,12 @@ fun LoginScreen(
     }
 }
 
+/**
+ * Tradueix una clau d'error provinent del sistema o del backend al seu recurs de cadena corresponent.
+ *
+ * @param key La clau identificadora de l'error.
+ * @return L'identificador del recurs string (R.string).
+ */
 private fun errorKeyToRes(key: String): Int {
     val lowercaseKey = key.lowercase()
 
@@ -174,10 +180,8 @@ private fun errorKeyToRes(key: String): Int {
         lowercaseKey == "invalid_credentials" -> R.string.error_invalid_credentials
         lowercaseKey == "user_not_exist" -> R.string.error_user_not_exist
 
-        // Atrapamos "Usuario no existe"
         lowercaseKey.contains("usuari no existeix") || lowercaseKey.contains("usuari no trobat") -> R.string.error_user_not_exist
 
-        // ATRAPAMOS CUALQUIER FALLO DE CONTRASEÑA O CREDENCIALES
         lowercaseKey.contains("credencials incorrectes") ||
                 lowercaseKey.contains("bad credentials") ||
                 lowercaseKey.contains("bad password") ||
