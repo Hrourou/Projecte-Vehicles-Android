@@ -207,5 +207,15 @@
 
     <string name="close">Close</string>
     <string name="sort_list">Sort list</string>
+    <string name="app_vehicles">App Vehicles</string>
+    <string name="dates">Dates</string>
+    <string name="price">Price</string>
+    <string name="go_back">Go back</string>
+    <string name="vehicle_searching_plate">vehicle_searching_plate: \'%1$s\'</string>
+    <string name="vehicles_in_memory">vehicles_in_memory: %1$d</string>
+    <string name="vehicle_plate_variant">Vehicle_Plate_Variant: %1$s | %2$s</string>
+    <string name="error_icon">Error_icon</string>
+    <string name="no_image">No Image</string>
+    <string name="notification">Notification</string>
 
 </resources>

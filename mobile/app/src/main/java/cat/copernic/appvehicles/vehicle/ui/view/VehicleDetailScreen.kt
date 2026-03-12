@@ -42,7 +42,7 @@ fun VehicleDetailScreen(
     val color = "White"
     val limitKm = "300 km/day"
     val minDies = "1 day"
-    val maxDies = "15 days"
+    val maxDies = "30 days"
     val fianca = "500€"
 
     Scaffold(
@@ -53,7 +53,7 @@ fun VehicleDetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Go back"
+                            contentDescription = stringResource(R.string.go_back)
                         )
                     }
                 }
@@ -72,8 +72,8 @@ fun VehicleDetailScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Carregant o vehicle no trobat...")
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Matrícula que busquem: '$matricula'", color = MaterialTheme.colorScheme.error)
-                    Text("Vehicles en memòria: ${vehicles.size}", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.vehicle_searching_plate, matricula), color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.vehicles_in_memory, vehicles.size), color = MaterialTheme.colorScheme.error)
                 }
             }
         } else {
@@ -131,7 +131,11 @@ fun VehicleDetailScreen(
                 )
 
                 Text(
-                    text = "Matrícula: ${vehicleReal.id.trim()} | ${vehicleReal.variant}",
+                    text = stringResource(
+                        R.string.vehicle_plate_variant,
+                        vehicleReal.id.trim(),
+                        vehicleReal.variant
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

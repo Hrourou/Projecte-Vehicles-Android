@@ -16,8 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.model.Vehicle
 import cat.copernic.appvehicles.vehicle.ui.viewmodel.VehicleViewModel
 import cat.copernic.appvehicles.core.composables.rememberBase64Bitmap
@@ -53,7 +55,7 @@ fun VehicleLlistarScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("App Vehicles") }
+                title = { Text(stringResource(R.string.app_vehicles)) }
             )
         }
     ) { paddingValues ->
@@ -107,7 +109,7 @@ fun VehicleLlistarScreen(
                                             if (days < 0) {
                                                 Toast.makeText(
                                                     context,
-                                                    "La data final ha de ser posterior a la d'inici",
+                                                    "error_end_date_after_start",
                                                     Toast.LENGTH_LONG
                                                 ).show()
                                             } else {
@@ -126,7 +128,7 @@ fun VehicleLlistarScreen(
                         ).show()
                     }
                 ) {
-                    Text("Dates")
+                    Text(stringResource(R.string.dates))
                 }
 
                 // ORDENAR POR PRECIO
@@ -137,7 +139,7 @@ fun VehicleLlistarScreen(
                 ) {
 
                     OutlinedTextField(
-                        value = "Price",
+                        value = stringResource(R.string.price),
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedPrice) },
@@ -176,7 +178,7 @@ fun VehicleLlistarScreen(
 
                         Toast.makeText(
                             context,
-                            "Date filter cleared",
+                            "date_filter_cleared)",
                             Toast.LENGTH_SHORT
                         ).show()
                     }

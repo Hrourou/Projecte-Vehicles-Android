@@ -143,7 +143,7 @@ fun ReserveListScreen(
                     modifier = Modifier.align(Alignment.Center).padding(32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(Icons.Rounded.Warning, contentDescription = "Error", modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
+                    Icon(Icons.Rounded.Warning, contentDescription = "Error_Icon", modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(stringResource(R.string.error_generic_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))

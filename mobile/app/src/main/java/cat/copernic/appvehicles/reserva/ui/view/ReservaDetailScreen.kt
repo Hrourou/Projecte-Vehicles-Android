@@ -97,7 +97,9 @@ fun ReservationDetailScreen(
         // 4. Renderització condicional segons l'estat de càrrega
         if (loading) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
@@ -105,11 +107,14 @@ fun ReservationDetailScreen(
         } else if (reserva == null) {
             // Pantalla d'error si la reserva no es pot obtenir
             Column(
-                modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(Icons.Rounded.Warning, contentDescription = "Error", modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
+                Icon(Icons.Rounded.Warning, contentDescription = stringResource(R.string.error_icon), modifier = Modifier.size(64.dp), tint = MaterialTheme.colorScheme.error)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(stringResource(R.string.error_generic_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -174,7 +179,7 @@ fun ReservationDetailScreen(
                             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                                 Icon(
                                     imageVector = Icons.Default.DirectionsCar,
-                                    contentDescription = "Sense imatge",
+                                    contentDescription = stringResource(R.string.no_image),
                                     modifier = Modifier.size(80.dp),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                                 )
@@ -246,7 +251,9 @@ fun ReservationDetailScreen(
                         Button(
                             onClick = { showConfirmDialog = true },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                            modifier = Modifier.fillMaxWidth().height(50.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
                         ) {
                             Text(text = stringResource(R.string.cancel_reservation), color = MaterialTheme.colorScheme.onError)
                         }
@@ -258,7 +265,7 @@ fun ReservationDetailScreen(
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Rounded.Email, contentDescription = "Notificació", tint = MaterialTheme.colorScheme.error)
+                                    Icon(Icons.Rounded.Email, contentDescription = stringResource(R.string.notification), tint = MaterialTheme.colorScheme.error)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = stringResource(R.string.cancellation_notification_title),
@@ -321,7 +328,9 @@ fun ReservationDetailScreen(
 @Composable
 fun DetailRow(label: String, value: String) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(label)
