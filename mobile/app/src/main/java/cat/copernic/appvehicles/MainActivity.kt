@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
 
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.1.210:8080/api/")
+            .baseUrl("http://10.31.110.46:8080/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

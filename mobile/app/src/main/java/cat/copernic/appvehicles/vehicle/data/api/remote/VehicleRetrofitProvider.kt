@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object VehicleRetrofitProvider {
 
     // URL del emulador a tu PC
-    private const val BASE_URL = "http://192.168.1.210:8080/"
+    private const val BASE_URL = "http://10.31.110.46:8080/"
 
     val vehicleApi: VehicleApiService by lazy {
         Retrofit.Builder()
