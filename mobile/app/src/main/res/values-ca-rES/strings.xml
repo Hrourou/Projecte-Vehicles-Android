@@ -1,121 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">appVehicles</string>
-    <string name="reservations_title">Les meves reserves</string>
-    <string name="back">Tornar</string>
-    <string name="sort">ordenar</string>
-    <string name="reservation_date_range">De %1$s a %2$s</string>
-    <string name="reservation_status_label">Estat</string>
-    <string name="status_cancelled">Cancel·lada</string>
-    <string name="status_finished">Acabat</string>
-    <string name="status_active">"Activa "</string>
-    <string name="reservation_code">Código de Reserva</string>
 
-    <!-- Para ReservationDetailScreen -->
-    <string name="reservation_detail_title">Detall de la reserva</string>
-    <string name="vehicle_photo_description">Foto del vehicle</string>
-    <string name="reservation_vehicle">Vehicle</string>
-    <string name="start_date">Data d\'inici</string>
-    <string name="end_date">Data de fi</string>
+    <!-- Bottom navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_reservations">Reservas</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="nav_vehicles">Vehículos</string>
+    <string name="nav_register">Registrarse</string>
 
-    <string name="deposit">Fiança</string>
-    <string name="rental_cost">Cost del lloguer</string>
-    <string name="reservation_total">Total: %1$s</string>
-    <string name="cancel_reservation">Anul·lar reserva</string>
-
-    <string name="create_reservation_title">Nova reserva</string>
-    <string name="select_dates">Selecciona les dates</string>
-    <string name="available_vehicle">Vehicle disponible</string>
-    <string name="select_car">Selecciona un cotxe</string>
-    <string name="cost_summary">Resum del cost</string>
-    <string name="rental_days">Dies de lloguer </string>
-    <string name="total_to_pay">Total a pagar</string>
-    <string name="confirm_reservation">Confirmar reserva</string>
-    <string name="confirm_cancel_question">Esteu segur que voleu cancel·lar aquesta reserva?</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel·la</string>
-
-
-    <string name="registre_pas_de">Registre - Pas %1$d de %2$d</string>
-    <string name="tornar_enrere">Tornar enrere</string>
-    <string name="enrere">Enrere</string>
-    <string name="seg_ent">Següent</string>
-    <string name="finalitzar">Finalitzar</string>
-
-    <string name="err_nom_complet_buit">El nom complet no pot estar buit.</string>
-    <string name="err_nom_format">El nom només pot contenir lletres i espais.</string>
-    <string name="err_numero_id_buit">El número d\'identificació no pot estar buit.</string>
-    <string name="err_format_data">Format de data incorrecte (Usa YYYY-MM-DD).</string>
-    <string name="err_data_passada">La data de caducitat no pot ser passada.</string>
-    <string name="err_data_invalida">Data invàlida.</string>
-
-    <string name="err_adreca_buida">L\'adreça no pot estar buida.</string>
-    <string name="err_nacionalitat_buida">La nacionalitat no pot estar buida.</string>
-    <string name="err_email_buit">L\'email no pot estar buit.</string>
-    <string name="err_email_format">Format d\'email incorrecte.</string>
-    <string name="err_password_buida">La contrasenya no pot estar buida.</string>
-
-    <string name="err_tipus_llicencia_buit">El tipus de llicència no pot estar buit.</string>
-    <string name="err_llicencia_caducada">La llicència no pot estar caducada.</string>
-    <string name="err_targeta_buida">La targeta de crèdit no pot estar buida.</string>
-    <string name="err_targeta_format">La targeta ha de tenir entre 13 i 19 números.</string>
-
-    <string name="acceptar">Acceptar</string>
-    <string name="cancel_lar">Cancel·lar</string>
-    <string name="dades_personals">Dades Personals</string>
-    <string name="nom_complet">Nom complet</string>
-    <string name="n_mero_d_identificaci">Número d\'identificació</string>
-    <string name="data_caducitat">Data caducitat</string>
+    <!-- Common -->
+    <string name="back">Atrás</string>
+    <string name="enrere">Atrás</string>
+    <string name="tornar_enrere">Volver atrás</string>
+    <string name="ok">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="cancel_lar">Cancelar</string>
+    <string name="acceptar">Aceptar</string>
+    <string name="show">Mostrar</string>
+    <string name="hide">Ocultar</string>
+    <string name="save_changes">Desar canvis</string>
     <string name="seleccionar_data">Seleccionar data</string>
-    <string name="pujar_foto_identificaci">Pujar foto identificació</string>
-    <string name="dades_de_conducci_i_pagament">Dades de Conducció i Pagament</string>
-    <string name="tipus_de_llic_ncia">Tipus de llicència</string>
-    <string name="data_caducitat_llic_ncia">Data caducitat llicència</string>
-    <string name="pujar_foto_llic_ncia">Pujar foto llicència</string>
-    <string name="targeta_de_cr_dit">Targeta de crèdit</string>
-    <string name="dades_de_contacte_i_acc_s">Dades de Contacte i Accés</string>
-    <string name="adre_a">Adreça</string>
-    <string name="nacionalitat">Nacionalitat</string>
-    <string name="email_usuari">Email (Usuari)</string>
-    <string name="email_example_com">email@example.com</string>
-    <string name="contrasenya">Contrasenya</string>
-    <string name="contrasenya_m_n_6_car_cters">Contrasenya (mín 6 caràcters)</string>
-    <string name="pujar">Pujar %1$s</string>
-    <string name="foto_seleccionada">Foto seleccionada!</string>
 
-    <string name="err_foto_llicencia">Has de pujar la foto de la llicència.</string>
-    <string name="err_foto_identificacio">Has de pujar la foto d\'identificació.</string>
-
-    <string name="filter_by_date_range">Filtrar per rang de dates</string>
-    <string name="start_date_dd_mm_yyyy">Data d\'inici (dd/mm/yyyy)</string>
-        <string name="available_vehicles">Vehicles disponibless</string>
-    <string name="end_date_dd_mm_yyyy">Data de fi (dd/mm/yyyy)</string>
-    <string name="apply_filter">Aplicar filtre</string>
-    <string name="sort_by_price">Ordenar per preu</string>
-    <string name="ascending">Ascendent</string>
-    <string name="descending">Descendent</string>
-    <string name="hour">%1$s €/hora</string>
-    <string name="electric">Elèctric</string>
-    <string name="hybrid">Híbrid</string>
-    <string name="diesel">Dièsel</string>
-    <string name="vehicle_details">Detall del vehicle</string>
-    <string name="power">Potència: %1$s</string>
+    <!-- Vehicles -->
+    <string name="available_vehicles">Vehicles disponibles</string>
+    <string name="available_vehicle">Selecciona un vehicle</string>
+    <string name="no_vehicles_available">No hay vehículos disponibles</string>
+    <string name="filter_by_date_range">Filtrar por rango de fechas</string>
+    <string name="apply_filter">Aplicar filtro</string>
+    <string name="sort">Ordenar</string>
+    <string name="sort_by_price">Ordenar por precio</string>
+    <string name="ascending">Ascendente</string>
+    <string name="descending">Descendente</string>
+    <string name="vehicle_details">Detalles del vehículo</string>
+    <string name="vehicle_photo_description">Foto del vehículo</string>
+    <string name="book_vehicle">Reservar vehículo</string>
+    <string name="view_detail">Ver detalle</string>
+    <string name="select_car">Selecciona un coche</string>
     <string name="color">Color: %1$s</string>
-    <string name="mileage_limit">Límit de quilometratge: %1$s</string>
-    <string name="minimum_rental_days">Dies mínims de lloguer: %1$s</string>
-    <string name="maximum_rental_days">Dies màxims de lloguer: %1$s</string>
-    <string name="standard_deposit">Fiança estàndard: %1$s</string>
-    <string name="book_vehicle">Reservar vehicle</string>
-    <string name="no_vehicles_available">No hi ha vehicles disponibles</string>
+    <string name="power">Potencia: %1$s</string>
+    <string name="hour">%1$s €/hora</string>
+    <string name="mileage_limit">Límite de kilometraje: %1$s</string>
+    <string name="minimum_rental_days">Días mínimos de alquiler: %1$s</string>
+    <string name="maximum_rental_days">Días máximos de alquiler: %1$s</string>
+    <string name="standard_deposit">Depósito estándar: %1$s</string>
+    <string name="electric">Eléctrico</string>
+    <string name="hybrid">Híbrido</string>
+    <string name="diesel">Diésel</string>
+
+    <!-- Reservations -->
+    <string name="reservations_title">Mis reservas</string>
+    <string name="reservation_detail_title">Detalle de la reserva</string>
+    <string name="reservation_vehicle">Vehículo</string>
+    <string name="reservation_code">Reserva #%1$s</string>
+    <string name="reservation_date_range">De %1$s a %2$s</string>
+    <string name="reservation_status_label">Estado</string>
+    <string name="reservation_total">Total: %1$s</string>
+    <string name="reservation_amount">Importe: %1$s €</string>
     <string name="reservation_created_title">Reserva creada</string>
-    <string name="reservation_amount">Import: %1$s €</string>
-    <string name="view_detail">Veure detall</string>
+    <string name="status_active">Activa</string>
+    <string name="status_cancelled">Cancelada</string>
+    <string name="status_finished">Finalizada</string>
+    <string name="cancel_reservation">Cancelar reserva</string>
+    <string name="confirm_cancel_question">¿Seguro que quieres cancelar esta reserva?</string>
+    <string name="cannot_cancel_started_finished">Les reserves iniciades o finalitzades no es poden cancel·lar.</string>
 
-    <string name="nav_vehicles">Vehicles</string>
-    <string name="nav_register">Registre</string>
+    <string name="email_body_greeting">Cos del missatge: Hola,</string>
+    <string name="email_body_cancelled_vehicle">La teva reserva del vehicle %1$s s\'ha cancel·lat correctament.</string>
 
+    <string name="email_body_refund">S\'ha aplicat un reemborsament de %1$s €.</string>
+    <string name="cancellation_notification_title">Notificació de cancel·lació</string>
+    <string name="email_to">Per a: %1$s</string>
+    <string name="email_subject_cancellation">Assumpte: Confirmació de cancel·lació de la reserva</string>
 
+    <string name="error_cancel_prefix">Error anul·lant reserva</string>
+    <string name="error_generic_title">Alguna cosa ha anat malament</string>
+    <string name="error_load_reservation_details">No hem pogut carregar els detalls de la reserva. Si us plau, comprova la teva connexió.</string>
+    <string name="error_load_reservations">No hem pogut carregar les reserves.</string>
+    <string name="error_dates_required">Si us plau, selecciona les dates d\'inici i finalització.</string>
+    <string name="error_invalid_date_range">Data invàlida. La data d\'inici ha de ser anterior a la data final.</string>
 
+    <string name="login_required_title">Has d\'iniciar sessió</string>
+    <string name="login_required_desc">Inicia sessió des del teu perfil per poder utilitzar aquest servei.</string>
+    <string name="no_reservations_found">No tens cap reserva actualment.</string>
 
+    <string name="close">Tancar</string>
+    <string name="sort_list">Ordenar llista</string>
+    <!-- Reservation creation -->
+    <string name="create_reservation_title">Nova reserva</string>
+    <string name="select_dates">Selecciona las fechas</string>
+    <string name="start_date">Fecha de inicio</string>
+    <string name="end_date">Fecha de fin</string>
+    <string name="start_date_dd_mm_yyyy">Fecha de inicio (dd/mm/aaaa)</string>
+    <string name="end_date_dd_mm_yyyy">Fecha de fin (dd/mm/aaaa)</string>
+    <string name="rental_days">Días de alquiler</string>
+    <string name="cost_summary">Resumen de costes</string>
+    <string name="deposit">Depósito</string>
+    <string name="rental_cost">Coste del alquiler</string>
+    <string name="total_to_pay">TOTAL A PAGAR</string>
+    <string name="confirm_reservation">Confirmar reserva</string>
 
+    <!-- Login -->
+    <string name="login_title">Inicio de sesión</string>
+    <string name="login_subtitle">Inicia sesión con tu cuenta</string>
+    <string name="email_label">Correo electrónico</string>
+    <string name="password_label">Contraseña</string>
+    <string name="login_action">Entrar</string>
+    <string name="forgot_password">¿Has olvidado la contraseña?</string>
+    <string name="go_to_register">Crear cuenta</string>
+
+    <!-- Recover password -->
+    <string name="recover_title">Recuperar contraseña</string>
+    <string name="recover_subtitle">¿Has olvidado la contraseña?</string>
+    <string name="recover_hint">Introduce tu correo y te enviaremos un enlace para restablecerla.</string>
+    <string name="recover_action">Enviar enlace</string>
+    <string name="recover_success">Instrucciones de recuperación enviadas</string>
+    <string name="reset_password_title">Restablecer contraseña</string>
+    <string name="recovery_token_label">Token de recuperación</string>
+    <string name="new_password_label">Nueva contraseña</string>
+    <string name="confirm_password_label">Confirmar contraseña</string>
+    <string name="reset_password_action">Actualizar contraseña</string>
+    <string name="password_reset_success">Contraseña actualizada correctamente</string>
+
+    <!-- Edit profile -->
+    <string name="logout">Cerrar sesión</string>
+    <string name="logout_confirm_title">Confirmar cierre de sesión</string>
+    <string name="logout_confirm_text">¿Seguro que quieres cerrar la sesión?</string>
+    <string name="edit_profile_title">Editar perfil</string>
+    <string name="profile_photo">Foto de perfil</string>
+    <string name="pick_profile_photo">Elegir foto de perfil</string>
+    <string name="full_name_label">Nombre completo *</string>
+    <string name="email_readonly">Correo electrónico (no editable)</string>
+    <string name="phone_label">Teléfono</string>
+    <string name="address_label">Dirección</string>
+    <string name="nationality_label">Nacionalidad</string>
+    <string name="documentation">Documentación</string>
+    <string name="id_expiry_label">Caducidad del documento (AAAA-MM-DD)</string>
+    <string name="id_image">Imagen del documento</string>
+    <string name="pick_id_image">Elegir imagen del documento</string>
+    <string name="license_type_label">Tipo de permiso de conducir</string>
+    <string name="license_expiry_label">Caducidad del permiso (AAAA-MM-DD)</string>
+    <string name="license_image">Imagen del permiso</string>
+    <string name="pick_license_image">Elegir imagen del permiso</string>
+    <string name="payment">Pago</string>
+    <string name="credit_card_label">Número de tarjeta de crédito</string>
+    <string name="profile_saved">Perfil guardado</string>
+
+    <!-- Registration -->
+    <string name="registre_pas_de">Registro - Paso %1$d de %2$d</string>
+    <string name="seg_ent">Siguiente</string>
+    <string name="finalitzar">Finalizar</string>
+
+    <string name="dades_personals">Datos personales</string>
+    <string name="nom_complet">Nombre completo</string>
+    <string name="n_mero_d_identificaci">Número de identificación</string>
+    <string name="data_caducitat">Fecha de caducidad</string>
+    <string name="pujar_foto_identificaci">Subir foto de identificación</string>
+
+    <string name="dades_de_conducci_i_pagament">Datos de conducción y pago</string>
+    <string name="tipus_de_llic_ncia">Tipo de licencia</string>
+    <string name="data_caducitat_llic_ncia">Fecha de caducidad de la licencia</string>
+    <string name="pujar_foto_llic_ncia">Subir foto de la licencia</string>
+    <string name="targeta_de_cr_dit">Tarjeta de crédito</string>
+
+    <string name="dades_de_contacte_i_acc_s">Datos de contacto y acceso</string>
+    <string name="adre_a">Dirección</string>
+    <string name="nacionalitat">Nacionalidad</string>
+    <string name="email_usuari">Correo electrónico (usuario)</string>
+    <string name="email_example_com">email@example.com</string>
+    <string name="contrasenya">Contraseña</string>
+    <string name="contrasenya_m_n_6_car_cters">Contraseña (mínimo 6 caracteres)</string>
+
+    <string name="pujar">Subir %1$s</string>
+    <string name="foto_seleccionada">Foto seleccionada</string>
+
+    <!-- Validation errors -->
+    <string name="error_generic">Algo ha salido mal</string>
+    <string name="error_email_required">El correo electrónico es obligatorio</string>
+    <string name="error_email_invalid">Correo electrónico no válido</string>
+    <string name="error_password_required">La contraseña es obligatoria</string>
+    <string name="error_password_too_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_password_mismatch">Las contraseñas no coinciden</string>
+    <string name="error_invalid_credentials">Credenciales no válidas</string>
+    <string name="error_recover_failed">La solicitud de recuperación ha fallado</string>
+    <string name="error_reset_failed">No se pudo restablecer la contraseña</string>
+    <string name="error_token_required">El token de recuperación es obligatorio</string>
+    <string name="error_session_missing_dni">No hay ningún DNI guardado en la sesión</string>
+    <string name="error_full_name_required">El nombre completo es obligatorio</string>
+    <string name="error_profile_load">Error al cargar el perfil</string>
+    <string name="error_profile_save">Error al guardar el perfil</string>
+
+    <string name="err_nom_complet_buit">El nombre completo no puede estar vacío.</string>
+    <string name="err_nom_format">El nombre solo puede contener letras y espacios.</string>
+    <string name="err_numero_id_buit">El número de identificación no puede estar vacío.</string>
+    <string name="err_format_data">Formato de fecha incorrecto (usa YYYY-MM-DD).</string>
+    <string name="err_data_passada">La fecha de caducidad no puede ser pasada.</string>
+    <string name="err_data_invalida">Fecha no válida.</string>
+    <string name="err_adreca_buida">La dirección no puede estar vacía.</string>
+    <string name="err_nacionalitat_buida">La nacionalidad no puede estar vacía.</string>
+    <string name="err_email_buit">El correo electrónico no puede estar vacío.</string>
+    <string name="err_email_format">Formato de correo electrónico incorrecto.</string>
+    <string name="err_password_buida">La contraseña no puede estar vacía.</string>
+    <string name="err_tipus_llicencia_buit">El tipo de licencia no puede estar vacío.</string>
+    <string name="err_llicencia_caducada">La licencia no puede estar caducada.</string>
+    <string name="err_targeta_buida">La tarjeta de crédito no puede estar vacía.</string>
+    <string name="err_targeta_format">La tarjeta debe tener entre 13 y 19 dígitos.</string>
+    <string name="err_foto_llicencia">Debes subir la foto de la licencia.</string>
+    <string name="err_foto_identificacio">Debes subir la foto de identificación.</string>
 </resources>

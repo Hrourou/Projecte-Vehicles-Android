@@ -1,23 +1,22 @@
 package cat.copernic.appvehicles.core.composables
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
-
-
-// Modelo temporal (Mock) para la UI.
-// Más adelante esto vendrá de tu capa 'domain'
-data class VehicleMock(val id: Int, val marca: String, val model: String, val variant: String, val preuHora: Double)
+// IMPORTANTE: Asegúrate de importar tu modelo real de Vehículo y no el Mock
+import cat.copernic.appvehicles.model.Vehicle
 
 @Composable
-fun VehicleCard(vehicle: VehicleMock, onClick: () -> Unit) {
-    // RN24: Uso de componentes Material Design 3
+fun VehicleCard(vehicle: Vehicle, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,16 +30,40 @@ fun VehicleCard(vehicle: VehicleMock, onClick: () -> Unit) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Placeholder para la imagen del coche
-            Surface(
-                modifier = Modifier.size(80.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text("Foto") // Aquí irá un AsyncImage (ej. con Coil)
+            // --- INICIO MAGIA DE LA FOTO ---
+            // Asegúrate de que tu data class Vehicle tenga el campo "fotoBase64"
+            val base64String = vehicle.fotoBase64
+            val uriSimulada = base64String?.let { "data:image/jpeg;base64,$it" }
+            val fotoCocheBitmap = rememberBase64Bitmap(imageUri = uriSimulada)
+
+            if (fotoCocheBitmap != null) {
+                // Pinta la foto real del coche si el backend nos la manda
+                Image(
+                    bitmap = fotoCocheBitmap,
+                    contentDescription = "Foto de ${vehicle.marca}",
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(MaterialTheme.shapes.medium),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                // Pinta el icono del coche gris si no hay foto
+                Surface(
+                    modifier = Modifier.size(80.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                        Icon(
+                            imageVector = Icons.Default.DirectionsCar,
+                            contentDescription = "Sense imatge",
+                            modifier = Modifier.size(40.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
                 }
             }
+            // --- FIN MAGIA DE LA FOTO ---
 
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -58,19 +81,10 @@ fun VehicleCard(vehicle: VehicleMock, onClick: () -> Unit) {
             }
 
             Text(
-                text = "${vehicle.preuHora}€/h", // RN26: Etiqueta clara del precio
+                text = "${vehicle.preuHora}€/h",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun VehicleCardPreview() {
-    // Usamos el modelo Mock que creamos antes
-    VehicleCard(
-vehicle = VehicleMock(1, "Seat", "Ibiza", "Combustió", 15.0),        onClick = {}
-    )
 }

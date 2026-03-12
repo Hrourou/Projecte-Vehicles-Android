@@ -55,19 +55,14 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
             if (response.isSuccessful && response.body() != null) {
                 val p = response.body()!!
 
-                // 1. La URL base correcta
-                val baseUrl = "http://192.168.1.210:8080/uploads/"
+                android.util.Log.d("DEBUG_FOTOS", "DNI Base64 (primeros 50 chars): ${p.imatgeDni?.take(50)}")
 
-                // 2. Función auxiliar para limpiar la basura de la ruta (quita carpetas y barras)
-                fun cleanFileName(path: String?): String? {
-                    if (path.isNullOrBlank()) return null
-                    // Corta todo lo que haya antes de la última barra (ya sea de Windows o de Mac/Linux)
-                    return path.substringAfterLast("\\").substringAfterLast("/")
-                }
+                // AHORA EL BACKEND NOS ENVÍA BASE64 DIRECTAMENTE
+                // Para que la UI (Coil) lo pinte como si fuera una URI, le añadimos este prefijo estándar:
+                val prefix = "data:image/jpeg;base64,"
 
-                // 3. Montamos las URLs limpias
-                val urlDni = cleanFileName(p.imatgeDni)?.let { baseUrl + it }
-                val urlCarnet = cleanFileName(p.imatgeCarnet)?.let { baseUrl + it }
+                val base64Dni = p.imatgeDni?.let { if (it.isNotBlank()) prefix + it else null }
+                val base64Carnet = p.imatgeCarnet?.let { if (it.isNotBlank()) prefix + it else null }
 
                 _uiState.value = EditProfileUiState(
                     isLoading = false,
@@ -83,9 +78,9 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
                     dataCaducitatCarnet = p.dataCaducitatCarnet.orEmpty(),
 
                     photoUri = null,
-                    // 4. Asignamos las URLs ya perfectas
-                    dniImageUri = urlDni,
-                    licenseImageUri = urlCarnet
+                    // Asignamos el Base64 listo para pintar
+                    dniImageUri = base64Dni,
+                    licenseImageUri = base64Carnet
                 )
             } else {
                 _uiState.value = _uiState.value.copy(isLoading = false, errorKeys = listOf("profile_load_error"))
@@ -117,6 +112,24 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
     fun onPhotoPicked(uri: String?) { _uiState.value = _uiState.value.copy(photoUri = uri, messageKey = null, errorKeys = emptyList()) }
     fun onDniImagePicked(uri: String?) { _uiState.value = _uiState.value.copy(dniImageUri = uri, messageKey = null, errorKeys = emptyList()) }
     fun onLicenseImagePicked(uri: String?) { _uiState.value = _uiState.value.copy(licenseImageUri = uri, messageKey = null, errorKeys = emptyList()) }
+
+    private fun uriToBase64(context: android.content.Context, uriString: String?): String? {
+        if (uriString.isNullOrBlank()) return null
+
+        // Si el string ya empieza por "data:image", significa que es la foto antigua del servidor.
+        // No hace falta volver a enviarla. Devolvemos null para que el backend no la sobrescriba.
+        if (uriString.startsWith("data:image")) return null
+
+        return try {
+            val uri = android.net.Uri.parse(uriString)
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val bytes = inputStream?.readBytes()
+            inputStream?.close()
+            if (bytes != null) android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP) else null
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     fun saveChanges() {
         viewModelScope.launch {
@@ -179,7 +192,11 @@ class EditProfileViewModel(app: Application) : AndroidViewModel(app) {
                 numeroTargetaCredit = s.numeroTargetaCredit.ifBlank { null },
                 dataCaducitatDni = s.dataCaducitatDni.ifBlank { null },
                 tipusCarnetConduir = s.tipusCarnetConduir.ifBlank { null },
-                dataCaducitatCarnet = s.dataCaducitatCarnet.ifBlank { null }
+                dataCaducitatCarnet = s.dataCaducitatCarnet.ifBlank { null },
+
+                        // ¡Ahora sí, 100% Kotlin!
+                imatgeDni = uriToBase64(getApplication<Application>(), s.dniImageUri),
+                imatgeCarnet = uriToBase64(getApplication<Application>(), s.licenseImageUri)
             )
 
             val response = repo.updateClient(email, req)

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cat.copernic.backendProjecte3.controller;
 
 import cat.copernic.backendProjecte3.business.ReservaService;
@@ -15,10 +11,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author HAMZA
- */
 @RestController
 @RequestMapping("/api/reserves")
 @CrossOrigin(origins = "*")
@@ -41,9 +33,9 @@ public class ReservaController {
         }
 
         return reserves.stream()
-                .sorted(cmp)
-                .map(ReservaResponse::fromEntity)
-                .collect(Collectors.toList());
+            .sorted(cmp)
+            .map(ReservaResponse::fromEntity)
+            .collect(Collectors.toList());
     }
 
     // Obtener detalle por id
@@ -58,6 +50,7 @@ public class ReservaController {
     public ReservaResponse createReserva(@RequestBody CreateReservaRequest req)
             throws ReservaDatesNoValidsException, VehicleNoDisponibleException, AccesDenegatException, DadesNoTrobadesException {
 
+        // FIX: Pasamos los 5 parámetros en el orden correcto, incluyendo el userName
         Reserva r = reservaService.crearReserva(
                 req.getEmailClient(),
                 req.getMatricula(),
@@ -69,7 +62,6 @@ public class ReservaController {
         return ReservaResponse.fromEntity(r);
     }
     
-
     // Anular reserva
     @DeleteMapping("/{id}")
     public CancelReservaResponse cancelReserva(
@@ -108,6 +100,7 @@ public class ReservaController {
         private String vehicleMatricula;
         private String importTotal;
         private String fiancaPagada;
+        private String estat;
 
         public static ReservaResponse fromEntity(Reserva r) {
             ReservaResponse dto = new ReservaResponse();
@@ -118,6 +111,7 @@ public class ReservaController {
             dto.vehicleMatricula = r.getVehicle() != null ? r.getVehicle().getMatricula() : null;
             dto.importTotal = r.getImportTotal() != null ? r.getImportTotal().toPlainString() : null;
             dto.fiancaPagada = r.getFiancaPagada() != null ? r.getFiancaPagada().toPlainString() : null;
+            dto.estat = r.getEstat() != null ? r.getEstat().name() : "ACTIVA";
             return dto;
         }
 
@@ -128,5 +122,6 @@ public class ReservaController {
         public String getVehicleMatricula() { return vehicleMatricula; }
         public String getImportTotal() { return importTotal; }
         public String getFiancaPagada() { return fiancaPagada; }
+        public String getEstat() { return estat; }
     }
 }

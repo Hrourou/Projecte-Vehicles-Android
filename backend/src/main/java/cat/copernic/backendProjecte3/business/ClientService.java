@@ -8,7 +8,8 @@ import cat.copernic.backendProjecte3.enums.UserRole;
 import cat.copernic.backendProjecte3.exceptions.ErrorAltaException;
 import cat.copernic.backendProjecte3.exceptions.ErrorDeleteException;
 import cat.copernic.backendProjecte3.repository.ClientRepository;
-
+import java.util.Base64;
+// Puedes eliminar la importación de org.springframework.web.multipart.MultipartFile
 import jakarta.transaction.Transactional;
 import java.util.List;
 
@@ -52,8 +53,11 @@ public class ClientService {
     /**
      * Registra un nuevo cliente validando duplicados y guardando fotos si existen.
      */
+    /**
+     * Registra un nuevo cliente validando duplicados y guardando fotos como BLOB.
+     */
     @Transactional
-    public Client registrarNouClient(ClientRegistreDTO dto, MultipartFile fotoDni, MultipartFile fotoCarnet) throws ErrorAltaException {
+    public Client registrarNouClient(ClientRegistreDTO dto) throws ErrorAltaException {
 
         // 1. Validar Email
         if (clientRepo.existsById(dto.getEmail())) {
@@ -65,11 +69,7 @@ public class ClientService {
             throw new ErrorAltaException("Ja existeix un client amb aquest DNI: " + dto.getDni());
         }
 
-        // 3. Guardar fotos si existen
-        String rutaDni = guardarArxiu(fotoDni);
-        String rutaCarnet = guardarArxiu(fotoCarnet);
-
-        // 4. Mapear DTO -> Entidad
+        // 3. Mapear DTO -> Entidad
         Client nouClient = new Client();
 
         nouClient.setEmail(dto.getEmail());
@@ -79,16 +79,20 @@ public class ClientService {
 
         nouClient.setDni(dto.getDni());
         nouClient.setDataCaducitatDni(dto.getDataCaducitatDni());
-        nouClient.setImatgeDni(rutaDni != null ? rutaDni : dto.getImatgeDni());
-
         nouClient.setNacionalitat(dto.getNacionalitat());
         nouClient.setAdreca(dto.getAdreca());
-
         nouClient.setTipusCarnetConduir(dto.getTipusCarnetConduir());
         nouClient.setDataCaducitatCarnet(dto.getDataCaducitatCarnet());
-        nouClient.setImatgeCarnet(rutaCarnet != null ? rutaCarnet : dto.getImatgeCarnet());
-
         nouClient.setNumeroTargetaCredit(dto.getNumeroTargetaCredit());
+
+        // 4. Convertir imágenes de Base64 (String) a byte[] (BLOB)
+        if (dto.getImatgeDni() != null && !dto.getImatgeDni().isEmpty()) {
+            nouClient.setImatgeDni(Base64.getDecoder().decode(dto.getImatgeDni()));
+        }
+        
+        if (dto.getImatgeCarnet() != null && !dto.getImatgeCarnet().isEmpty()) {
+            nouClient.setImatgeCarnet(Base64.getDecoder().decode(dto.getImatgeCarnet()));
+        }
 
         return clientRepo.save(nouClient);
     }
@@ -96,13 +100,15 @@ public class ClientService {
     /**
      * RF04: Actualizar perfil de cliente por DNI
      */
+   /**
+     * RF04: Actualizar perfil de cliente por Email
+     */
     @Transactional
-  // Añade esto en tu ClientService.java
     public Client actualitzarPerfilPerEmail(String email, ClientUpdateDTO dto) {
         // 1. Buscamos al cliente por su email
         Client client = obtenirPerId(email); 
 
-        // 2. Actualizamos solo los campos que vienen del formulario del móvil
+        // 2. Actualizamos los campos de texto
         client.setNomComplet(dto.getNomComplet());
         client.setTelefon(dto.getTelefon());
         client.setAdreca(dto.getAdreca());
@@ -112,36 +118,22 @@ public class ClientService {
         client.setTipusCarnetConduir(dto.getTipusCarnetConduir());
         client.setDataCaducitatCarnet(dto.getDataCaducitatCarnet());
 
-        // 3. Guardamos en la base de datos y devolvemos el cliente actualizado
-        return clientRepo.save(client); // Cambia clientRepository por el nombre de tu repositorio JPA
+        // 3. ACTUALIZACIÓN DE IMÁGENES (Faltaba esto)
+        // Solo las actualizamos si el móvil nos envía un Base64 nuevo (no nulo ni vacío)
+        if (dto.getImatgeDni() != null && !dto.getImatgeDni().isEmpty()) {
+            client.setImatgeDni(Base64.getDecoder().decode(dto.getImatgeDni()));
+        }
+        
+        if (dto.getImatgeCarnet() != null && !dto.getImatgeCarnet().isEmpty()) {
+            client.setImatgeCarnet(Base64.getDecoder().decode(dto.getImatgeCarnet()));
+        }
+
+        // 4. Guardamos en la base de datos
+        return clientRepo.save(client);
     }
 
     /**
      * Función auxiliar para guardar archivos en el servidor
      */
-    private String guardarArxiu(MultipartFile arxiu) {
-
-        if (arxiu == null || arxiu.isEmpty()) return null;
-
-        try {
-
-            String uploadDir = "uploads/";
-            java.io.File dir = new java.io.File(uploadDir);
-
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-            String fileName = System.currentTimeMillis() + "_" + arxiu.getOriginalFilename();
-
-            java.nio.file.Path path = java.nio.file.Paths.get(uploadDir + fileName);
-            java.nio.file.Files.write(path, arxiu.getBytes());
-
-            return path.toString();
-
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    
 }

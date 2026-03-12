@@ -11,6 +11,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Estado de la pantalla de recuperación y restablecimiento de contraseña.
+ *
+ * @property email correo introducido para solicitar la recuperación.
+ * @property token token recibido por correo.
+ * @property newPassword nueva contraseña.
+ * @property confirmPassword confirmación de la nueva contraseña.
+ * @property isLoading indica si hay una operación en curso.
+ * @property errorKey clave de error para traducir desde recursos.
+ * @property successKey clave de éxito para traducir desde recursos.
+ */
 data class RecoverPasswordUiState(
     val email: String = "",
     val token: String = "",
@@ -21,41 +32,72 @@ data class RecoverPasswordUiState(
     val successKey: String? = null
 )
 
+/**
+ * ViewModel de la funcionalidad RF03 de recuperación de contraseña.
+ *
+ * <p>Gestiona el estado de la IU usando {@code MutableStateFlow} y ejecuta las
+ * llamadas asíncronas al backend mediante corrutinas.
+ */
 class RecoverPasswordViewModel : ViewModel() {
 
     private val repository = AuthRepository(
-        RetrofitProvider.retrofit.create(AuthApiService::class.java)
+        api = RetrofitProvider.retrofit.create(AuthApiService::class.java)
     )
 
     private val _uiState = MutableStateFlow(RecoverPasswordUiState())
     val uiState: StateFlow<RecoverPasswordUiState> = _uiState
 
+    /**
+     * Actualiza el email del formulario.
+     *
+     * @param value nuevo valor introducido por el usuario.
+     */
     fun onEmailChanged(value: String) {
         _uiState.update { it.copy(email = value, errorKey = null, successKey = null) }
     }
 
+    /**
+     * Actualiza el token del formulario de restablecimiento.
+     *
+     * @param value token introducido por el usuario.
+     */
     fun onTokenChanged(value: String) {
         _uiState.update { it.copy(token = value, errorKey = null, successKey = null) }
     }
 
+    /**
+     * Actualiza la nueva contraseña.
+     *
+     * @param value nueva contraseña.
+     */
     fun onNewPasswordChanged(value: String) {
         _uiState.update { it.copy(newPassword = value, errorKey = null, successKey = null) }
     }
 
+    /**
+     * Actualiza la confirmación de contraseña.
+     *
+     * @param value confirmación escrita por el usuario.
+     */
     fun onConfirmPasswordChanged(value: String) {
         _uiState.update { it.copy(confirmPassword = value, errorKey = null, successKey = null) }
     }
 
+    /**
+     * Solicita al backend el envío del correo de recuperación.
+     *
+     * <p>Valida previamente que el email no esté vacío y tenga un formato correcto.
+     */
     fun sendRecoveryEmail() {
         val email = _uiState.value.email.trim()
 
         if (email.isBlank()) {
-            _uiState.update { it.copy(errorKey = "email_required") }
+            _uiState.update { it.copy(errorKey = "email_required", successKey = null) }
             return
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _uiState.update { it.copy(errorKey = "email_invalid") }
+            _uiState.update { it.copy(errorKey = "email_invalid", successKey = null) }
             return
         }
 
@@ -84,28 +126,34 @@ class RecoverPasswordViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Envía al backend el token de recuperación junto con la nueva contraseña.
+     *
+     * <p>Valida token, longitud mínima y coincidencia entre contraseña y confirmación
+     * antes de hacer la petición remota.
+     */
     fun resetPassword() {
         val token = _uiState.value.token.trim()
         val newPassword = _uiState.value.newPassword
         val confirmPassword = _uiState.value.confirmPassword
 
         if (token.isBlank()) {
-            _uiState.update { it.copy(errorKey = "token_required") }
+            _uiState.update { it.copy(errorKey = "token_required", successKey = null) }
             return
         }
 
         if (newPassword.isBlank()) {
-            _uiState.update { it.copy(errorKey = "password_required") }
+            _uiState.update { it.copy(errorKey = "password_required", successKey = null) }
             return
         }
 
         if (newPassword.length < 6) {
-            _uiState.update { it.copy(errorKey = "password_too_short") }
+            _uiState.update { it.copy(errorKey = "password_too_short", successKey = null) }
             return
         }
 
         if (newPassword != confirmPassword) {
-            _uiState.update { it.copy(errorKey = "password_mismatch") }
+            _uiState.update { it.copy(errorKey = "password_mismatch", successKey = null) }
             return
         }
 
@@ -136,18 +184,4 @@ class RecoverPasswordViewModel : ViewModel() {
                 }
         }
     }
-    fun onSendClick() {
-        val trimmed = _uiState.value.email.trim()
-        if (trimmed.isBlank()) {
-            _uiState.update { it.copy(errorKey = "email_required", successKey = null) }
-            return
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(trimmed).matches()) {
-            _uiState.update { it.copy(errorKey = "email_invalid", successKey = null) }
-            return
-        }
-
-        // Aquí debería llamarse a backend (RF03), pero tu proyecto no tiene endpoint.
-        // Dejamos mensaje neutro.
-        _uiState.update { it.copy(errorKey = null, successKey = "recover_sent") }
-}}
+}

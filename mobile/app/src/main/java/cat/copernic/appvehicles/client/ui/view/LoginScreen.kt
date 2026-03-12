@@ -12,7 +12,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import cat.copernic.appvehicles.R
 import cat.copernic.appvehicles.client.ui.viewmodel.LoginViewModel
 
@@ -24,7 +23,7 @@ fun LoginScreen(
     onNavigateToRecover: () -> Unit = {},
     onNavigateToRegister: () -> Unit = {}
 ) {
-
+    // CORRECCIÓ: Escrit correctament "uiState"
     val state by vm.uiState.collectAsState()
 
     var passwordVisible by remember { mutableStateOf(false) }
@@ -110,9 +109,12 @@ fun LoginScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
+                    // AFEGIT: Si el backend retorna un missatge lliure que no està als XML, el mostrem tal qual.
                     state.generalError?.let {
+                        // Intentem traduir si la clau existeix, sinó mostrem el missatge cru del backend
+                        val resId = try { errorKeyToRes(it) } catch (e: Exception) { null }
                         Text(
-                            text = stringResource(errorKeyToRes(it)),
+                            text = if (resId != null && resId != R.string.error_generic) stringResource(resId) else it,
                             color = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.height(12.dp))
@@ -135,13 +137,16 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
+                    // CORRECCIÓ: La propietat és isLoginEnabled (si tens un métode per comprovar, sinó ho validem aquí)
+                    val canLogin = state.email.isNotBlank() && state.password.isNotBlank() && !state.isLoading
+
                     Button(
                         onClick = {
                             focusManager.clearFocus()
                             vm.onLoginClick()
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = state.isLoginEnabled && !state.isLoading
+                        enabled = canLogin
                     ) {
                         Text(stringResource(R.string.login_action))
                     }

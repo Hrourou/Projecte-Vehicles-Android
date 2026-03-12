@@ -21,30 +21,49 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
     private val _asc = MutableStateFlow(false)
     val asc = _asc.asStateFlow()
 
+    // 🔥 NOU: Emmagatzema els errors del servidor per poder-los ensenyar
+    private val _errorMsg = MutableStateFlow<String?>(null)
+    val errorMsg = _errorMsg.asStateFlow()
+
     private val _creationResult = MutableStateFlow<Result<ReservaResponse>?>(null)
     val creationResult = _creationResult.asStateFlow()
 
     private val _reservaDetail = MutableStateFlow<ReservaResponse?>(null)
     val reservaDetail = _reservaDetail.asStateFlow()
+
     private val _cancelResult = MutableStateFlow<Result<CancelReservaResponse>?>(null)
     val cancelResult = _cancelResult.asStateFlow()
+
+    fun clearCreationResult() {
+        _creationResult.value = null
+    }
+
+    // 🔥 NOU: Neteja la llista quan fem logout
+    fun clearReserves() {
+        _reserves.value = emptyList()
+        _errorMsg.value = null
+    }
 
     fun cancelReserva(id: Long, userName: String) {
         viewModelScope.launch {
             _loading.value = true
-            _cancelResult.value = try {
+            try {
                 val response = repo.cancelReserva(id, userName)
-                Result.success(response)
+                _cancelResult.value = Result.success(response)
+                // Canviem l'estat localment al instant
+                _reservaDetail.value = _reservaDetail.value?.copy(estat = "CANCELADA")
             } catch (e: Exception) {
-                Result.failure(e)
+                _cancelResult.value = Result.failure(e)
+            } finally {
+                _loading.value = false
             }
-            _loading.value = false
         }
     }
 
     fun clearCancelResult() {
         _cancelResult.value = null
     }
+
     fun loadReservaDetalle(id: Long) {
         viewModelScope.launch {
             try {
@@ -54,6 +73,7 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
             }
         }
     }
+
     fun toggleOrder(email: String) {
         _asc.value = !_asc.value
         load(email)
@@ -62,10 +82,13 @@ class ReservaViewModel(private val repo: ReservaRepository) : ViewModel() {
     fun load(email: String) {
         viewModelScope.launch {
             _loading.value = true
+            _errorMsg.value = null // Netejem errors antics
             try {
                 _reserves.value = repo.getReservesClient(email, _asc.value)
             } catch (e: Exception) {
                 _reserves.value = emptyList()
+                // 🔥 NOU: Si peta, guardem l'error en comptes d'amagar-lo!
+                _errorMsg.value = "Error de connexió: " + e.message
             }
             _loading.value = false
         }

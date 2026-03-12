@@ -3,6 +3,8 @@ package cat.copernic.backendProjecte3.controller;
 import cat.copernic.backendProjecte3.business.ClientService;
 import cat.copernic.backendProjecte3.business.UserLogic;
 import cat.copernic.backendProjecte3.dto.ClientRegistreDTO;
+import cat.copernic.backendProjecte3.dto.LoginRequest;
+import cat.copernic.backendProjecte3.dto.LoginResponse;
 import cat.copernic.backendProjecte3.dto.PasswordRecoveryRequest;
 import cat.copernic.backendProjecte3.dto.PasswordRecoveryResponse;
 import cat.copernic.backendProjecte3.dto.ResetPasswordRequest;
@@ -10,6 +12,7 @@ import cat.copernic.backendProjecte3.entities.Client;
 import cat.copernic.backendProjecte3.entities.Usuari;
 import cat.copernic.backendProjecte3.exceptions.AccesDenegatException;
 import cat.copernic.backendProjecte3.exceptions.ErrorAltaException;
+import cat.copernic.backendProjecte3.repository.UsuariRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -17,26 +20,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import tools.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile; // IMPORTANTE
+
 import java.util.HashMap;
 import java.util.Map;
+import tools.jackson.databind.ObjectMapper;
 
-import cat.copernic.backendProjecte3.business.UserLogic;
-import cat.copernic.backendProjecte3.dto.LoginRequest;
-import cat.copernic.backendProjecte3.dto.LoginResponse;
-import cat.copernic.backendProjecte3.exceptions.AccesDenegatException;
-import cat.copernic.backendProjecte3.entities.Usuari;
-import java.util.UUID;
-
+/**
+ * Controlador REST de autenticación y registro.
+ *
+ * <p>Centraliza las operaciones relacionadas con:
+ * <ul>
+ *     <li>Registro de clientes.</li>
+ *     <li>Inicio de sesión.</li>
+ *     <li>Recuperación de contraseña.</li>
+ *     <li>Restablecimiento de contraseña mediante token.</li>
+ * </ul>
+ *
+ * <p>Este controlador da cobertura principalmente a los requisitos RF01, RF02 y RF03.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin
@@ -49,18 +51,32 @@ public class AuthController {
     private UserLogic userLogic;
 
     @Autowired
+    private UsuariRepository usuariRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
-    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> register(
-            @RequestPart("clientData") String clientDataJson,
-            @RequestPart(value = "fotoIdentificacio", required = false) MultipartFile fotoIdentificacio,
-            @RequestPart(value = "fotoLlicencia", required = false) MultipartFile fotoLlicencia
-    ) {
+    /**
+     * Registra un nuevo cliente a partir de un bloque JSON y dos ficheros opcionales.
+     *
+     * <p>El campo {@code clientData} contiene el JSON serializado con los datos del
+     * usuario. Las imágenes se reciben en multipart para permitir subir documentación
+     * e identificación durante el proceso de registro.
+     *
+     * @param clientDataJson JSON con los datos del cliente.
+     * @param fotoIdentificacio imagen del documento identificativo.
+     * @param fotoLlicencia imagen de la licencia de conducir.
+     * @return respuesta HTTP con el resultado del alta.
+     */
+    /**
+     * Endpoint para registrar un cliente desde el móvil (recibe JSON con imágenes en Base64).
+     */
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> register(@RequestBody ClientRegistreDTO registerDTO) {
 
         try {
-            ClientRegistreDTO registerDTO = objectMapper.readValue(clientDataJson, ClientRegistreDTO.class);
-            Client nuevoCliente = clientService.registrarNouClient(registerDTO, fotoIdentificacio, fotoLlicencia);
+            // 1. Llamamos a la lógica pasándole el DTO (que ya incluye las fotos en Base64)
+            Client nuevoCliente = clientService.registrarNouClient(registerDTO);
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Usuari registrat correctament");
@@ -71,17 +87,29 @@ public class AuthController {
         } catch (ErrorAltaException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse); // 409 Conflict
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error intern del servidor: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error intern del servidor: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse); // 500
         }
     }
 
+    /**
+     * Inicia el proceso de recuperación de contraseña.
+     *
+     * <p>Si el correo existe en el sistema, se genera un token temporal y se envía
+     * un correo con las instrucciones de recuperación. Si no existe, se responde
+     * igualmente con éxito para no filtrar información del sistema.
+     *
+     * @param request petición con el email del usuario.
+     * @return respuesta estándar del proceso de recuperación.
+     */
     @PostMapping("/recover-password")
-    public ResponseEntity<PasswordRecoveryResponse> recoverPassword(@RequestBody PasswordRecoveryRequest request) {
-
+    public ResponseEntity<PasswordRecoveryResponse> recoverPassword(
+            @RequestBody PasswordRecoveryRequest request
+    ) {
         userLogic.recoverPassword(request.getEmail());
 
         return ResponseEntity.ok(
@@ -92,9 +120,16 @@ public class AuthController {
         );
     }
 
+    /**
+     * Restablece la contraseña de un usuario utilizando un token de recuperación.
+     *
+     * @param request petición con token y nueva contraseña.
+     * @return respuesta estándar informando del resultado del cambio.
+     */
     @PostMapping("/reset-password")
-    public ResponseEntity<PasswordRecoveryResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
-
+    public ResponseEntity<PasswordRecoveryResponse> resetPassword(
+            @RequestBody ResetPasswordRequest request
+    ) {
         userLogic.resetPassword(request.getToken(), request.getNewPassword());
 
         return ResponseEntity.ok(
@@ -104,34 +139,38 @@ public class AuthController {
                 )
         );
     }
+
     /**
-     * Endpoint para el inicio de sesión (RF01).
+     * Realiza el login del usuario.
+     *
+     * <p>Primero valida las credenciales mediante la lógica de negocio. Después,
+     * recupera el usuario desde persistencia para construir el DTO de respuesta que
+     * consumirá la aplicación móvil. Nunca devuelve la contraseña.
+     *
+     * @param loginRequest credenciales de acceso.
+     * @return respuesta HTTP 200 con los datos de sesión o el error correspondiente.
      */
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            // 1. Llamamos a la lógica de negocio
-            Usuari usuari = userLogic.login(loginRequest.getEmail(), loginRequest.getPassword());
+            userLogic.login(loginRequest.getEmail(), loginRequest.getPassword());
 
-            // 2. Mapeamos la entidad al DTO de respuesta
+            Usuari usuari = usuariRepository.findByEmail(loginRequest.getEmail())
+                    .orElseThrow(() -> new AccesDenegatException("Usuari no existeix"));
+
             LoginResponse response = new LoginResponse();
             response.setEmail(usuari.getEmail());
             response.setNomComplet(usuari.getNomComplet());
-
-            // Generamos un token básico (UUID) para que el móvil guarde el estado de la sesión
             response.setToken(UUID.randomUUID().toString());
 
-            // 3. Devolvemos 200 OK con los datos
             return ResponseEntity.ok(response);
 
         } catch (AccesDenegatException e) {
-            // Si fallan las credenciales, devolvemos 401 Unauthorized
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
 
         } catch (Exception e) {
-            // Error genérico del servidor 500
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Error intern del servidor");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);

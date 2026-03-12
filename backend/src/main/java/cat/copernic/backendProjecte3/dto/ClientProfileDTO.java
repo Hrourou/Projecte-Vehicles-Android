@@ -2,6 +2,8 @@ package cat.copernic.backendProjecte3.dto;
 
 import cat.copernic.backendProjecte3.entities.Client;
 import java.time.LocalDate;
+import java.util.Base64;
+
 
 public class ClientProfileDTO {
 
@@ -33,9 +35,17 @@ public class ClientProfileDTO {
         dto.tipusCarnetConduir = c.getTipusCarnetConduir();
         dto.dataCaducitatCarnet = c.getDataCaducitatCarnet();
 
-        dto.imatgeDni = c.getImatgeDni();
-        dto.imatgeCarnet = c.getImatgeCarnet();
+       if (c.getImatgeDni() != null) {
+    dto.imatgeDni = Base64.getEncoder().encodeToString(c.getImatgeDni());
+} else {
+    dto.imatgeDni = null; // o ""
+}
 
+if (c.getImatgeCarnet() != null) {
+    dto.imatgeCarnet = Base64.getEncoder().encodeToString(c.getImatgeCarnet());
+} else {
+    dto.imatgeCarnet = null; // o ""
+}
         return dto;
     }
 }

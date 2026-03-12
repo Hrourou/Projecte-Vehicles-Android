@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,98 +26,92 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
-
-// -----------------------------------------------------------------
-// COMPONENT CALENDARI (DatePickerDialog de Material 3)
-// Ens permet seleccionar la data amb una interfície gràfica de calendari
-// -----------------------------------------------------------------
+/**
+ * Modal dissenyat segons les guies de Material 3 per a la selecció interactiva de dates.
+ *
+ * @param onDateSelected Callback executat en confirmar, proveint un String format YYYY-MM-DD.
+ * @param onDismiss Callback en cancel·lar l'operació.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DatePickerModal(
-    onDateSelected: (String) -> Unit,
-    onDismiss: () -> Unit
-) {
+fun DatePickerModal(onDateSelected: (String) -> Unit, onDismiss: () -> Unit) {
     val datePickerState = rememberDatePickerState()
-
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
                 datePickerState.selectedDateMillis?.let { millis ->
-                    // Convertim els milisegons a format "YYYY-MM-DD"
                     val date = Instant.ofEpochMilli(millis).atZone(ZoneId.of("UTC")).toLocalDate()
                     onDateSelected(date.toString())
                 }
                 onDismiss()
             }) { Text(stringResource(R.string.ok)) }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
-        }
-    ) {
-        DatePicker(state = datePickerState)
-    }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
+    ) { DatePicker(state = datePickerState) }
 }
 
-private data class VehicleOption(
-    val name: String,
-    val matricula: String,
-    val preuHora: Double
-)
-
+/**
+ * Pantalla que permet a l'usuari processar el lloguer d'un vehicle pre-seleccionat.
+ * L'algorisme intern avalua dinàmicament el preu total basant-se en els dies i el cost per hora del vehicle.
+ *
+ * @param matriculaFixa Referència a la identitat del vehicle escollit.
+ * @param onNavigateBack Funció de retorn de navegació.
+ * @param viewModel Encarregat de gestionar la petició POST cap a l'API.
+ * @param vehicleViewModel Repositori de les dades base dels vehicles per extreure les tarifes.
+ * @param userEmail Adreça de l'usuari autenticat; avalua els permisos d'accés a l'esdeveniment de creació.
+ * @param onReservaCreada Event executat post-creació (envia la clau primària resultant per a navegació encadenada).
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReservationScreen(
+    matriculaFixa: String = "",
     onNavigateBack: () -> Unit = {},
     viewModel: ReservaViewModel? = null,
     vehicleViewModel: VehicleViewModel? = null,
-    userEmail: String = "client@exemple.com",
+    userEmail: String = "",
     onReservaCreada: (Long) -> Unit = {}
 ) {
-    // 1. CARREGAR VEHICLES REALS
+    // 1. Obtenció de dades locals
     val vehiclesReals = vehicleViewModel?.vehicles?.collectAsState()?.value ?: emptyList()
-    val availableVehicles = if (vehiclesReals.isNotEmpty()) {
-        vehiclesReals.map { VehicleOption("${it.marca} ${it.model}", it.id, it.preuHora) }
-    } else {
-        listOf(VehicleOption(stringResource(R.string.no_vehicles_available), "", 0.0))
-    }
+    val vehicleSeleccionat = vehiclesReals.find { it.id == matriculaFixa }
 
-    var selectedVehicle by remember { mutableStateOf(availableVehicles.firstOrNull() ?: VehicleOption("", "", 0.0)) }
-    var isDropdownExpanded by remember { mutableStateOf(false) }
+    val preuHora = vehicleSeleccionat?.preuHora ?: 0.0
+    val nomVehicle = if (vehicleSeleccionat != null) "${vehicleSeleccionat.marca} ${vehicleSeleccionat.model}" else matriculaFixa
 
-    // 2. DATES AMB CALENDARI (Controls)
+    // 2. Definició d'estat de UI
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
-    // Obtenim el context per poder llegir els strings des de dins del botó
-    val context = androidx.compose.ui.platform.LocalContext.current
 
     var costCalculat by remember { mutableStateOf(0.0) }
-    val fiancaFixa = 300.0
+    val fiancaFixa = 300.0 // Valor prefixat temporal. Pot ser extret d'una constant del sistema.
 
-    // 3. CÀLCUL DEL PREU (S'executa quan canvien les dates o el vehicle)
-    LaunchedEffect(startDate, endDate, selectedVehicle) {
+    val isLoggedIn = userEmail.isNotBlank()
+
+    // Llegeix els recursos abans d'entrar a la corrutina
+    val selectDatesError = stringResource(R.string.error_dates_required)
+    val invalidDatesError = stringResource(R.string.error_invalid_date_range)
+
+    // 3. Reactor de càlcul de pressupost
+    LaunchedEffect(startDate, endDate) {
         try {
             if (startDate.isNotBlank() && endDate.isNotBlank()) {
                 val inici = LocalDate.parse(startDate)
                 val fi = LocalDate.parse(endDate)
-
                 var dies = ChronoUnit.DAYS.between(inici, fi)
-                if (dies <= 0) dies = 1L // Mínim un dia de lloguer
-
-                costCalculat = dies * 24 * selectedVehicle.preuHora
+                if (dies <= 0) dies = 1L
+                costCalculat = dies * 24 * preuHora
             } else {
                 costCalculat = 0.0
             }
-        } catch (e: Exception) {
-            costCalculat = 0.0
-        }
+        } catch (e: Exception) { costCalculat = 0.0 }
     }
 
-    // 4. ESTAT DEL BACKEND
+    // 4. Reactor de l'estat remot
     val loading = viewModel?.loading?.collectAsState()?.value ?: false
     val creationResult = viewModel?.creationResult?.collectAsState()?.value
     var errorMsg by remember { mutableStateOf<String?>(null) }
@@ -133,24 +128,20 @@ fun CreateReservationScreen(
                 showSuccessDialog = true
             },
             onFailure = { e ->
-                // Posem el text directament per evitar problemes amb Compose
-                errorMsg = "Error reservation: " + e.message
+                // Sense traducció: mostra directament l'error tècnic
+                errorMsg = e.message
             }
         )
     }
 
-    // MODAL DELS CALENDARIS
-    if (showStartDatePicker) {
-        DatePickerModal(onDateSelected = { startDate = it }, onDismiss = { showStartDatePicker = false })
-    }
-    if (showEndDatePicker) {
-        DatePickerModal(onDateSelected = { endDate = it }, onDismiss = { showEndDatePicker = false })
-    }
+    // Modal de calendaris
+    if (showStartDatePicker) DatePickerModal(onDateSelected = { startDate = it }, onDismiss = { showStartDatePicker = false })
+    if (showEndDatePicker) DatePickerModal(onDateSelected = { endDate = it }, onDismiss = { showEndDatePicker = false })
 
-    // DIÀLEG D'ÈXIT
+    // Diàleg final d'èxit
     if (showSuccessDialog && reservaId != null) {
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = { },
             title = { Text(stringResource(R.string.reservation_created_title)) },
             text = {
                 Column {
@@ -162,124 +153,130 @@ fun CreateReservationScreen(
             confirmButton = {
                 Button(onClick = {
                     showSuccessDialog = false
+                    viewModel?.clearCreationResult()
                     onReservaCreada(reservaId!!)
                 }) { Text(stringResource(R.string.view_detail)) }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showSuccessDialog = false
+                    viewModel?.clearCreationResult()
+                    onNavigateBack()
+                }) { Text(stringResource(R.string.close)) }
             }
         )
     }
 
-    // INTERFÍCIE (UI)
+    // Renderització principal
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.create_reservation_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) { Icon(Icons.Default.ArrowBack, contentDescription = "Back") }
-                }
+                navigationIcon = { IconButton(onClick = onNavigateBack) { Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back)) } }
             )
         }
     ) { paddingValues ->
+        Column(modifier = Modifier.fillMaxSize().padding(paddingValues).verticalScroll(rememberScrollState()).padding(16.dp)) {
 
-        Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).verticalScroll(rememberScrollState()).padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            // Prevenció d'accés anònim
+            if (!isLoggedIn) {
+                OutlinedCard(
+                    colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                ) {
+                    Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Rounded.Info, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.login_required_desc),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
 
-            // FILA DE CALENDARIS
-            Text(stringResource(R.string.select_dates), style = MaterialTheme.typography.titleMedium, modifier = Modifier.align(Alignment.Start))
+            Text(stringResource(R.string.select_dates), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 
-                // Quadre de text clicable per la Data d'Inici
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Box(modifier = Modifier.weight(1f).clickable { showStartDatePicker = true }) {
                     OutlinedTextField(
                         value = startDate,
-                        onValueChange = { },
-                        enabled = false, // Desactivat perquè l'usuari no pugui escriure manualment
+                        onValueChange = {},
+                        enabled = false,
                         label = { Text(stringResource(R.string.start_date)) },
-                        trailingIcon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
-                        colors = OutlinedTextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface, disabledBorderColor = MaterialTheme.colorScheme.outline, disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant, disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant)
+                        trailingIcon = { Icon(Icons.Default.CalendarMonth, null) },
+                        colors = OutlinedTextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface)
                     )
                 }
-
-                // Quadre de text clicable per la Data Final
                 Box(modifier = Modifier.weight(1f).clickable { showEndDatePicker = true }) {
                     OutlinedTextField(
                         value = endDate,
-                        onValueChange = { },
+                        onValueChange = {},
                         enabled = false,
                         label = { Text(stringResource(R.string.end_date)) },
-                        trailingIcon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
-                        colors = OutlinedTextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface, disabledBorderColor = MaterialTheme.colorScheme.outline, disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant, disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant)
+                        trailingIcon = { Icon(Icons.Default.CalendarMonth, null) },
+                        colors = OutlinedTextFieldDefaults.colors(disabledTextColor = MaterialTheme.colorScheme.onSurface)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // DESPLEGABLE DE VEHICLES
-            Text(stringResource(R.string.available_vehicle), style = MaterialTheme.typography.titleMedium, modifier = Modifier.align(Alignment.Start))
+            Text(stringResource(R.string.reservation_vehicle), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
-            ExposedDropdownMenuBox(expanded = isDropdownExpanded, onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }) {
-                OutlinedTextField(
-                    value = selectedVehicle.name,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text(stringResource(R.string.reservation_vehicle)) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
-                )
-                ExposedDropdownMenu(expanded = isDropdownExpanded, onDismissRequest = { isDropdownExpanded = false }) {
-                    availableVehicles.forEach { vehicle ->
-                        DropdownMenuItem(text = { Text(vehicle.name) }, onClick = { selectedVehicle = vehicle; isDropdownExpanded = false })
-                    }
-                }
-            }
+            OutlinedTextField(
+                value = nomVehicle,
+                onValueChange = {},
+                readOnly = true,
+                enabled = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // RESUM PREU
             ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(stringResource(R.string.cost_summary), fontWeight = FontWeight.Bold)
-                    Divider(modifier = Modifier.padding(vertical = 8.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     CostRow(stringResource(R.string.rental_cost), String.format("%.2f €", costCalculat))
                     CostRow(stringResource(R.string.deposit), String.format("%.2f €", fiancaFixa))
-                    Divider(modifier = Modifier.padding(vertical = 8.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     CostRow(stringResource(R.string.total_to_pay), String.format("%.2f €", costCalculat + fiancaFixa))
                 }
             }
 
-            // ERRORS (Mala data seleccionada, etc.)
             if (errorMsg != null) {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(errorMsg!!, color = MaterialTheme.colorScheme.error)
+                Text(errorMsg!!, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold)
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // BOTÓ CONFIRMAR
             Button(
                 onClick = {
                     errorMsg = null
-
-                    // Comprovar si les dates estan buides o del revés
                     if (startDate.isBlank() || endDate.isBlank()) {
-                        errorMsg = "Selecciona les dates"
+                        errorMsg = selectDatesError
                         return@Button
                     }
                     val i = LocalDate.parse(startDate)
                     val f = LocalDate.parse(endDate)
                     if (i.isAfter(f)) {
-                        errorMsg = "Error: " // Hauries de llegir el recurs aquí amb el Context, però ho deixem simple
+                        errorMsg = invalidDatesError
                         return@Button
                     }
 
-                    // Cridar al Backend
-                    viewModel?.crearReserva(CreateReservaRequest(userEmail, selectedVehicle.matricula, startDate, endDate, userEmail))
+                    viewModel?.crearReserva(CreateReservaRequest(userEmail, matriculaFixa, startDate, endDate, userEmail))
                 },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
-                enabled = !loading
+                enabled = !loading && isLoggedIn
             ) {
                 if (loading) CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
                 else Text(stringResource(R.string.confirm_reservation))
@@ -288,6 +285,9 @@ fun CreateReservationScreen(
     }
 }
 
+/**
+ * Component estructural per facilitar la presentació semàntica de parells "Etiqueta-Valor" econòmics.
+ */
 @Composable
 fun CostRow(label: String, value: String) {
     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {

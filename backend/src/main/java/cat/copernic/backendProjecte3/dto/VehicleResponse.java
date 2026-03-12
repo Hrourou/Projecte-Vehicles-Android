@@ -1,27 +1,48 @@
 package cat.copernic.backendProjecte3.dto;
 
+import cat.copernic.backendProjecte3.entities.Vehicle;
 import java.math.BigDecimal;
+import java.util.Base64;
 
-public class VehicleResponseDTO {
+public class VehicleResponse {
 
     private String matricula;
     private String marca;
     private String model;
     private String variant;
     private BigDecimal preuHora;
-    private String fotoBase64;  // NUEVO
-    private String fotoUrl;
+    private String fotoBase64; // NUEVO: Imagen en Base64
+    private String fotoUrl;     // Lo mantenemos por compatibilidad
     private String potencia;
     private String color;
     private Integer limitQuilometratge;
     private BigDecimal fiancaEstandard;
     private Integer minDiesLloguer;
     private Integer maxDiesLloguer;
-    private String tipusVehicle;
-    private String estatVehicle;
 
-    // Constructor vacío
-    public VehicleResponseDTO() {
+    // Constructor por defecto
+    public VehicleResponse() {
+    }
+
+    // Constructor desde entidad
+    public VehicleResponse(Vehicle vehicle) {
+        this.matricula = vehicle.getMatricula();
+        this.marca = vehicle.getMarca();
+        this.model = vehicle.getModel();
+        this.variant = vehicle.getVariant();
+        this.preuHora = vehicle.getPreuHora();
+        this.fotoUrl = vehicle.getFotoUrl();
+        this.potencia = vehicle.getPotencia();
+        this.color = vehicle.getColor();
+        this.limitQuilometratge = vehicle.getLimitQuilometratge();
+        this.fiancaEstandard = vehicle.getFiancaEstandard();
+        this.minDiesLloguer = vehicle.getMinDiesLloguer();
+        this.maxDiesLloguer = vehicle.getMaxDiesLloguer();
+
+        // Convertir byte[] a Base64 para JSON
+        if (vehicle.getFotoBinario() != null) {
+            this.fotoBase64 = Base64.getEncoder().encodeToString(vehicle.getFotoBinario());
+        }
     }
 
     // Getters y Setters
@@ -127,21 +148,5 @@ public class VehicleResponseDTO {
 
     public void setMaxDiesLloguer(Integer maxDiesLloguer) {
         this.maxDiesLloguer = maxDiesLloguer;
-    }
-
-    public String getTipusVehicle() {
-        return tipusVehicle;
-    }
-
-    public void setTipusVehicle(String tipusVehicle) {
-        this.tipusVehicle = tipusVehicle;
-    }
-
-    public String getEstatVehicle() {
-        return estatVehicle;
-    }
-
-    public void setEstatVehicle(String estatVehicle) {
-        this.estatVehicle = estatVehicle;
     }
 }

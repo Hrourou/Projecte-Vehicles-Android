@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppVehiclesTheme {
 
+
                 MainScreen(authRepository)
             }
         }

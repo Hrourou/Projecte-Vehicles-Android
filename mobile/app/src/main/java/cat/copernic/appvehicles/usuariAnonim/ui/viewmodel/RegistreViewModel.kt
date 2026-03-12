@@ -13,16 +13,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.net.Uri
-import androidx.lifecycle.viewModelScope
+import android.util.Base64
+import java.io.InputStream
+
+
 import cat.copernic.appvehicles.core.composables.uriToFile
-import com.google.gson.Gson // Si no tienes Gson, puedes usar la librería JSON que utilices
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
+import com.google.gson.Gson
+
 
 class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
 
@@ -74,84 +71,45 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
 
         viewModelScope.launch {
             try {
-                // 1. El DTO original (Lo convertimos a JSON)
+                // 1. Convertir las imágenes (URIs) a Strings en Base64
+                val imatgeDniBase64 = uriToBase64(context, currentState.fotoIdentificacioUri)
+                val imatgeCarnetBase64 = uriToBase64(context, currentState.fotoLlicenciaUri)
+
+                if (imatgeDniBase64.isBlank() || imatgeCarnetBase64.isBlank()) {
+                    _uiState.update {
+                        it.copy(isLoading = false, errorMessage = "Error en llegir les imatges. Torna a seleccionar-les.")
+                    }
+                    return@launch
+                }
+
+                // 2. Crear el DTO exacto que espera el Repositorio
                 val request = ClientRegisterRequest(
                     email = currentState.email,
                     password = currentState.password,
                     nomComplet = currentState.nomComplet,
                     dni = currentState.numeroIdentificacio,
                     dataCaducitatDni = currentState.dataCaducitatId.ifBlank { "2025-01-01" },
-                    imatgeDni = "pending_url", // El backend lo ignorará y guardará la URL real
+                    imatgeDni = imatgeDniBase64, // ¡Aquí pasamos el Base64 directamente!
                     nacionalitat = currentState.nacionalitat,
                     adreca = currentState.adreca,
                     tipusCarnetConduir = currentState.tipusLlicencia,
                     dataCaducitatCarnet = currentState.dataCaducitatLlicencia.ifBlank { "2030-01-01" },
-                    imatgeCarnet = "pending_url",
+                    imatgeCarnet = imatgeCarnetBase64, // ¡Y aquí también!
                     numeroTargetaCredit = currentState.numeroTargetaCredit
                 )
 
-                val jsonRequest = Gson().toJson(request)
-                val clientDataPart =
-                    jsonRequest.toRequestBody("application/json".toMediaTypeOrNull())
+                // 3. LLAMADA AL REPOSITORIO (Limpio y directo)
+                val result = repository.register(request)
 
-                // 2. Transformar la FOTO DEL DNI de URI a Archivo
-                var dniPart: MultipartBody.Part? = null
-                if (!currentState.fotoIdentificacioUri.isNullOrBlank()) {
-                    val uriDni = Uri.parse(currentState.fotoIdentificacioUri)
-                    val fileDni = uriToFile(context, uriDni, "dni_temp.jpg")
-                    if (fileDni != null) {
-                        val requestFileDni = fileDni.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                        dniPart = MultipartBody.Part.createFormData(
-                            "fotoIdentificacio",
-                            fileDni.name,
-                            requestFileDni
-                        )
-                    }
-                }
-
-                // 3. Transformar la FOTO DE LA LLICÈNCIA de URI a Archivo
-                var llicenciaPart: MultipartBody.Part? = null
-                if (!currentState.fotoLlicenciaUri.isNullOrBlank()) {
-                    val uriLlicencia = Uri.parse(currentState.fotoLlicenciaUri)
-                    val fileLlicencia = uriToFile(context, uriLlicencia, "llicencia_temp.jpg")
-                    if (fileLlicencia != null) {
-                        val requestFileLlicencia =
-                            fileLlicencia.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                        llicenciaPart = MultipartBody.Part.createFormData(
-                            "fotoLlicencia",
-                            fileLlicencia.name,
-                            requestFileLlicencia
-                        )
-                    }
-                }
-
-                // Si por algún motivo falló la carga de las fotos, detenemos el proceso
-                if (dniPart == null || llicenciaPart == null) {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = "Error en llegir les imatges. Torna a seleccionar-les."
-                        )
-                    }
-                    return@launch
-                }
-
-                // 4. LLAMADA AL REPOSITORIO (Pasándole las 3 partes empaquetadas)
-                val result = repository.register(clientDataPart, dniPart, llicenciaPart)
-
-                // 5. GESTIÓN DE LA RESPUESTA
+                // 4. GESTIÓN DE LA RESPUESTA
                 if (result.isSuccess) {
                     _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 } else {
                     val errorMsg = result.exceptionOrNull()?.message ?: "Error desconegut"
 
-                    // Comprobación rápida para el famoso error 409 (Email duplicado)
                     if (errorMsg.contains("409")) {
                         _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                errorMessage = "Aquest email o DNI ja estan registrats."
-                            )
+                            it.copy(isLoading = false, errorMessage = "Aquest email o DNI ja estan registrats.")
                         }
                     } else {
                         _uiState.update { it.copy(isLoading = false, errorMessage = errorMsg) }
@@ -159,13 +117,28 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "Error de connexió: ${e.message}"
-                    )
+                    it.copy(isLoading = false, errorMessage = "Error de connexió: ${e.message}")
                 }
             }
         }
+    }
+}
+
+private fun uriToBase64(context: Context, uriString: String?): String {
+    if (uriString.isNullOrBlank()) return ""
+    return try {
+        val uri = Uri.parse(uriString)
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        val bytes = inputStream?.readBytes()
+        inputStream?.close()
+
+        if (bytes != null) {
+            Base64.encodeToString(bytes, Base64.NO_WRAP)
+        } else {
+            ""
+        }
+    } catch (e: Exception) {
+        ""
     }
 }
 

@@ -19,59 +19,49 @@ class VehicleViewModel(
     val isLoading: StateFlow<Boolean> = _isLoading
 
     fun loadVehicles() {
-
         viewModelScope.launch {
-
             _isLoading.value = true
-
             val result = repository.getVehicles()
 
             result.fold(
                 onSuccess = { vehicleResponseList ->
-
                     _vehicles.value = vehicleResponseList.map { response ->
                         Vehicle(
                             id = response.matricula,
                             marca = response.marca,
                             model = response.model,
                             variant = response.variant,
-                            preuHora = response.preuHora
+                            preuHora = response.preuHora,
+                            fotoBase64 = response.fotoBase64 // <-- ¡AQUÍ ESTÁ LA MAGIA!
                         )
                     }
-
                 },
                 onFailure = {}
             )
-
             _isLoading.value = false
         }
     }
 
     fun loadVehiclesDisponibles(inici: String, fi: String) {
-
         viewModelScope.launch {
-
             _isLoading.value = true
-
             val result = repository.getVehiclesDisponibles(inici, fi)
 
             result.fold(
                 onSuccess = { vehicleResponseList ->
-
                     _vehicles.value = vehicleResponseList.map { response ->
                         Vehicle(
                             id = response.matricula,
                             marca = response.marca,
                             model = response.model,
                             variant = response.variant,
-                            preuHora = response.preuHora
+                            preuHora = response.preuHora,
+                            fotoBase64 = response.fotoBase64 // <-- ¡Y AQUÍ TAMBIÉN!
                         )
                     }
-
                 },
                 onFailure = {}
             )
-
             _isLoading.value = false
         }
     }

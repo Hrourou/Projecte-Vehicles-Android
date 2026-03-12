@@ -16,30 +16,24 @@ public class Vehicle {
     @Column(length = 20)
     private String matricula;
 
-    // --- DADES COMERCIALS (RF90) ---
-
     @Column(nullable = false)
     private String marca;
 
     @Column(nullable = false)
     private String model;
 
-    /**
-     * Variant comercial (Elèctric, Híbrid, Dièsel…)
-     * No confondre amb tipusVehicle (COTXE, MOTO…)
-     */
     @Column(nullable = false)
     private String variant;
 
-    /**
-     * Ruta o URL pública de la imatge del vehicle
-     */
-    private String fotoUrl;
+    // --- CAMPOS MODIFICADOS PARA IMAGEN BLOB ---
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] fotoBinario;  // NUEVO: Almacena la imagen como BLOB
+    
+    private String fotoUrl;  // Lo mantenemos por compatibilidad
 
     private String potencia;
-
     private String color;
-
     private Integer limitQuilometratge;
 
     @Column(precision = 10, scale = 2)
@@ -49,10 +43,7 @@ public class Vehicle {
     private BigDecimal fiancaEstandard;
 
     private Integer minDiesLloguer;
-
     private Integer maxDiesLloguer;
-
-    // --- DADES INTERNES DE NEGOCI ---
 
     @Enumerated(EnumType.STRING)
     private TipusVehicle tipusVehicle;
@@ -70,8 +61,7 @@ public class Vehicle {
 
     public Vehicle() {}
 
-    // ---------------- GETTERS & SETTERS ----------------
-
+    // GETTERS Y SETTERS
     public String getMatricula() { return matricula; }
     public void setMatricula(String matricula) { this.matricula = matricula; }
 
@@ -83,6 +73,10 @@ public class Vehicle {
 
     public String getVariant() { return variant; }
     public void setVariant(String variant) { this.variant = variant; }
+
+    // NUEVOS GETTERS Y SETTERS PARA fotoBinario
+    public byte[] getFotoBinario() { return fotoBinario; }
+    public void setFotoBinario(byte[] fotoBinario) { this.fotoBinario = fotoBinario; }
 
     public String getFotoUrl() { return fotoUrl; }
     public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
@@ -123,8 +117,6 @@ public class Vehicle {
     public List<Reserva> getReservas() { return reservas; }
     public void setReservas(List<Reserva> reservas) { this.reservas = reservas; }
 
-    // ---------------- equals & hashCode ----------------
-
     @Override
     public int hashCode() {
         return Objects.hashCode(this.matricula);
@@ -148,4 +140,5 @@ public class Vehicle {
                 ", preuHora=" + preuHora +
                 '}';
     }
+    
 }

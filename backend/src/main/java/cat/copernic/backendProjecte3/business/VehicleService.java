@@ -22,60 +22,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class VehicleService {
 
-    @Autowired
-    private VehicleRepository vehicleRepo;
+    private final VehicleRepository vehicleRepository;
 
-    @Autowired
-    private ReservaRepository reservaRepo;
-
-    
-    
+    public VehicleService(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
+    }
     
     public List<Vehicle> obtenirTots() {
-        return vehicleRepo.findAll();
+        return vehicleRepository.findAll();
     }
 
-    public Vehicle obtenirPerId(String matricula) {
-        return vehicleRepo.findById(matricula)
-                .orElseThrow(() -> new RuntimeException("Vehicle no trobat: " + matricula));
-    }
-
-    @Transactional
-    public Vehicle guardarVehicle(Vehicle vehicle) {
-        return vehicleRepo.save(vehicle);
-    }
-
-    @Transactional
-    public void eliminarVehicle(String matricula) {
-        vehicleRepo.deleteById(matricula);
-    }
-    
-    public List<Vehicle> cercarVehiclesDisponibles(LocalDate inici, LocalDate fi, TipusVehicle tipus, String codiPostal) {
-        // Assumeix una @Query al repositori que filtra per dates i lloc
-        return vehicleRepo.findDisponibles(inici, fi, tipus, codiPostal);
-    }
-
-
-    @Transactional
-    public void donarDeBaixaVehicle(String matricula) {
-        Vehicle v = obtenirPerId(matricula);
-
-        // Validació de negoci: No es pot donar de baixa si té reserves futures
-        boolean teReservesFutures = reservaRepo.existsByVehicleAndDataFiAfter(v, LocalDate.now());
-        if (teReservesFutures) {
-            throw new IllegalStateException("El vehicle té reserves compromeses i no es pot desactivar.");
-        }
-
-        v.setEstatVehicle(EstatVehicle.BAIXA);
-        vehicleRepo.save(v);
-    }
-
-
-    @Transactional
-    public void donarDeAltaVehicle(String matricula, String motiuManteniment) {
-        Vehicle v = obtenirPerId(matricula);
-        
-        v.setEstatVehicle(EstatVehicle.ALTA);
-        vehicleRepo.save(v);
+    public List<Vehicle> cercarVehiclesDisponibles(LocalDate inici, LocalDate fi, TipusVehicle tipus) {
+        return vehicleRepository.findDisponibles(inici, fi, tipus);
     }
 }

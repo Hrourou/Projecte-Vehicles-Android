@@ -19,8 +19,9 @@ public class Client extends Usuari {
     @Column(name = "data_caducitat_dni")
     private LocalDate dataCaducitatDni;
 
-    @Column(name = "imatge_dni")
-    private String imatgeDni;
+   @Lob
+    @Column(name = "imatge_dni", columnDefinition = "LONGBLOB")
+    private byte[] imatgeDni;
 
     @Column(name = "nacionalitat")
     private String nacionalitat;
@@ -39,8 +40,9 @@ public class Client extends Usuari {
     @Column(name = "data_caducitat_carnet")
     private LocalDate dataCaducitatCarnet;
 
-    @Column(name = "imatge_carnet")
-    private String imatgeCarnet;
+    @Lob
+    @Column(name = "imatge_carnet", columnDefinition = "LONGBLOB")
+    private byte[] imatgeCarnet;
 
     // --- Datos Económicos ---
     @Column(name = "numero_targeta_credit")
@@ -65,9 +67,9 @@ public class Client extends Usuari {
     public LocalDate getDataCaducitatDni() { return dataCaducitatDni; }
     public void setDataCaducitatDni(LocalDate dataCaducitatDni) { this.dataCaducitatDni = dataCaducitatDni; }
 
-    public String getImatgeDni() { return imatgeDni; }
-    public void setImatgeDni(String imatgeDni) { this.imatgeDni = imatgeDni; }
-
+    public byte[] getImatgeDni() { return imatgeDni; }
+    public void setImatgeDni(byte[] imatgeDni) { this.imatgeDni = imatgeDni; }
+    
     public String getNacionalitat() { return nacionalitat; }
     public void setNacionalitat(String nacionalitat) { this.nacionalitat = nacionalitat; }
 
@@ -83,8 +85,8 @@ public class Client extends Usuari {
     public LocalDate getDataCaducitatCarnet() { return dataCaducitatCarnet; }
     public void setDataCaducitatCarnet(LocalDate dataCaducitatCarnet) { this.dataCaducitatCarnet = dataCaducitatCarnet; }
 
-    public String getImatgeCarnet() { return imatgeCarnet; }
-    public void setImatgeCarnet(String imatgeCarnet) { this.imatgeCarnet = imatgeCarnet; }
+    public byte[] getImatgeCarnet() { return imatgeCarnet; }
+    public void setImatgeCarnet(byte[] imatgeCarnet) { this.imatgeCarnet = imatgeCarnet; }
 
     public String getNumeroTargetaCredit() { return numeroTargetaCredit; }
     public void setNumeroTargetaCredit(String numeroTargetaCredit) { this.numeroTargetaCredit = numeroTargetaCredit; }

@@ -1,5 +1,6 @@
 package cat.copernic.appvehicles.usuariAnonim.data.api.remote
 
+import cat.copernic.appvehicles.model.ClientRegisterRequest
 import cat.copernic.appvehicles.usuariAnonim.data.model.PasswordRecoveryRequest
 import cat.copernic.appvehicles.usuariAnonim.data.model.PasswordRecoveryResponse
 import cat.copernic.appvehicles.usuariAnonim.data.model.ResetPasswordRequest
@@ -15,13 +16,9 @@ import retrofit2.http.Part
 
 interface AuthApiService {
 
-    @Multipart
     @POST("auth/register")
-    suspend fun register(
-        @Part("clientData") clientData: RequestBody,
-        @Part fotoIdentificacio: MultipartBody.Part,
-        @Part fotoLlicencia: MultipartBody.Part
-    ): Response<Unit>
+    suspend fun register(@Body request: ClientRegisterRequest): Response<Unit>
+
 
     @POST("auth/recover-password")
     suspend fun recoverPassword(

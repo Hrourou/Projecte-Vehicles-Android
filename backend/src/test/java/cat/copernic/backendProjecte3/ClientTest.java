@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cat.copernic.backendProjecte3;
 
 import cat.copernic.backendProjecte3.config.PasswordHasher;
@@ -45,53 +41,56 @@ public class ClientTest {
     }
 
     @Test
-public void testRegistrarNouClient_FluxCorrecte() {
+    public void testRegistrarNouClient_FluxCorrecte() {
 
-    ClientRegistreDTO dto = new ClientRegistreDTO();
-    dto.setEmail("nou.client@test.com");
-    dto.setPassword("secret123");
-    dto.setNomComplet("Client de Prova");
-    dto.setDni("12345678Z");
-    dto.setAdreca("Carrer de l'Exemple, 123");
-    dto.setTipusCarnetConduir("B");
-    dto.setNumeroTargetaCredit("1111-2222-3333-4444");
+        ClientRegistreDTO dto = new ClientRegistreDTO();
+        dto.setEmail("nou.client@test.com");
+        dto.setPassword("secret123");
+        dto.setNomComplet("Client de Prova");
+        dto.setDni("12345678Z");
+        dto.setAdreca("Carrer de l'Exemple, 123");
+        dto.setTipusCarnetConduir("B");
+        dto.setNumeroTargetaCredit("1111-2222-3333-4444");
 
-    Client resultat = assertDoesNotThrow(() ->
-            clientService.registrarNouClient(dto, null, null)
-    );
+        // AQUÍ HEMOS QUITADO LOS "null, null"
+        Client resultat = assertDoesNotThrow(() ->
+                clientService.registrarNouClient(dto)
+        );
 
-    assertNotNull(resultat);
+        assertNotNull(resultat);
 
-    Client clientDesat = clientRepo.findById("nou.client@test.com").orElse(null);
+        Client clientDesat = clientRepo.findById("nou.client@test.com").orElse(null);
 
-    // Verificaciones
-    assertNotNull(clientDesat);
-    assertEquals("nou.client@test.com", clientDesat.getEmail());
-    assertTrue(PasswordHasher.check("secret123", clientDesat.getPassword()));
-    assertEquals("12345678Z", clientDesat.getDni());
-    assertEquals("Carrer de l'Exemple, 123", clientDesat.getAdreca());
-    assertEquals(UserRole.CLIENT, clientDesat.getRol());
-}
+        // Verificaciones
+        assertNotNull(clientDesat);
+        assertEquals("nou.client@test.com", clientDesat.getEmail());
+        assertTrue(PasswordHasher.check("secret123", clientDesat.getPassword()));
+        assertEquals("12345678Z", clientDesat.getDni());
+        assertEquals("Carrer de l'Exemple, 123", clientDesat.getAdreca());
+        assertEquals(UserRole.CLIENT, clientDesat.getRol());
+    }
 
-@Test
-public void testRegistrarClient_EmailDuplicat() throws ErrorAltaException {
+    @Test
+    public void testRegistrarClient_EmailDuplicat() throws ErrorAltaException {
 
-    ClientRegistreDTO primer = new ClientRegistreDTO();
-    primer.setEmail("ja.existeix@test.com");
-    primer.setPassword("1234");
-    primer.setNomComplet("Client Existent");
-    primer.setDni("99999999X");
+        ClientRegistreDTO primer = new ClientRegistreDTO();
+        primer.setEmail("ja.existeix@test.com");
+        primer.setPassword("1234");
+        primer.setNomComplet("Client Existent");
+        primer.setDni("99999999X");
 
-    clientService.registrarNouClient(primer, null, null);
+        // AQUÍ TAMBIÉN QUITAMOS LOS "null, null"
+        clientService.registrarNouClient(primer);
 
-    ClientRegistreDTO duplicat = new ClientRegistreDTO();
-    duplicat.setEmail("ja.existeix@test.com"); // mismo email
-    duplicat.setPassword("novaPass");
-    duplicat.setNomComplet("Client Nou");
-    duplicat.setDni("88888888Y"); // DNI diferente
+        ClientRegistreDTO duplicat = new ClientRegistreDTO();
+        duplicat.setEmail("ja.existeix@test.com"); // mismo email
+        duplicat.setPassword("novaPass");
+        duplicat.setNomComplet("Client Nou");
+        duplicat.setDni("88888888Y"); // DNI diferente
 
-    assertThrows(ErrorAltaException.class, () ->
-            clientService.registrarNouClient(duplicat, null, null)
-    );
-}
+        // Y AQUÍ TAMBIÉN QUITAMOS LOS "null, null"
+        assertThrows(ErrorAltaException.class, () ->
+                clientService.registrarNouClient(duplicat)
+        );
+    }
 }

@@ -2,26 +2,23 @@ package cat.copernic.backendProjecte3.dto;
 
 import java.math.BigDecimal;
 
-public class VehicleResponseDTO {
+public class VehicleRequest {
 
     private String matricula;
     private String marca;
     private String model;
     private String variant;
     private BigDecimal preuHora;
-    private String fotoBase64;  // NUEVO
-    private String fotoUrl;
+    private String fotoBase64; // Imagen en Base64
     private String potencia;
     private String color;
     private Integer limitQuilometratge;
     private BigDecimal fiancaEstandard;
     private Integer minDiesLloguer;
     private Integer maxDiesLloguer;
-    private String tipusVehicle;
-    private String estatVehicle;
 
     // Constructor vacío
-    public VehicleResponseDTO() {
+    public VehicleRequest() {
     }
 
     // Getters y Setters
@@ -73,14 +70,6 @@ public class VehicleResponseDTO {
         this.fotoBase64 = fotoBase64;
     }
 
-    public String getFotoUrl() {
-        return fotoUrl;
-    }
-
-    public void setFotoUrl(String fotoUrl) {
-        this.fotoUrl = fotoUrl;
-    }
-
     public String getPotencia() {
         return potencia;
     }
@@ -127,21 +116,5 @@ public class VehicleResponseDTO {
 
     public void setMaxDiesLloguer(Integer maxDiesLloguer) {
         this.maxDiesLloguer = maxDiesLloguer;
-    }
-
-    public String getTipusVehicle() {
-        return tipusVehicle;
-    }
-
-    public void setTipusVehicle(String tipusVehicle) {
-        this.tipusVehicle = tipusVehicle;
-    }
-
-    public String getEstatVehicle() {
-        return estatVehicle;
-    }
-
-    public void setEstatVehicle(String estatVehicle) {
-        this.estatVehicle = estatVehicle;
     }
 }

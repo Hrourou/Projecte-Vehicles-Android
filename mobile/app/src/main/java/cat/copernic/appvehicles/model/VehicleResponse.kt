@@ -12,5 +12,6 @@ data class VehicleResponse(
     val preuHora: Double,
     val fiancaEstandard: Double?,
     val minDiesLloguer: Int?,
-    val maxDiesLloguer: Int?
+    val maxDiesLloguer: Int?,
+    val fotoBase64: String? = null
 )
