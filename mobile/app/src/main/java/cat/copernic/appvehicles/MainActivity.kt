@@ -3,55 +3,29 @@ package cat.copernic.appvehicles
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import cat.copernic.appvehicles.core.auth.SessionManager
 import cat.copernic.appvehicles.core.navigation.MainScreen
 import cat.copernic.appvehicles.ui.theme.AppVehiclesTheme
-import cat.copernic.appvehicles.usuariAnonim.data.api.remote.AuthApiService
 import cat.copernic.appvehicles.usuariAnonim.data.repository.AuthRepository
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+// Importem el proveïdor centralitzat!
+import cat.copernic.appvehicles.core.network.RetrofitProvider
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 1. Utilitzem l'API de Login centralitzada (adéu Retrofit local!)
+        val authService = RetrofitProvider.authApi
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val authService = retrofit.create(AuthApiService::class.java)
-
+        // 2. Inicialitzem el gestor de sessions i el repositori
         val sessionManager = SessionManager(applicationContext)
         val authRepository = AuthRepository(authService, sessionManager)
 
+        // 3. Arrenquem la interfície gràfica
         setContent {
             AppVehiclesTheme {
-
-
                 MainScreen(authRepository)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppVehiclesTheme {
-        Greeting("Android")
     }
 }
