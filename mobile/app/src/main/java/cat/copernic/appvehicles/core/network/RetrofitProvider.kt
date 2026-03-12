@@ -7,8 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitProvider {
 
-    // Emulador Android -> localhost del PC
-    private const val BASE_URL = "http://10.31.110.46:8080/api/"
+    // IP actualizada según tu ipconfig (Wi-Fi)
+    private const val BASE_URL = "http://10.0.2.2:8080/"
 
     private val client: OkHttpClient by lazy {
         val log = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }

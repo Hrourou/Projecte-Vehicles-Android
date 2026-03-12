@@ -153,27 +153,61 @@ fun MainScreen(
             composable(AppRoutes.Vehicles.route) {
                 VehicleLlistarScreen(
                     viewModel = vehicleViewModel,
-                    onVehicleClick = { matricula: String ->
-                        navController.navigate("${AppRoutes.VehicleDetail.route}/$matricula")
+                    // MODIFICAT: Ara rep les dates de la pantalla de llista
+                    onVehicleClick = { matricula, inici, fi ->
+                        navController.navigate("${AppRoutes.VehicleDetail.route}/$matricula?inici=$inici&fi=$fi")
                     }
                 )
             }
 
             // VEHICLE DETAIL
             composable(
-                route = "${AppRoutes.VehicleDetail.route}/{matricula}",
+                route = "${AppRoutes.VehicleDetail.route}/{matricula}?inici={inici}&fi={fi}",
                 arguments = listOf(
-                    navArgument("matricula") { type = NavType.StringType }
+                    navArgument("matricula") { type = NavType.StringType },
+                    navArgument("inici") { type = NavType.StringType; defaultValue = "" },
+                    navArgument("fi") { type = NavType.StringType; defaultValue = "" }
                 )
             ) { backStackEntry ->
                 val matricula = backStackEntry.arguments?.getString("matricula") ?: ""
+                val inici = backStackEntry.arguments?.getString("inici") ?: ""
+                val fi = backStackEntry.arguments?.getString("fi") ?: ""
 
                 VehicleDetailScreen(
                     matricula = matricula,
                     viewModel = vehicleViewModel,
                     onBackClick = { navController.popBackStack() },
-                    // CORREGIT: Passem la matricula a la següent pantalla!
-                    onReservarClick = { navController.navigate("reserva_create/$matricula") }
+                    // Passem les dates cap a la pantalla de crear reserva!
+                    onReservarClick = { navController.navigate("reserva_create/$matricula?inici=$inici&fi=$fi") }
+                )
+            }
+
+            // RESERVA CREATE
+            composable(
+                route = "reserva_create/{matricula}?inici={inici}&fi={fi}",
+                arguments = listOf(
+                    navArgument("matricula") { type = NavType.StringType },
+                    navArgument("inici") { type = NavType.StringType; defaultValue = "" },
+                    navArgument("fi") { type = NavType.StringType; defaultValue = "" }
+                )
+            ) { backStackEntry ->
+                val matriculaEscollida = backStackEntry.arguments?.getString("matricula") ?: ""
+                val inici = backStackEntry.arguments?.getString("inici") ?: ""
+                val fi = backStackEntry.arguments?.getString("fi") ?: ""
+
+                CreateReservationScreen(
+                    matriculaFixa = matriculaEscollida,
+                    iniciFix = inici, // Nou paràmetre!
+                    fiFix = fi,       // Nou paràmetre!
+                    onNavigateBack = { navController.popBackStack() },
+                    viewModel = reservaViewModel,
+                    vehicleViewModel = vehicleViewModel,
+                    userEmail = userEmail ?: "",
+                    onReservaCreada = { idReserva ->
+                        navController.navigate("reserva_detail/$idReserva") {
+                            popUpTo(AppRoutes.Vehicles.route)
+                        }
+                    }
                 )
             }
 
