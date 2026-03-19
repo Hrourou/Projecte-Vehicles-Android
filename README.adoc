@@ -27,7 +27,8 @@ L’objectiu del projecte és implementar una solució completa formada per:
 
 Vídeo promocional / demo:
 
-link:[https://drive.google.com/file/d/1f5RMDnChKqthnHl5k6nWN0WYeVRQ7ebd/view?usp=sharing,window=_blank][Veure vídeo del projecte]
+link:https://drive.google.com/file/d/1f5RMDnChKqthnHl5k6nWN0WYeVRQ7ebd/view?usp=sharing[Veure vídeo del projecte]
+
 video::https://drive.google.com/file/d/1f5RMDnChKqthnHl5k6nWN0WYeVRQ7ebd/view?usp=sharing[]
 == Membres del grup
 
