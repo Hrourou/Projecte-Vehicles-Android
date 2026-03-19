@@ -1,4 +1,4 @@
-= MobileCat
+= MOBIRENT
 :toc:
 :toc-title: Índex
 :sectnums:
