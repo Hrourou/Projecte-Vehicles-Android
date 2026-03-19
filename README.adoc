@@ -1,4 +1,4 @@
-= [NOMBRE DE LA APP]
+= [MobileCat]
 :toc:
 :toc-title: Índex
 :sectnums:
@@ -29,7 +29,7 @@ Vídeo promocional / demo:
 
 * link:[AQUÍ_ENLLAÇ_VIDEO,window=_blank][Veure vídeo del projecte]
 
-video::AQUÍ_ENLLAÇ_VIDEO[]
+video::AQUÍ_ENLLAÇ_VIDEO[https://drive.google.com/file/d/1f5RMDnChKqthnHl5k6nWN0WYeVRQ7ebd/view?usp=sharing]
 
 == Membres del grup
 
