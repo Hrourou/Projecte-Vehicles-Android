@@ -1,4 +1,4 @@
-= [MobileCat]
+= MobileCat
 :toc:
 :toc-title: Índex
 :sectnums:
@@ -27,10 +27,8 @@ L’objectiu del projecte és implementar una solució completa formada per:
 
 Vídeo promocional / demo:
 
-* link:[AQUÍ_ENLLAÇ_VIDEO,window=_blank][Veure vídeo del projecte]
-
-video::AQUÍ_ENLLAÇ_VIDEO[https://drive.google.com/file/d/1f5RMDnChKqthnHl5k6nWN0WYeVRQ7ebd/view?usp=sharing]
-
+link:[https://drive.google.com/file/d/1f5RMDnChKqthnHl5k6nWN0WYeVRQ7ebd/view?usp=sharing,window=_blank][Veure vídeo del projecte]
+video::https://drive.google.com/file/d/1f5RMDnChKqthnHl5k6nWN0WYeVRQ7ebd/view?usp=sharing[]
 == Membres del grup
 
 * Bachir El Harrak
