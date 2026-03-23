@@ -9,7 +9,7 @@ Projecte ABP - Projecte 3 - Aplicació mobile amb API REST
 
 == Descripció del projecte
 
-[Nom de l'app] és una aplicació mòbil Android desenvolupada amb Kotlin i Jetpack Compose que permet consultar vehicles, veure’n el detall, consultar la disponibilitat per rang de dates i gestionar reserves mitjançant una arquitectura client-servidor basada en una API REST implementada amb Spring Boot.
+MOBIRENT és una aplicació mòbil Android desenvolupada amb Kotlin i Jetpack Compose que permet consultar vehicles, veure’n el detall, consultar la disponibilitat per rang de dates i gestionar reserves mitjançant una arquitectura client-servidor basada en una API REST implementada amb Spring Boot.
 
 L’aplicació diferencia entre funcionalitats per a usuari anònim i funcionalitats per a client autenticat. Els usuaris registrats poden iniciar sessió, editar el seu perfil, crear reserves, consultar-les, ordenar-les i anul·lar-les abans de la seva data d’inici.
 
