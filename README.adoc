@@ -39,10 +39,10 @@ video::https://drive.google.com/file/d/1f5RMDnChKqthnHl5k6nWN0WYeVRQ7ebd/view?us
 
 == Portafolis personals
 
-* link:[AQUÍ_ENLLAÇ_PORTAFOLI_1,window=_blank][Portafoli Bachir El Harrak]
-* link:[AQUÍ_ENLLAÇ_PORTAFOLI_2,window=_blank][Portafoli Javier Sánchez Osuna]
-* link:[AQUÍ_ENLLAÇ_PORTAFOLI_3,window=_blank][Portafoli Hamza Rourou Rourou]
-* link:[AQUÍ_ENLLAÇ_PORTAFOLI_4,window=_blank][Portafoli Joel Reyes Niebla]
+* link:[https://github.com/bvbJV/][Portafoli Bachir El Harrak]
+* link:[https://github.com/javiprogramm28][Portafoli Javier Sánchez Osuna]
+* link:[https://github.com/Hrourou][Portafoli Hamza Rourou Rourou]
+* link:[https://github.com/jreyes2-dev][Portafoli Joel Reyes Niebla]
 
 == Estructura del repositori
 
